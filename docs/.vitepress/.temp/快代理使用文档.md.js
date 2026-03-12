@@ -1,0 +1,37 @@
+import { ssrRenderAttrs, ssrRenderAttr, ssrRenderStyle } from "vue/server-renderer";
+import { useSSRContext } from "vue";
+import { _ as _export_sfc } from "./plugin-vue_export-helper.1tPrXgE0.js";
+const _imports_0 = "/MediaCrawler/assets/img.C5SooiSi.png";
+const _imports_1 = "/MediaCrawler/assets/img_1.BOhFUpZn.png";
+const _imports_2 = "/MediaCrawler/assets/img_2.BqwqDg50.png";
+const _imports_3 = "/MediaCrawler/assets/img_3.C3qoX5mD.png";
+const _imports_4 = "/MediaCrawler/assets/img_4.ClBbViCM.png";
+const __pageData = JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"快代理使用文档.md","filePath":"快代理使用文档.md","lastUpdated":1753981511000}');
+const _sfc_main = { name: "快代理使用文档.md" };
+function _sfc_ssrRender(_ctx, _push, _parent, _attrs, $props, $setup, $data, $options) {
+  _push(`<div${ssrRenderAttrs(_attrs)}><h2 id="快代理使用文档-支持个人和企业用户" tabindex="-1">快代理使用文档（支持个人和企业用户） <a class="header-anchor" href="#快代理使用文档-支持个人和企业用户" aria-label="Permalink to &quot;快代理使用文档（支持个人和企业用户）&quot;">​</a></h2><h2 id="准备代理-ip-信息" tabindex="-1">准备代理 IP 信息 <a class="header-anchor" href="#准备代理-ip-信息" aria-label="Permalink to &quot;准备代理 IP 信息&quot;">​</a></h2><p>点击 <a href="https://www.kuaidaili.com/?ref=ldwkjqipvz6c">快代理</a> 官网注册并实名认证（国内使用代理 IP 必须要实名，懂的都懂）</p><h2 id="获取-ip-代理的密钥信息" tabindex="-1">获取 IP 代理的密钥信息 <a class="header-anchor" href="#获取-ip-代理的密钥信息" aria-label="Permalink to &quot;获取 IP 代理的密钥信息&quot;">​</a></h2><p>从 <a href="https://www.kuaidaili.com/?ref=ldwkjqipvz6c">快代理</a> 官网获取免费试用，如下图所示 <img${ssrRenderAttr("src", _imports_0)} alt="img.png"></p><p>注意：选择私密代理 <img${ssrRenderAttr("src", _imports_1)} alt="img_1.png"></p><p>选择开通试用 <img${ssrRenderAttr("src", _imports_2)} alt="img_2.png"></p><p>初始化一个快代理的示例，如下代码所示，需要4个参数</p><div class="language-python vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">python</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#6A737D", "--shiki-dark": "#6A737D" })}"># 文件地址： proxy/providers/kuai_daili_proxy.py</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#6A737D", "--shiki-dark": "#6A737D" })}"># -*- coding: utf-8 -*-</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">def</span><span style="${ssrRenderStyle({ "--shiki-light": "#6F42C1", "--shiki-dark": "#B392F0" })}"> new_kuai_daili_proxy</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">() -&gt; KuaiDaiLiProxy:</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">    构造快代理HTTP实例</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">    Returns:</span></span>
+<span class="line"></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">    return</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> KuaiDaiLiProxy(</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#E36209", "--shiki-dark": "#FFAB70" })}">        kdl_secret_id</span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">=</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">os.getenv(</span><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">&quot;kdl_secret_id&quot;</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">, </span><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">&quot;你的快代理secert_id&quot;</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">),</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#E36209", "--shiki-dark": "#FFAB70" })}">        kdl_signature</span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">=</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">os.getenv(</span><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">&quot;kdl_signature&quot;</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">, </span><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">&quot;你的快代理签名&quot;</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">),</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#E36209", "--shiki-dark": "#FFAB70" })}">        kdl_user_name</span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">=</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">os.getenv(</span><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">&quot;kdl_user_name&quot;</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">, </span><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">&quot;你的快代理用户名&quot;</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">),</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#E36209", "--shiki-dark": "#FFAB70" })}">        kdl_user_pwd</span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">=</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">os.getenv(</span><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">&quot;kdl_user_pwd&quot;</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">, </span><span style="${ssrRenderStyle({ "--shiki-light": "#032F62", "--shiki-dark": "#9ECBFF" })}">&quot;你的快代理密码&quot;</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">),</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">    )</span></span></code></pre></div><p>在试用的订单中可以看到这四个参数，如下图所示</p><p><code>kdl_user_name</code>、<code>kdl_user_pwd</code><img${ssrRenderAttr("src", _imports_3)} alt="img_3.png"></p><p><code>kdl_secret_id</code>、<code>kdl_signature</code><img${ssrRenderAttr("src", _imports_4)} alt="img_4.png"></p></div>`);
+}
+const _sfc_setup = _sfc_main.setup;
+_sfc_main.setup = (props, ctx) => {
+  const ssrContext = useSSRContext();
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("快代理使用文档.md");
+  return _sfc_setup ? _sfc_setup(props, ctx) : void 0;
+};
+const _______ = /* @__PURE__ */ _export_sfc(_sfc_main, [["ssrRender", _sfc_ssrRender]]);
+export {
+  __pageData,
+  _______ as default
+};
