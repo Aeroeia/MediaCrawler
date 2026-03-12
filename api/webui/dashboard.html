@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediaCrawler 数据表盘</title>
+    <link rel="stylesheet" href="/static/dashboard.css" />
+    <script src="/static/dashboard.js" defer></script>
+  </head>
+  <body>
+    <div class="bg-grid"></div>
+    <div class="page">
+      <header class="header card">
+        <div>
+          <h1>数据表盘</h1>
+          <p>按渠道聚合内容、评论、创作者数据（基于 MySQL）</p>
+        </div>
+        <div class="controls">
+          <label for="days-select">时间范围</label>
+          <select id="days-select">
+            <option value="7">最近 7 天</option>
+            <option value="30">最近 30 天</option>
+          </select>
+          <button id="refresh-btn" type="button">刷新</button>
+        </div>
+      </header>
+
+      <section class="kpi-grid">
+        <article class="kpi-card card">
+          <h3>今日新增内容</h3>
+          <div id="today-new-contents" class="kpi-value">-</div>
+          <p>当日采集条目</p>
+        </article>
+        <article class="kpi-card card">
+          <h3>总内容量</h3>
+          <div id="total-contents" class="kpi-value">-</div>
+          <p>全渠道累计</p>
+        </article>
+        <article class="kpi-card card">
+          <h3>总评论量</h3>
+          <div id="total-comments" class="kpi-value">-</div>
+          <p>全渠道累计</p>
+        </article>
+        <article class="kpi-card card">
+          <h3>总创作者数</h3>
+          <div id="total-creators" class="kpi-value">-</div>
+          <p>全渠道累计</p>
+        </article>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel card">
+          <div class="panel-head">
+            <h2>内容采集趋势</h2>
+            <span id="trend-period" class="badge">最近 7 天</span>
+          </div>
+          <div id="trend-chart" class="trend-chart empty-state">暂无数据</div>
+        </article>
+        <article class="panel card">
+          <div class="panel-head">
+            <h2>渠道数据分布</h2>
+            <span class="badge">内容 / 评论 / 创作者</span>
+          </div>
+          <div id="channel-stats" class="channel-stats empty-state">暂无数据</div>
+        </article>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel card">
+          <div class="panel-head">
+            <h2>关键词 Top</h2>
+            <span class="badge">按来源关键词聚合</span>
+          </div>
+          <div id="keyword-list" class="keyword-list empty-state">暂无数据</div>
+        </article>
+        <article class="panel card">
+          <div class="panel-head">
+            <h2>最近采集内容</h2>
+            <span id="recent-count" class="badge">0 条</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>渠道</th>
+                  <th>标题/摘要</th>
+                  <th>互动</th>
+                  <th>采集时间</th>
+                </tr>
+              </thead>
+              <tbody id="recent-table-body">
+                <tr>
+                  <td colspan="4" class="empty-state">暂无数据</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+  </body>
+</html>

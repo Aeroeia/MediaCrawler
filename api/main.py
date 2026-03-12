@@ -30,7 +30,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from .routers import crawler_router, data_router, websocket_router
+from .routers import crawler_router, data_router, dashboard_router, websocket_router
 
 app = FastAPI(
     title="MediaCrawler WebUI API",
@@ -58,6 +58,7 @@ app.add_middleware(
 # Register routers
 app.include_router(crawler_router, prefix="/api")
 app.include_router(data_router, prefix="/api")
+app.include_router(dashboard_router, prefix="/api")
 app.include_router(websocket_router, prefix="/api")
 
 
@@ -72,6 +73,18 @@ async def serve_frontend():
         "version": "1.0.0",
         "docs": "/docs",
         "note": "WebUI not found, please build it first: cd webui && npm run build"
+    }
+
+
+@app.get("/dashboard")
+async def serve_dashboard():
+    """Return dashboard page"""
+    dashboard_path = os.path.join(WEBUI_DIR, "dashboard.html")
+    if os.path.exists(dashboard_path):
+        return FileResponse(dashboard_path)
+    return {
+        "message": "Dashboard not found",
+        "note": "Missing file: api/webui/dashboard.html",
     }
 
 
