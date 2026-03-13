@@ -16,7 +16,7 @@
 # 详细许可条款请参阅项目根目录下的LICENSE文件。
 # 使用本代码即表示您同意遵守上述原则和LICENSE中的所有条款。
 
-from sqlalchemy import create_engine, Column, Integer, Text, String, BigInteger
+from sqlalchemy import create_engine, Column, Integer, Text, String, BigInteger, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -450,3 +450,49 @@ class ZhihuCreator(Base):
     get_voteup_count = Column(Integer, default=0, comment='获赞数')
     add_ts = Column(BigInteger, comment='添加时间戳')
     last_modify_ts = Column(BigInteger, comment='最后修改时间戳')
+
+
+class CrawlerTask(Base):
+    __tablename__ = 'crawler_task'
+    id = Column(Integer, primary_key=True, comment='任务ID')
+    name = Column(String(255), nullable=False, index=True, comment='任务名称')
+    description = Column(Text, default='', comment='任务描述')
+    platform = Column(String(32), nullable=False, index=True, comment='平台代号')
+    crawler_type = Column(String(32), default='search', comment='爬取模式')
+    login_type = Column(String(32), default='qrcode', comment='登录方式')
+    save_option = Column(String(32), default='jsonl', comment='存储方式')
+    keywords = Column(Text, default='', comment='搜索关键词')
+    specified_ids = Column(Text, default='', comment='详情ID列表')
+    creator_ids = Column(Text, default='', comment='创作者ID列表')
+    cookies = Column(Text, default='', comment='Cookies')
+    start_page = Column(Integer, default=1, comment='起始页')
+    enable_comments = Column(Boolean, default=True, comment='是否抓取评论')
+    enable_sub_comments = Column(Boolean, default=False, comment='是否抓取子评论')
+    headless = Column(Boolean, default=False, comment='是否无头模式')
+    priority = Column(String(16), default='medium', comment='优先级')
+    timeout_seconds = Column(Integer, default=30, comment='超时时间（秒）')
+    cron_expr = Column(String(128), nullable=False, comment='Cron表达式')
+    is_enabled = Column(Boolean, default=True, comment='是否启用调度')
+    status = Column(String(32), default='idle', comment='任务状态')
+    next_run_at = Column(BigInteger, default=0, index=True, comment='下次执行时间戳')
+    last_run_at = Column(BigInteger, default=0, comment='最后执行时间戳')
+    success_count = Column(Integer, default=0, comment='成功次数')
+    fail_count = Column(Integer, default=0, comment='失败次数')
+    last_error = Column(Text, default='', comment='最近错误信息')
+    running_pid = Column(Integer, default=0, comment='当前运行进程PID')
+    add_ts = Column(BigInteger, comment='创建时间戳')
+    last_modify_ts = Column(BigInteger, comment='更新时间戳')
+
+
+class CrawlerTaskRun(Base):
+    __tablename__ = 'crawler_task_run'
+    id = Column(Integer, primary_key=True, comment='运行记录ID')
+    task_id = Column(Integer, nullable=False, index=True, comment='任务ID')
+    platform = Column(String(32), nullable=False, index=True, comment='平台代号')
+    trigger_type = Column(String(16), default='cron', comment='触发方式 cron/manual')
+    status = Column(String(32), default='running', index=True, comment='运行状态')
+    started_at = Column(BigInteger, default=0, index=True, comment='开始时间戳')
+    finished_at = Column(BigInteger, default=0, comment='结束时间戳')
+    exit_code = Column(Integer, default=0, comment='进程退出码')
+    pid = Column(Integer, default=0, comment='进程PID')
+    error_message = Column(Text, default='', comment='错误信息')

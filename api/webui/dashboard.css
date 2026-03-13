@@ -354,6 +354,47 @@ body {
   background: #fff;
 }
 
+.table-pagination {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.page-btn {
+  border: 1px solid #c8d6f3;
+  background: #fff;
+  color: var(--primary);
+  border-radius: 8px;
+  height: 32px;
+  min-width: 72px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.page-btn:hover {
+  background: #eaf1ff;
+  border-color: #b8ccf5;
+}
+
+.page-btn:disabled {
+  color: #94a3b8;
+  border-color: #d9e2f2;
+  background: #f8fafc;
+  cursor: not-allowed;
+}
+
+.page-text {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: "Fira Code", "SFMono-Regular", Consolas, monospace;
+}
+
 .data-table,
 .detail-table {
   width: 100%;

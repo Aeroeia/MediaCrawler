@@ -105,12 +105,17 @@ class TieBaDbStoreImplement(AbstractStore):
             content_item: content item dict
         """
         note_id = content_item.get("note_id")
+        content_item = dict(content_item)
+        if int(content_item.get("add_ts") or 0) <= 0:
+            content_item["add_ts"] = utils.get_current_timestamp()
         async with get_session() as session:
             stmt = select(TiebaNote).where(TiebaNote.note_id == note_id)
             res = await session.execute(stmt)
             db_note = res.scalar_one_or_none()
             if db_note:
                 for key, value in content_item.items():
+                    if key == "add_ts" and int(getattr(db_note, "add_ts", 0) or 0) > 0:
+                        continue
                     setattr(db_note, key, value)
             else:
                 db_note = TiebaNote(**content_item)
@@ -124,12 +129,17 @@ class TieBaDbStoreImplement(AbstractStore):
             comment_item: comment item dict
         """
         comment_id = comment_item.get("comment_id")
+        comment_item = dict(comment_item)
+        if int(comment_item.get("add_ts") or 0) <= 0:
+            comment_item["add_ts"] = utils.get_current_timestamp()
         async with get_session() as session:
             stmt = select(TiebaComment).where(TiebaComment.comment_id == comment_id)
             res = await session.execute(stmt)
             db_comment = res.scalar_one_or_none()
             if db_comment:
                 for key, value in comment_item.items():
+                    if key == "add_ts" and int(getattr(db_comment, "add_ts", 0) or 0) > 0:
+                        continue
                     setattr(db_comment, key, value)
             else:
                 db_comment = TiebaComment(**comment_item)
@@ -143,12 +153,17 @@ class TieBaDbStoreImplement(AbstractStore):
             creator: creator dict
         """
         user_id = creator.get("user_id")
+        creator = dict(creator)
+        if int(creator.get("add_ts") or 0) <= 0:
+            creator["add_ts"] = utils.get_current_timestamp()
         async with get_session() as session:
             stmt = select(TiebaCreator).where(TiebaCreator.user_id == user_id)
             res = await session.execute(stmt)
             db_creator = res.scalar_one_or_none()
             if db_creator:
                 for key, value in creator.items():
+                    if key == "add_ts" and int(getattr(db_creator, "add_ts", 0) or 0) > 0:
+                        continue
                     setattr(db_creator, key, value)
             else:
                 db_creator = TiebaCreator(**creator)

@@ -74,7 +74,8 @@ async def update_tieba_note(note_item: TiebaNote):
     """
     note_item.source_keyword = source_keyword_var.get()
     save_note_item = note_item.model_dump()
-    save_note_item.update({"last_modify_ts": utils.get_current_timestamp()})
+    now_ts = utils.get_current_timestamp()
+    save_note_item.update({"last_modify_ts": now_ts, "add_ts": now_ts})
     utils.logger.info(f"[store.tieba.update_tieba_note] tieba note: {save_note_item}")
 
     await TieBaStoreFactory.create_store().store_content(save_note_item)
@@ -107,7 +108,8 @@ async def update_tieba_note_comment(note_id: str, comment_item: TiebaComment):
 
     """
     save_comment_item = comment_item.model_dump()
-    save_comment_item.update({"last_modify_ts": utils.get_current_timestamp()})
+    now_ts = utils.get_current_timestamp()
+    save_comment_item.update({"last_modify_ts": now_ts, "add_ts": now_ts})
     utils.logger.info(f"[store.tieba.update_tieba_note_comment] tieba note id: {note_id} comment:{save_comment_item}")
     await TieBaStoreFactory.create_store().store_comment(save_comment_item)
 
@@ -122,6 +124,8 @@ async def save_creator(user_info: TiebaCreator):
 
     """
     local_db_item = user_info.model_dump()
-    local_db_item["last_modify_ts"] = utils.get_current_timestamp()
+    now_ts = utils.get_current_timestamp()
+    local_db_item["last_modify_ts"] = now_ts
+    local_db_item["add_ts"] = now_ts
     utils.logger.info(f"[store.tieba.save_creator] creator:{local_db_item}")
     await TieBaStoreFactory.create_store().store_creator(local_db_item)

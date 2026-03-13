@@ -25,6 +25,7 @@ from .crawler import (
     CrawlerStatusResponse,
     LogEntry,
 )
+from .task import TaskUpsertRequest
 
 __all__ = [
     "PlatformEnum",
@@ -34,4 +35,5 @@ __all__ = [
     "CrawlerStartRequest",
     "CrawlerStatusResponse",
     "LogEntry",
+    "TaskUpsertRequest",
 ]

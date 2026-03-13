@@ -18,5 +18,14 @@
 
 from .crawler_manager import CrawlerManager, crawler_manager
 from .dashboard_service import DashboardService, dashboard_service
+from .task_scheduler_service import TaskSchedulerError, TaskSchedulerService, task_scheduler_service
 
-__all__ = ["CrawlerManager", "crawler_manager", "DashboardService", "dashboard_service"]
+__all__ = [
+    "CrawlerManager",
+    "crawler_manager",
+    "DashboardService",
+    "dashboard_service",
+    "TaskSchedulerError",
+    "TaskSchedulerService",
+    "task_scheduler_service",
+]

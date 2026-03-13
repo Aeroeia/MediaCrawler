@@ -22,6 +22,7 @@ Start command: uvicorn api.main:app --port 8080 --reload
 Or: python -m api.main
 """
 import asyncio
+import logging
 import os
 import subprocess
 import uvicorn
@@ -30,13 +31,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse
 
-from .routers import crawler_router, data_router, dashboard_router, websocket_router
+from .routers import crawler_router, data_router, dashboard_router, task_router, websocket_router
+from .services import dashboard_service, task_scheduler_service
 
 app = FastAPI(
     title="MediaCrawler WebUI API",
     description="API for controlling MediaCrawler from WebUI",
     version="1.0.0"
 )
+logger = logging.getLogger(__name__)
 
 # Get webui static files directory
 WEBUI_DIR = os.path.join(os.path.dirname(__file__), "webui")
@@ -72,7 +75,29 @@ app.add_middleware(
 app.include_router(crawler_router, prefix="/api")
 app.include_router(data_router, prefix="/api")
 app.include_router(dashboard_router, prefix="/api")
+app.include_router(task_router, prefix="/api")
 app.include_router(websocket_router, prefix="/api")
+
+
+@app.on_event("startup")
+async def startup_event():
+    try:
+        await task_scheduler_service.start()
+    except Exception as exc:
+        logger.exception("Task scheduler startup failed: %s", exc)
+    try:
+        result = await dashboard_service.backfill_tieba_add_ts()
+        logger.info("Tieba add_ts backfill finished: %s", result)
+    except Exception as exc:
+        logger.exception("Tieba add_ts backfill failed: %s", exc)
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    try:
+        await task_scheduler_service.stop()
+    except Exception as exc:
+        logger.exception("Task scheduler shutdown failed: %s", exc)
 
 
 @app.get("/")

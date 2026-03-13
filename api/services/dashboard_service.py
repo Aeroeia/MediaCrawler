@@ -21,6 +21,7 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, time, timedelta, timezone
+import logging
 from typing import Any, Dict, List, Optional
 from zoneinfo import ZoneInfo
 
@@ -30,6 +31,8 @@ from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, create_async_en
 from sqlalchemy.pool import NullPool
 
 from config.db_config import mysql_db_config
+
+logger = logging.getLogger(__name__)
 
 
 class DashboardServiceError(RuntimeError):
@@ -561,7 +564,7 @@ class DashboardService:
 
     async def get_comment_groups(self, days: int, limit: int) -> Dict[str, Any]:
         days = self.normalize_days(days)
-        limit = self.normalize_limit(limit, default=20, max_limit=100)
+        limit = self.normalize_limit(limit, default=20, max_limit=200)
         start_ts, end_ts, _ = self._get_period_bounds(days)
         rows: List[Dict[str, Any]] = []
 
@@ -679,6 +682,28 @@ class DashboardService:
                     "content_id": content_id,
                     "rows": rows,
                 }
+        except SQLAlchemyError as exc:
+            raise DashboardServiceError(f"MySQL query failed: {exc}") from exc
+
+    async def backfill_tieba_add_ts(self) -> Dict[str, int]:
+        now_ts = int(datetime.now(self._SH_TZ).timestamp())
+        sql_tpl = (
+            "UPDATE {table} "
+            "SET add_ts = CASE "
+            "WHEN IFNULL(last_modify_ts, 0) > 0 THEN last_modify_ts "
+            "ELSE :now_ts END "
+            "WHERE IFNULL(add_ts, 0) <= 0"
+        )
+        try:
+            async with self.engine.begin() as conn:
+                note_res = await conn.execute(text(sql_tpl.format(table="tieba_note")), {"now_ts": now_ts})
+                comment_res = await conn.execute(text(sql_tpl.format(table="tieba_comment")), {"now_ts": now_ts})
+                creator_res = await conn.execute(text(sql_tpl.format(table="tieba_creator")), {"now_ts": now_ts})
+            return {
+                "tieba_note": int(note_res.rowcount or 0),
+                "tieba_comment": int(comment_res.rowcount or 0),
+                "tieba_creator": int(creator_res.rowcount or 0),
+            }
         except SQLAlchemyError as exc:
             raise DashboardServiceError(f"MySQL query failed: {exc}") from exc
 

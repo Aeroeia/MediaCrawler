@@ -12,6 +12,10 @@ const state = {
   days: 7,
   openGroupKey: "",
   mergedRows: [],
+  mergedPage: 1,
+  mergedPageSize: 50,
+  mergedTotal: 0,
+  mergedTotalPages: 1,
   detailCache: new Map(),
 };
 
@@ -325,22 +329,59 @@ function renderDetailContent(detailState) {
   `;
 }
 
+function getMergedPageRows() {
+  state.mergedTotal = state.mergedRows.length;
+  state.mergedTotalPages = Math.max(1, Math.ceil(state.mergedTotal / state.mergedPageSize));
+  if (state.mergedPage > state.mergedTotalPages) {
+    state.mergedPage = state.mergedTotalPages;
+  }
+  if (state.mergedPage < 1) {
+    state.mergedPage = 1;
+  }
+  const start = (state.mergedPage - 1) * state.mergedPageSize;
+  const end = start + state.mergedPageSize;
+  return state.mergedRows.slice(start, end);
+}
+
+function renderMergedPagination() {
+  const container = $("merged-pagination");
+  const prevBtn = $("merged-page-prev");
+  const nextBtn = $("merged-page-next");
+  const text = $("merged-page-text");
+  if (!container || !prevBtn || !nextBtn || !text) return;
+
+  if (state.mergedTotal <= 0) {
+    container.classList.add("hidden");
+    text.textContent = "第 0 / 0 页";
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+    return;
+  }
+
+  container.classList.remove("hidden");
+  prevBtn.disabled = state.mergedPage <= 1;
+  nextBtn.disabled = state.mergedPage >= state.mergedTotalPages;
+  text.textContent = `第 ${state.mergedPage} / ${state.mergedTotalPages} 页`;
+}
+
 function renderMergedRows(rows) {
   rows = rows || [];
   const tbody = getElementOrWarn("merged-table-body");
   const mergedCount = getElementOrWarn("merged-count");
   if (!tbody) return;
   state.mergedRows = rows;
+  const pageRows = getMergedPageRows();
+  renderMergedPagination();
   if (mergedCount) {
-    mergedCount.textContent = `${rows.length} 个帖子`;
+    mergedCount.textContent = `${state.mergedTotal} 个帖子`;
   }
 
-  if (rows.length === 0) {
+  if (pageRows.length === 0) {
     tbody.innerHTML = `<tr><td colspan="8" class="empty-state">暂无数据</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = rows
+  tbody.innerHTML = pageRows
     .map((row) => {
       const key = row.key;
       const opened = state.openGroupKey === key;
@@ -435,6 +476,7 @@ async function loadDashboard() {
     refreshBtn.textContent = "加载中...";
   }
   state.openGroupKey = "";
+  state.mergedPage = 1;
   state.detailCache.clear();
 
   try {
@@ -466,14 +508,14 @@ async function loadDashboard() {
       {
         key: "recent",
         label: "最近帖子",
-        promise: apiGet(`recent?days=${state.days}&limit=50`),
-        fallback: { period_days: state.days, limit: 50, rows: [] },
+        promise: apiGet(`recent?days=${state.days}&limit=200`),
+        fallback: { period_days: state.days, limit: 200, rows: [] },
       },
       {
         key: "commentGroups",
         label: "评论归属",
-        promise: apiGet(`comment-groups?days=${state.days}&limit=100`),
-        fallback: { period_days: state.days, limit: 100, rows: [] },
+        promise: apiGet(`comment-groups?days=${state.days}&limit=200`),
+        fallback: { period_days: state.days, limit: 200, rows: [] },
       },
     ];
     const settled = await Promise.allSettled(entries.map((item) => item.promise));
@@ -542,6 +584,26 @@ function bindEvents() {
     });
   } else {
     console.error("[dashboard] Missing #merged-table-body; comment detail interaction disabled");
+  }
+
+  const prevBtn = $("merged-page-prev");
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      if (state.mergedPage <= 1) return;
+      state.mergedPage -= 1;
+      state.openGroupKey = "";
+      renderMergedRows(state.mergedRows);
+    });
+  }
+
+  const nextBtn = $("merged-page-next");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      if (state.mergedPage >= state.mergedTotalPages) return;
+      state.mergedPage += 1;
+      state.openGroupKey = "";
+      renderMergedRows(state.mergedRows);
+    });
   }
 }
 
