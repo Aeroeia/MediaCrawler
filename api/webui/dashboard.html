@@ -8,82 +8,87 @@
     <script src="/static/dashboard.js" defer></script>
   </head>
   <body>
-    <div class="bg-grid"></div>
-    <div class="page">
-      <header class="header card">
-        <div>
-          <h1>数据表盘</h1>
-          <p>按渠道聚合内容、评论、创作者数据（基于 MySQL）</p>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <main class="page">
+      <header class="topbar card">
+        <div class="title-block">
+          <h1>MediaCrawler 数据表盘</h1>
+          <p>帖子 + 评论为主口径的跨网站采集分析（MySQL）</p>
         </div>
-        <div class="controls">
+        <div class="toolbar">
           <label for="days-select">时间范围</label>
           <select id="days-select">
             <option value="7">最近 7 天</option>
             <option value="30">最近 30 天</option>
           </select>
-          <button id="refresh-btn" type="button">刷新</button>
+          <button id="refresh-btn" type="button">刷新数据</button>
         </div>
       </header>
 
       <section class="kpi-grid">
-        <article class="kpi-card card">
-          <h3>今日新增内容</h3>
-          <div id="today-new-contents" class="kpi-value">-</div>
-          <p>当日采集条目</p>
+        <article class="kpi-card card primary">
+          <h2>总爬取量</h2>
+          <div id="total-crawled" class="kpi-value">-</div>
+          <p>帖子 + 评论</p>
+        </article>
+        <article class="kpi-card card accent">
+          <h2>今日新增爬取量</h2>
+          <div id="today-new-crawled" class="kpi-value">-</div>
+          <p>今日帖子 + 今日评论</p>
         </article>
         <article class="kpi-card card">
-          <h3>总内容量</h3>
+          <h2>帖子总量</h2>
           <div id="total-contents" class="kpi-value">-</div>
-          <p>全渠道累计</p>
+          <p>全网站累计</p>
         </article>
         <article class="kpi-card card">
-          <h3>总评论量</h3>
+          <h2>评论总量</h2>
           <div id="total-comments" class="kpi-value">-</div>
-          <p>全渠道累计</p>
+          <p>全网站累计</p>
         </article>
-        <article class="kpi-card card">
-          <h3>总创作者数</h3>
+        <article class="kpi-card card ghost">
+          <h2>创作者总量</h2>
           <div id="total-creators" class="kpi-value">-</div>
-          <p>全渠道累计</p>
+          <p>辅助参考</p>
         </article>
       </section>
 
-      <section class="panel-grid">
+      <section class="panel-grid two-col">
         <article class="panel card">
           <div class="panel-head">
-            <h2>内容采集趋势</h2>
-            <span id="trend-period" class="badge">最近 7 天</span>
+            <h2>帖子采集趋势</h2>
+            <span id="trend-period" class="chip">最近 7 天</span>
           </div>
           <div id="trend-chart" class="trend-chart empty-state">暂无数据</div>
         </article>
         <article class="panel card">
           <div class="panel-head">
-            <h2>渠道数据分布</h2>
-            <span class="badge">内容 / 评论 / 创作者</span>
+            <h2>网站分类统计</h2>
+            <span class="chip">每个网站单独分类</span>
           </div>
-          <div id="channel-stats" class="channel-stats empty-state">暂无数据</div>
+          <div id="site-classification" class="site-list empty-state">暂无数据</div>
         </article>
       </section>
 
-      <section class="panel-grid">
+      <section class="panel-grid two-col">
         <article class="panel card">
           <div class="panel-head">
             <h2>关键词 Top</h2>
-            <span class="badge">按来源关键词聚合</span>
+            <span class="chip">来源关键词</span>
           </div>
-          <div id="keyword-list" class="keyword-list empty-state">暂无数据</div>
+          <div id="keyword-list" class="keyword-list empty-state">暂无关键词数据</div>
         </article>
         <article class="panel card">
           <div class="panel-head">
-            <h2>最近采集内容</h2>
-            <span id="recent-count" class="badge">0 条</span>
+            <h2>最近采集帖子</h2>
+            <span id="recent-count" class="chip">0 条</span>
           </div>
           <div class="table-wrap">
-            <table>
+            <table class="data-table">
               <thead>
                 <tr>
-                  <th>渠道</th>
-                  <th>标题/摘要</th>
+                  <th>网站</th>
+                  <th>标题 / 摘要</th>
                   <th>互动</th>
                   <th>采集时间</th>
                 </tr>
@@ -97,8 +102,36 @@
           </div>
         </article>
       </section>
-    </div>
 
-    <div id="toast" class="toast hidden"></div>
+      <section class="panel-grid full">
+        <article class="panel card">
+          <div class="panel-head">
+            <h2>评论归属分类（按帖子聚合）</h2>
+            <span id="comment-group-count" class="chip">0 个帖子</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>网站</th>
+                  <th>帖子 ID</th>
+                  <th>帖子标题</th>
+                  <th>评论数</th>
+                  <th>最新评论时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="comment-group-body">
+                <tr>
+                  <td colspan="6" class="empty-state">暂无数据</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
   </body>
 </html>

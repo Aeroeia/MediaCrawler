@@ -82,3 +82,31 @@ async def get_dashboard_recent(days: int = Query(default=7), limit: int = Query(
     except Exception as exc:
         return _error_response(f"Internal error: {exc}", status_code=500)
 
+
+@router.get("/comment-groups")
+async def get_dashboard_comment_groups(days: int = Query(default=7), limit: int = Query(default=20)):
+    try:
+        data = await dashboard_service.get_comment_groups(days, limit)
+        return {"success": True, "data": data}
+    except DashboardServiceError as exc:
+        return _error_response(str(exc))
+    except Exception as exc:
+        return _error_response(f"Internal error: {exc}", status_code=500)
+
+
+@router.get("/comment-group-detail")
+async def get_dashboard_comment_group_detail(
+    days: int = Query(default=7),
+    channel: str = Query(default=""),
+    content_id: str = Query(default=""),
+    limit: int = Query(default=50),
+):
+    try:
+        data = await dashboard_service.get_comment_group_detail(days, channel, content_id, limit)
+        return {"success": True, "data": data}
+    except DashboardServiceError as exc:
+        msg = str(exc)
+        status_code = 400 if msg.startswith("Invalid channel:") or msg == "content_id is required" else 503
+        return _error_response(msg, status_code=status_code)
+    except Exception as exc:
+        return _error_response(f"Internal error: {exc}", status_code=500)

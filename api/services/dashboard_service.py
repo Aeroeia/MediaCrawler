@@ -56,6 +56,21 @@ class RecentQueryConfig:
     share_expr: str
 
 
+@dataclass(frozen=True)
+class CommentQueryConfig:
+    channel: str
+    content_table: str
+    comment_table: str
+    content_id_col: str
+    comment_content_id_col: str
+    title_col: str
+    summary_col: str
+    comment_id_col: str
+    comment_text_col: str
+    comment_user_col: str
+    comment_like_expr: str
+
+
 class DashboardService:
     """Dashboard aggregation service based on MySQL."""
 
@@ -146,6 +161,100 @@ class DashboardService:
         ),
     ]
 
+    _COMMENT_QUERIES: List[CommentQueryConfig] = [
+        CommentQueryConfig(
+            channel="xhs",
+            content_table="xhs_note",
+            comment_table="xhs_note_comment",
+            content_id_col="`note_id`",
+            comment_content_id_col="`note_id`",
+            title_col="`title`",
+            summary_col="`desc`",
+            comment_id_col="`comment_id`",
+            comment_text_col="`content`",
+            comment_user_col="`nickname`",
+            comment_like_expr="CAST(IFNULL(`like_count`, '0') AS SIGNED)",
+        ),
+        CommentQueryConfig(
+            channel="dy",
+            content_table="douyin_aweme",
+            comment_table="douyin_aweme_comment",
+            content_id_col="`aweme_id`",
+            comment_content_id_col="`aweme_id`",
+            title_col="`title`",
+            summary_col="`desc`",
+            comment_id_col="`comment_id`",
+            comment_text_col="`content`",
+            comment_user_col="`nickname`",
+            comment_like_expr="CAST(IFNULL(`like_count`, '0') AS SIGNED)",
+        ),
+        CommentQueryConfig(
+            channel="ks",
+            content_table="kuaishou_video",
+            comment_table="kuaishou_video_comment",
+            content_id_col="`video_id`",
+            comment_content_id_col="`video_id`",
+            title_col="`title`",
+            summary_col="`desc`",
+            comment_id_col="`comment_id`",
+            comment_text_col="`content`",
+            comment_user_col="`nickname`",
+            comment_like_expr="0",
+        ),
+        CommentQueryConfig(
+            channel="bili",
+            content_table="bilibili_video",
+            comment_table="bilibili_video_comment",
+            content_id_col="`video_id`",
+            comment_content_id_col="`video_id`",
+            title_col="`title`",
+            summary_col="`desc`",
+            comment_id_col="`comment_id`",
+            comment_text_col="`content`",
+            comment_user_col="`nickname`",
+            comment_like_expr="CAST(IFNULL(`like_count`, '0') AS SIGNED)",
+        ),
+        CommentQueryConfig(
+            channel="wb",
+            content_table="weibo_note",
+            comment_table="weibo_note_comment",
+            content_id_col="`note_id`",
+            comment_content_id_col="`note_id`",
+            title_col="`content`",
+            summary_col="`content`",
+            comment_id_col="`comment_id`",
+            comment_text_col="`content`",
+            comment_user_col="`nickname`",
+            comment_like_expr="CAST(IFNULL(`comment_like_count`, '0') AS SIGNED)",
+        ),
+        CommentQueryConfig(
+            channel="tieba",
+            content_table="tieba_note",
+            comment_table="tieba_comment",
+            content_id_col="`note_id`",
+            comment_content_id_col="`note_id`",
+            title_col="`title`",
+            summary_col="`desc`",
+            comment_id_col="`comment_id`",
+            comment_text_col="`content`",
+            comment_user_col="`user_nickname`",
+            comment_like_expr="0",
+        ),
+        CommentQueryConfig(
+            channel="zhihu",
+            content_table="zhihu_content",
+            comment_table="zhihu_comment",
+            content_id_col="`content_id`",
+            comment_content_id_col="`content_id`",
+            title_col="`title`",
+            summary_col="`content_text`",
+            comment_id_col="`comment_id`",
+            comment_text_col="`content`",
+            comment_user_col="`user_nickname`",
+            comment_like_expr="CAST(IFNULL(`like_count`, 0) AS SIGNED)",
+        ),
+    ]
+
     def __init__(self) -> None:
         mysql_url = (
             f"mysql+asyncmy://{mysql_db_config['user']}:{mysql_db_config['password']}"
@@ -181,6 +290,26 @@ class DashboardService:
         start_of_tomorrow = start_of_today + timedelta(days=1)
         return int(start_of_today.timestamp()), int(start_of_tomorrow.timestamp())
 
+    @classmethod
+    def _ts_expr_with_alias(cls, alias: str) -> str:
+        return (
+            "CAST(CASE WHEN "
+            f"{alias}.add_ts > 1000000000000 THEN {alias}.add_ts / 1000 "
+            f"ELSE {alias}.add_ts END AS SIGNED)"
+        )
+
+    def _to_sh_time_str(self, ts: int) -> str:
+        if ts <= 0:
+            return ""
+        dt = datetime.fromtimestamp(ts, tz=timezone.utc).astimezone(self._SH_TZ)
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
+
+    def _find_comment_query(self, channel: str) -> Optional[CommentQueryConfig]:
+        for query in self._COMMENT_QUERIES:
+            if query.channel == channel:
+                return query
+        return None
+
     async def _fetch_scalar(self, conn: AsyncConnection, sql: str, params: Dict[str, Any] | None = None) -> int:
         result = await conn.execute(text(sql), params or {})
         value = result.scalar()
@@ -210,6 +339,7 @@ class DashboardService:
                 period_comments = 0
                 period_creators = 0
                 today_new_contents = 0
+                today_new_comments = 0
 
                 for channel in self._CHANNEL_TABLES:
                     total_contents += await self._safe_scalar(conn, channel.content_table, period=False)
@@ -231,19 +361,30 @@ class DashboardService:
                         start_ts=today_start_ts,
                         end_ts=tomorrow_start_ts,
                     )
+                    today_new_comments += await self._safe_scalar(
+                        conn,
+                        channel.comment_table,
+                        period=True,
+                        start_ts=today_start_ts,
+                        end_ts=tomorrow_start_ts,
+                    )
 
                 return {
                     "period_days": days,
                     "today_new_contents": today_new_contents,
+                    "today_new_comments": today_new_comments,
+                    "today_new_crawled": today_new_contents + today_new_comments,
                     "totals": {
                         "contents": total_contents,
                         "comments": total_comments,
                         "creators": total_creators,
+                        "crawled": total_contents + total_comments,
                     },
                     "period": {
                         "contents": period_contents,
                         "comments": period_comments,
                         "creators": period_creators,
+                        "crawled": period_contents + period_comments,
                     },
                 }
         except SQLAlchemyError as exc:
@@ -260,12 +401,12 @@ class DashboardService:
                     rows.append(
                         {
                             "channel": channel.channel,
-                            "content_count": await self._safe_scalar(
+                            "content_count": (content_count := await self._safe_scalar(
                                 conn, channel.content_table, period=True, start_ts=start_ts, end_ts=end_ts
-                            ),
-                            "comment_count": await self._safe_scalar(
+                            )),
+                            "comment_count": (comment_count := await self._safe_scalar(
                                 conn, channel.comment_table, period=True, start_ts=start_ts, end_ts=end_ts
-                            ),
+                            )),
                             "creator_count": (
                                 await self._safe_scalar(
                                     conn, channel.creator_table, period=True, start_ts=start_ts, end_ts=end_ts
@@ -273,6 +414,7 @@ class DashboardService:
                                 if channel.creator_table
                                 else 0
                             ),
+                            "crawled_count": content_count + comment_count,
                         }
                     )
                 return {"period_days": days, "rows": rows}
@@ -414,6 +556,129 @@ class DashboardService:
                 row.pop("collected_ts", None)
 
             return {"period_days": days, "limit": limit, "rows": rows}
+        except SQLAlchemyError as exc:
+            raise DashboardServiceError(f"MySQL query failed: {exc}") from exc
+
+    async def get_comment_groups(self, days: int, limit: int) -> Dict[str, Any]:
+        days = self.normalize_days(days)
+        limit = self.normalize_limit(limit, default=20, max_limit=100)
+        start_ts, end_ts, _ = self._get_period_bounds(days)
+        rows: List[Dict[str, Any]] = []
+
+        try:
+            async with self.engine.connect() as conn:
+                for query in self._COMMENT_QUERIES:
+                    comment_ts_expr = self._ts_expr_with_alias("c")
+                    sql = (
+                        "SELECT :channel AS channel, "
+                        f"CAST(c.{query.comment_content_id_col} AS CHAR) AS content_id, "
+                        f"MAX(COALESCE(NULLIF(TRIM(p.{query.title_col}), ''), NULLIF(TRIM(p.{query.summary_col}), ''), '(无标题)')) AS title, "
+                        "COUNT(1) AS comment_count, "
+                        f"MAX({comment_ts_expr}) AS latest_comment_ts "
+                        f"FROM {query.comment_table} c "
+                        f"LEFT JOIN {query.content_table} p ON p.{query.content_id_col} = c.{query.comment_content_id_col} "
+                        f"WHERE {comment_ts_expr} >= :start_ts AND {comment_ts_expr} < :end_ts "
+                        f"AND c.{query.comment_content_id_col} IS NOT NULL "
+                        f"GROUP BY c.{query.comment_content_id_col} "
+                        "ORDER BY comment_count DESC, latest_comment_ts DESC "
+                        "LIMIT :limit"
+                    )
+                    result = await conn.execute(
+                        text(sql),
+                        {
+                            "channel": query.channel,
+                            "start_ts": start_ts,
+                            "end_ts": end_ts,
+                            "limit": limit,
+                        },
+                    )
+                    for row in result:
+                        latest_comment_ts = int(row.latest_comment_ts or 0)
+                        rows.append(
+                            {
+                                "channel": row.channel,
+                                "content_id": str(row.content_id or ""),
+                                "title": str(row.title or "(无标题)"),
+                                "comment_count": int(row.comment_count or 0),
+                                "latest_comment_at": self._to_sh_time_str(latest_comment_ts) or "-",
+                                "latest_comment_ts": latest_comment_ts,
+                            }
+                        )
+
+            rows.sort(
+                key=lambda item: (
+                    int(item.get("comment_count", 0)),
+                    int(item.get("latest_comment_ts", 0)),
+                ),
+                reverse=True,
+            )
+            rows = rows[:limit]
+            for row in rows:
+                row.pop("latest_comment_ts", None)
+            return {"period_days": days, "limit": limit, "rows": rows}
+        except SQLAlchemyError as exc:
+            raise DashboardServiceError(f"MySQL query failed: {exc}") from exc
+
+    async def get_comment_group_detail(self, days: int, channel: str, content_id: str, limit: int) -> Dict[str, Any]:
+        days = self.normalize_days(days)
+        limit = self.normalize_limit(limit, default=50, max_limit=200)
+        start_ts, end_ts, _ = self._get_period_bounds(days)
+        channel = str(channel or "").strip()
+        content_id = str(content_id or "").strip()
+        if not content_id:
+            raise DashboardServiceError("content_id is required")
+
+        query = self._find_comment_query(channel)
+        if not query:
+            raise DashboardServiceError(f"Invalid channel: {channel}")
+
+        try:
+            async with self.engine.connect() as conn:
+                comment_ts_expr = self._ts_expr_with_alias("c")
+                sql = (
+                    "SELECT :channel AS channel, "
+                    f"CAST(c.{query.comment_id_col} AS CHAR) AS comment_id, "
+                    f"COALESCE(c.{query.comment_user_col}, '') AS user_name, "
+                    f"COALESCE(c.{query.comment_text_col}, '') AS content, "
+                    f"{query.comment_like_expr} AS like_count, "
+                    f"{comment_ts_expr} AS collected_ts "
+                    f"FROM {query.comment_table} c "
+                    f"WHERE CAST(c.{query.comment_content_id_col} AS CHAR) = :content_id "
+                    f"AND {comment_ts_expr} >= :start_ts AND {comment_ts_expr} < :end_ts "
+                    f"ORDER BY {comment_ts_expr} DESC "
+                    "LIMIT :limit"
+                )
+                result = await conn.execute(
+                    text(sql),
+                    {
+                        "channel": channel,
+                        "content_id": content_id,
+                        "start_ts": start_ts,
+                        "end_ts": end_ts,
+                        "limit": limit,
+                    },
+                )
+
+                rows: List[Dict[str, Any]] = []
+                for row in result:
+                    collected_ts = int(row.collected_ts or 0)
+                    rows.append(
+                        {
+                            "channel": row.channel,
+                            "comment_id": str(row.comment_id or ""),
+                            "user_name": str(row.user_name or ""),
+                            "content": str(row.content or ""),
+                            "like_count": int(row.like_count or 0),
+                            "collected_at": self._to_sh_time_str(collected_ts) or "-",
+                        }
+                    )
+                return {
+                    "period_days": days,
+                    "limit": limit,
+                    "channel": channel,
+                    "content_id": content_id,
+                    "rows": rows,
+                }
         except SQLAlchemyError as exc:
             raise DashboardServiceError(f"MySQL query failed: {exc}") from exc
 
