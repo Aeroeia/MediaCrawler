@@ -11,11 +11,32 @@ const CHANNEL_LABELS = {
 const state = {
   days: 7,
   openGroupKey: "",
-  commentGroupsRows: [],
+  mergedRows: [],
   detailCache: new Map(),
 };
 
 const $ = (id) => document.getElementById(id);
+const OVERVIEW_FALLBACK = {
+  totals: { contents: 0, comments: 0, creators: 0, crawled: 0 },
+  today_new_contents: 0,
+  today_new_comments: 0,
+  today_new_crawled: 0,
+};
+
+function getElementOrWarn(id) {
+  const el = $(id);
+  if (!el) {
+    console.error(`[dashboard] Missing DOM element: #${id}`);
+  }
+  return el;
+}
+
+function safeSetText(id, text) {
+  const el = getElementOrWarn(id);
+  if (el) {
+    el.textContent = text;
+  }
+}
 
 function formatNum(value) {
   const num = Number(value || 0);
@@ -40,6 +61,10 @@ function truncateText(input, maxLen = 80) {
 
 function showToast(message) {
   const toast = $("toast");
+  if (!toast) {
+    console.error(`[dashboard] Toast unavailable: ${message}`);
+    return;
+  }
   toast.textContent = message;
   toast.classList.remove("hidden");
   setTimeout(() => toast.classList.add("hidden"), 2600);
@@ -72,7 +97,18 @@ function getChannelName(channel) {
   return CHANNEL_LABELS[channel] || channel;
 }
 
+function parseCollectedTs(collectedAt) {
+  const text = String(collectedAt || "").trim();
+  if (!text) return 0;
+  const ts = Date.parse(`${text.replace(" ", "T")}+08:00`);
+  return Number.isNaN(ts) ? 0 : ts;
+}
+
 function renderOverview(overview) {
+  if (!overview) {
+    console.error("[dashboard] renderOverview received empty payload");
+    return;
+  }
   const totals = overview.totals || {};
   const totalContents = Number(totals.contents || 0);
   const totalComments = Number(totals.comments || 0);
@@ -83,17 +119,20 @@ function renderOverview(overview) {
   const todayNewComments = Number(overview.today_new_comments || 0);
   const todayNewCrawled = Number(overview.today_new_crawled || todayNewContents + todayNewComments);
 
-  $("total-crawled").textContent = formatNum(totalCrawled);
-  $("today-new-crawled").textContent = formatNum(todayNewCrawled);
-  $("total-contents").textContent = formatNum(totalContents);
-  $("total-comments").textContent = formatNum(totalComments);
-  $("total-creators").textContent = formatNum(totalCreators);
+  safeSetText("total-crawled", formatNum(totalCrawled));
+  safeSetText("today-new-crawled", formatNum(todayNewCrawled));
+  safeSetText("total-contents", formatNum(totalContents));
+  safeSetText("total-comments", formatNum(totalComments));
+  safeSetText("total-creators", formatNum(totalCreators));
 }
 
 function renderTrend(trendData) {
-  const chart = $("trend-chart");
+  trendData = trendData || { period_days: state.days, series: [] };
+  const chart = getElementOrWarn("trend-chart");
+  const period = getElementOrWarn("trend-period");
+  if (!chart || !period) return;
   const series = trendData.series || [];
-  $("trend-period").textContent = `最近 ${trendData.period_days || state.days} 天`;
+  period.textContent = `最近 ${trendData.period_days || state.days} 天`;
 
   if (series.length === 0) {
     chart.className = "trend-chart empty-state";
@@ -123,7 +162,9 @@ function renderTrend(trendData) {
 }
 
 function renderSiteClassification(channelsData) {
-  const container = $("site-classification");
+  channelsData = channelsData || { rows: [] };
+  const container = getElementOrWarn("site-classification");
+  if (!container) return;
   const rows = (channelsData.rows || []).map((row) => {
     const contentCount = Number(row.content_count || 0);
     const commentCount = Number(row.comment_count || 0);
@@ -175,7 +216,9 @@ function renderSiteClassification(channelsData) {
 }
 
 function renderKeywords(keywordData) {
-  const container = $("keyword-list");
+  keywordData = keywordData || { rows: [] };
+  const container = getElementOrWarn("keyword-list");
+  if (!container) return;
   const rows = keywordData.rows || [];
 
   if (rows.length === 0) {
@@ -197,38 +240,46 @@ function renderKeywords(keywordData) {
     .join("");
 }
 
-function renderRecent(recentData) {
-  const tbody = $("recent-table-body");
-  const rows = recentData.rows || [];
-  $("recent-count").textContent = `${rows.length} 条`;
+function mergeRecentAndCommentGroups(recentData, groupData) {
+  recentData = recentData || { rows: [] };
+  groupData = groupData || { rows: [] };
+  const groupMap = new Map();
+  (groupData.rows || []).forEach((item) => {
+    const channel = String(item.channel || "");
+    const contentId = String(item.content_id || "");
+    const key = buildGroupKey(channel, contentId);
+    groupMap.set(key, {
+      commentCount: Number(item.comment_count || 0),
+      latestCommentAt: String(item.latest_comment_at || "-"),
+    });
+  });
 
-  if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" class="empty-state">暂无数据</td></tr>`;
-    return;
-  }
+  const mergedRows = (recentData.rows || []).map((item, index) => {
+    const channel = String(item.channel || "");
+    const contentId = String(item.content_id || "");
+    const key = buildGroupKey(channel, contentId);
+    const group = groupMap.get(key);
+    const title = String(item.title || item.summary || "(无标题)");
+    const summary = item.summary && item.summary !== title ? String(item.summary) : "";
+    return {
+      key,
+      rowIndex: index,
+      channel,
+      contentId,
+      title,
+      summary,
+      collectedAt: String(item.collected_at || "-"),
+      collectedTs: parseCollectedTs(item.collected_at),
+      likeCount: Number(item.like_count || 0),
+      interactCommentCount: Number(item.comment_count || 0),
+      shareCount: Number(item.share_count || 0),
+      capturedCommentCount: group ? group.commentCount : 0,
+      latestCommentAt: group ? group.latestCommentAt : "-",
+    };
+  });
 
-  tbody.innerHTML = rows
-    .map((item) => {
-      const channel = getChannelName(item.channel);
-      const title = item.title || item.summary || "(无标题)";
-      const safeTitle = String(title);
-      const summary = item.summary && item.summary !== title ? item.summary : "";
-      const info = summary
-        ? `<div class="content-title" title="${escapeHtml(safeTitle)}">${escapeHtml(truncateText(safeTitle, 90))}</div><div class="content-summary">${escapeHtml(truncateText(summary, 96))}</div>`
-        : `<div class="content-title" title="${escapeHtml(safeTitle)}">${escapeHtml(truncateText(safeTitle, 90))}</div>`;
-      const interact = `赞 ${formatNum(item.like_count)} / 评 ${formatNum(item.comment_count)} / 转 ${formatNum(
-        item.share_count
-      )}`;
-      return `
-        <tr>
-          <td><span class="site-tag">${escapeHtml(channel)}</span></td>
-          <td>${info}</td>
-          <td>${interact}</td>
-          <td>${escapeHtml(item.collected_at || "-")}</td>
-        </tr>
-      `;
-    })
-    .join("");
+  mergedRows.sort((a, b) => b.collectedTs - a.collectedTs || a.rowIndex - b.rowIndex);
+  return mergedRows;
 }
 
 function renderDetailContent(detailState) {
@@ -274,49 +325,68 @@ function renderDetailContent(detailState) {
   `;
 }
 
-function renderCommentGroups(groupData) {
-  const tbody = $("comment-group-body");
-  const rows = groupData.rows || [];
-  state.commentGroupsRows = rows;
-  $("comment-group-count").textContent = `${rows.length} 个帖子`;
+function renderMergedRows(rows) {
+  rows = rows || [];
+  const tbody = getElementOrWarn("merged-table-body");
+  const mergedCount = getElementOrWarn("merged-count");
+  if (!tbody) return;
+  state.mergedRows = rows;
+  if (mergedCount) {
+    mergedCount.textContent = `${rows.length} 个帖子`;
+  }
 
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">暂无数据</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">暂无数据</td></tr>`;
     return;
   }
 
   tbody.innerHTML = rows
     .map((row) => {
-      const key = buildGroupKey(row.channel, row.content_id);
+      const key = row.key;
       const opened = state.openGroupKey === key;
       const detailState = state.detailCache.get(key);
+      const canExpand = row.capturedCommentCount > 0;
       const actionText = opened ? "收起" : "展开";
-      const title = String(row.title || "(无标题)");
+      const safeTitle = String(row.title || "(无标题)");
+      const summaryHtml = row.summary
+        ? `<div class="content-summary">${escapeHtml(truncateText(row.summary, 96))}</div>`
+        : "";
+      const actionNode = canExpand
+        ? `
+          <button
+            class="toggle-btn"
+            type="button"
+            data-channel="${escapeHtml(row.channel)}"
+            data-content-id="${escapeHtml(row.contentId)}"
+          >
+            ${actionText}
+          </button>
+        `
+        : `<button class="toggle-btn action-disabled" type="button" disabled>无评论</button>`;
       const details = opened
         ? `
           <tr class="detail-row">
-            <td colspan="6">${renderDetailContent(detailState)}</td>
+            <td colspan="8">${renderDetailContent(detailState)}</td>
           </tr>
         `
         : "";
+      const interact = `赞 ${formatNum(row.likeCount)} / 评 ${formatNum(row.interactCommentCount)} / 转 ${formatNum(
+        row.shareCount
+      )}`;
 
       return `
         <tr class="group-row ${opened ? "opened" : ""}">
           <td><span class="site-tag">${escapeHtml(getChannelName(row.channel))}</span></td>
-          <td class="mono">${escapeHtml(row.content_id)}</td>
-          <td><span class="row-title" title="${escapeHtml(title)}">${escapeHtml(truncateText(title, 96))}</span></td>
-          <td>${formatNum(row.comment_count)}</td>
-          <td>${escapeHtml(row.latest_comment_at || "-")}</td>
+          <td class="mono">${escapeHtml(row.contentId)}</td>
           <td>
-            <button
-              class="toggle-btn"
-              type="button"
-              data-channel="${escapeHtml(row.channel)}"
-              data-content-id="${escapeHtml(row.content_id)}"
-            >
-              ${actionText}
-            </button>
+            <div class="content-title" title="${escapeHtml(safeTitle)}">${escapeHtml(truncateText(safeTitle, 90))}</div>
+            ${summaryHtml}
           </td>
+          <td class="mono">${escapeHtml(row.collectedAt)}</td>
+          <td class="mono">${formatNum(row.capturedCommentCount)}</td>
+          <td class="mono">${escapeHtml(row.latestCommentAt)}</td>
+          <td class="mono">${interact}</td>
+          <td>${actionNode}</td>
         </tr>
         ${details}
       `;
@@ -326,16 +396,21 @@ function renderCommentGroups(groupData) {
 
 async function toggleCommentGroup(channel, contentId) {
   const key = buildGroupKey(channel, contentId);
+  const currentRow = state.mergedRows.find((item) => item.key === key);
+  if (!currentRow || currentRow.capturedCommentCount <= 0) {
+    return;
+  }
+
   if (state.openGroupKey === key) {
     state.openGroupKey = "";
-    renderCommentGroups({ rows: state.commentGroupsRows });
+    renderMergedRows(state.mergedRows);
     return;
   }
 
   state.openGroupKey = key;
   if (!state.detailCache.has(key)) {
     state.detailCache.set(key, { loading: true, error: "", rows: [] });
-    renderCommentGroups({ rows: state.commentGroupsRows });
+    renderMergedRows(state.mergedRows);
 
     try {
       const detailData = await apiGet(
@@ -350,60 +425,132 @@ async function toggleCommentGroup(channel, contentId) {
     }
   }
 
-  renderCommentGroups({ rows: state.commentGroupsRows });
+  renderMergedRows(state.mergedRows);
 }
 
 async function loadDashboard() {
   const refreshBtn = $("refresh-btn");
-  refreshBtn.disabled = true;
-  refreshBtn.textContent = "加载中...";
+  if (refreshBtn) {
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = "加载中...";
+  }
   state.openGroupKey = "";
   state.detailCache.clear();
 
   try {
-    const [overview, channels, trend, keywords, recent, commentGroups] = await Promise.all([
-      apiGet(`overview?days=${state.days}`),
-      apiGet(`channels?days=${state.days}`),
-      apiGet(`trend?days=${state.days}`),
-      apiGet(`keywords?days=${state.days}&limit=10`),
-      apiGet(`recent?days=${state.days}&limit=50`),
-      apiGet(`comment-groups?days=${state.days}&limit=20`),
-    ]);
+    const entries = [
+      {
+        key: "overview",
+        label: "总览",
+        promise: apiGet(`overview?days=${state.days}`),
+        fallback: OVERVIEW_FALLBACK,
+      },
+      {
+        key: "channels",
+        label: "网站分类",
+        promise: apiGet(`channels?days=${state.days}`),
+        fallback: { period_days: state.days, rows: [] },
+      },
+      {
+        key: "trend",
+        label: "趋势",
+        promise: apiGet(`trend?days=${state.days}`),
+        fallback: { period_days: state.days, series: [] },
+      },
+      {
+        key: "keywords",
+        label: "关键词",
+        promise: apiGet(`keywords?days=${state.days}&limit=10`),
+        fallback: { period_days: state.days, limit: 10, rows: [] },
+      },
+      {
+        key: "recent",
+        label: "最近帖子",
+        promise: apiGet(`recent?days=${state.days}&limit=50`),
+        fallback: { period_days: state.days, limit: 50, rows: [] },
+      },
+      {
+        key: "commentGroups",
+        label: "评论归属",
+        promise: apiGet(`comment-groups?days=${state.days}&limit=100`),
+        fallback: { period_days: state.days, limit: 100, rows: [] },
+      },
+    ];
+    const settled = await Promise.allSettled(entries.map((item) => item.promise));
+    const data = {};
+    const failedModules = [];
 
-    renderOverview(overview);
-    renderSiteClassification(channels);
-    renderTrend(trend);
-    renderKeywords(keywords);
-    renderRecent(recent);
-    renderCommentGroups(commentGroups);
+    settled.forEach((result, idx) => {
+      const entry = entries[idx];
+      if (result.status === "fulfilled") {
+        data[entry.key] = result.value;
+      } else {
+        data[entry.key] = entry.fallback;
+        failedModules.push(entry.label);
+        console.error(`[dashboard] ${entry.label} 加载失败`, result.reason);
+      }
+    });
+    const mergedRows = mergeRecentAndCommentGroups(data.recent, data.commentGroups);
+
+    renderOverview(data.overview || OVERVIEW_FALLBACK);
+    renderSiteClassification(data.channels);
+    renderTrend(data.trend);
+    renderKeywords(data.keywords);
+    renderMergedRows(mergedRows);
+    if (failedModules.length > 0) {
+      showToast(`${failedModules.join("、")}加载失败，其他模块已显示`);
+    }
   } catch (error) {
+    console.error("[dashboard] loadDashboard fatal error", error);
     showToast(error.message || "加载失败");
   } finally {
-    refreshBtn.disabled = false;
-    refreshBtn.textContent = "刷新数据";
+    if (refreshBtn) {
+      refreshBtn.disabled = false;
+      refreshBtn.textContent = "刷新数据";
+    }
   }
 }
 
 function bindEvents() {
-  $("days-select").addEventListener("change", (event) => {
-    state.days = Number(event.target.value) || 7;
-    loadDashboard();
-  });
+  const daysSelect = $("days-select");
+  if (daysSelect) {
+    daysSelect.addEventListener("change", (event) => {
+      state.days = Number(event.target.value) || 7;
+      loadDashboard();
+    });
+  } else {
+    console.error("[dashboard] Missing #days-select; change filter disabled");
+  }
 
-  $("refresh-btn").addEventListener("click", () => {
-    loadDashboard();
-  });
+  const refreshBtn = $("refresh-btn");
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      loadDashboard();
+    });
+  } else {
+    console.error("[dashboard] Missing #refresh-btn; manual refresh disabled");
+  }
 
-  $("comment-group-body").addEventListener("click", (event) => {
-    const button = event.target.closest(".toggle-btn");
-    if (!button) return;
-    const channel = button.dataset.channel || "";
-    const contentId = button.dataset.contentId || "";
-    toggleCommentGroup(channel, contentId);
-  });
+  const mergedTableBody = $("merged-table-body");
+  if (mergedTableBody) {
+    mergedTableBody.addEventListener("click", (event) => {
+      const button = event.target.closest(".toggle-btn");
+      if (!button || button.disabled) return;
+      const channel = button.dataset.channel || "";
+      const contentId = button.dataset.contentId || "";
+      toggleCommentGroup(channel, contentId);
+    });
+  } else {
+    console.error("[dashboard] Missing #merged-table-body; comment detail interaction disabled");
+  }
 }
 
 function bootstrap() {
+  const currentScript = Array.from(document.scripts).find((item) => item.src.includes("/static/dashboard.js"));
+  console.info("[dashboard] bootstrap", {
+    path: window.location.pathname,
+    script: currentScript ? currentScript.src : "unknown",
+  });
   bindEvents();
   loadDashboard();
 }

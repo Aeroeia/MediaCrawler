@@ -28,7 +28,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 
 from .routers import crawler_router, data_router, dashboard_router, websocket_router
 
@@ -40,6 +40,19 @@ app = FastAPI(
 
 # Get webui static files directory
 WEBUI_DIR = os.path.join(os.path.dirname(__file__), "webui")
+
+
+def _dashboard_asset_version() -> str:
+    candidates = [
+        os.path.join(WEBUI_DIR, "dashboard.html"),
+        os.path.join(WEBUI_DIR, "dashboard.js"),
+        os.path.join(WEBUI_DIR, "dashboard.css"),
+    ]
+    latest_mtime = 0
+    for path in candidates:
+        if os.path.exists(path):
+            latest_mtime = max(latest_mtime, int(os.path.getmtime(path)))
+    return str(latest_mtime or 1)
 
 # CORS configuration - allow frontend dev server access
 app.add_middleware(
@@ -81,7 +94,10 @@ async def serve_dashboard():
     """Return dashboard page"""
     dashboard_path = os.path.join(WEBUI_DIR, "dashboard.html")
     if os.path.exists(dashboard_path):
-        return FileResponse(dashboard_path)
+        with open(dashboard_path, "r", encoding="utf-8") as fp:
+            html = fp.read()
+        html = html.replace("__DASHBOARD_ASSET_VERSION__", _dashboard_asset_version())
+        return HTMLResponse(content=html)
     return {
         "message": "Dashboard not found",
         "note": "Missing file: api/webui/dashboard.html",

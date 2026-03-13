@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediaCrawler 数据表盘</title>
-    <link rel="stylesheet" href="/static/dashboard.css" />
-    <script src="/static/dashboard.js" defer></script>
+    <link rel="stylesheet" href="/static/dashboard.css?v=__DASHBOARD_ASSET_VERSION__" />
+    <script src="/static/dashboard.js?v=__DASHBOARD_ASSET_VERSION__" defer></script>
   </head>
   <body>
     <div class="bg-grid" aria-hidden="true"></div>
@@ -70,7 +70,7 @@
         </article>
       </section>
 
-      <section class="panel-grid two-col">
+      <section class="panel-grid full">
         <article class="panel card">
           <div class="panel-head">
             <h2>关键词 Top</h2>
@@ -78,52 +78,31 @@
           </div>
           <div id="keyword-list" class="keyword-list empty-state">暂无关键词数据</div>
         </article>
-        <article class="panel card">
-          <div class="panel-head">
-            <h2>最近采集帖子</h2>
-            <span id="recent-count" class="chip">0 条</span>
-          </div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>网站</th>
-                  <th>标题 / 摘要</th>
-                  <th>互动</th>
-                  <th>采集时间</th>
-                </tr>
-              </thead>
-              <tbody id="recent-table-body">
-                <tr>
-                  <td colspan="4" class="empty-state">暂无数据</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
       </section>
 
       <section class="panel-grid full">
         <article class="panel card">
           <div class="panel-head">
-            <h2>评论归属分类（按帖子聚合）</h2>
-            <span id="comment-group-count" class="chip">0 个帖子</span>
+            <h2>帖子与评论归属</h2>
+            <span id="merged-count" class="chip">0 个帖子</span>
           </div>
           <div class="table-wrap">
-            <table class="data-table">
+            <table class="data-table merged-table">
               <thead>
                 <tr>
                   <th>网站</th>
                   <th>帖子 ID</th>
-                  <th>帖子标题</th>
-                  <th>评论数</th>
+                  <th>标题 / 摘要</th>
+                  <th>采集时间</th>
+                  <th>已采评论数</th>
                   <th>最新评论时间</th>
+                  <th>互动</th>
                   <th>操作</th>
                 </tr>
               </thead>
-              <tbody id="comment-group-body">
+              <tbody id="merged-table-body">
                 <tr>
-                  <td colspan="6" class="empty-state">暂无数据</td>
+                  <td colspan="8" class="empty-state">暂无数据</td>
                 </tr>
               </tbody>
             </table>
