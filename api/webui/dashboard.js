@@ -10,6 +10,7 @@ const CHANNEL_LABELS = {
 
 const state = {
   days: 7,
+  pageMode: "all",
   openGroupKey: "",
   mergedRows: [],
   mergedPage: 1,
@@ -27,16 +28,16 @@ const OVERVIEW_FALLBACK = {
   today_new_crawled: 0,
 };
 
-function getElementOrWarn(id) {
+function getElementOrWarn(id, silent = false) {
   const el = $(id);
-  if (!el) {
+  if (!el && !silent) {
     console.error(`[dashboard] Missing DOM element: #${id}`);
   }
   return el;
 }
 
 function safeSetText(id, text) {
-  const el = getElementOrWarn(id);
+  const el = $(id);
   if (el) {
     el.textContent = text;
   }
@@ -132,8 +133,8 @@ function renderOverview(overview) {
 
 function renderTrend(trendData) {
   trendData = trendData || { period_days: state.days, series: [] };
-  const chart = getElementOrWarn("trend-chart");
-  const period = getElementOrWarn("trend-period");
+  const chart = $("trend-chart");
+  const period = $("trend-period");
   if (!chart || !period) return;
   const series = trendData.series || [];
   period.textContent = `最近 ${trendData.period_days || state.days} 天`;
@@ -145,24 +146,81 @@ function renderTrend(trendData) {
   }
 
   chart.className = "trend-chart";
-  const maxValue = Math.max(...series.map((item) => Number(item.total || 0)), 1);
+  const values = series.map((item) => Number(item.total || 0));
+  const maxValue = Math.max(...values, 1);
+  const svgWidth = Math.max(700, series.length * 34);
+  const svgHeight = 220;
+  const paddingLeft = 16;
+  const paddingRight = 12;
+  const paddingTop = 16;
+  const paddingBottom = 34;
+  const innerWidth = svgWidth - paddingLeft - paddingRight;
+  const innerHeight = svgHeight - paddingTop - paddingBottom;
+  const step = innerWidth / Math.max(series.length, 1);
+  const barWidth = Math.max(4, Math.min(18, step * 0.58));
 
-  chart.innerHTML = series
-    .map((item) => {
-      const value = Number(item.total || 0);
-      const height = Math.max(6, Math.round((value / maxValue) * 100));
-      const dateLabel = escapeHtml(String(item.date || "").slice(5));
-      return `
-        <div class="trend-item">
-          <div class="trend-num">${formatNum(value)}</div>
-          <div class="trend-bar-wrap">
-            <div class="trend-bar" style="height:${height}%"></div>
-          </div>
-          <div class="trend-date">${dateLabel}</div>
-        </div>
-      `;
-    })
-    .join("");
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map((ratio) => {
+    const y = paddingTop + innerHeight * (1 - ratio);
+    const value = Math.round(maxValue * ratio);
+    return { y, value };
+  });
+
+  const points = [];
+  const bars = [];
+  const labels = [];
+  const valueLabels = [];
+  const labelStep = series.length > 14 ? Math.ceil(series.length / 8) : 1;
+
+  series.forEach((item, index) => {
+    const value = Number(item.total || 0);
+    const ratio = maxValue > 0 ? value / maxValue : 0;
+    const x = paddingLeft + index * step + step / 2;
+    const barHeight = value > 0 ? Math.max(4, ratio * innerHeight) : 2;
+    const y = paddingTop + innerHeight - barHeight;
+    points.push(`${x},${y}`);
+    bars.push(
+      `<rect x="${Math.max(0, x - barWidth / 2)}" y="${y}" width="${barWidth}" height="${barHeight}" rx="2" class="trend-bar-rect" />`
+    );
+    if (value > 0) {
+      valueLabels.push(
+        `<text x="${x}" y="${Math.max(10, y - 6)}" class="trend-value-label" text-anchor="middle">${escapeHtml(
+          formatNum(value)
+        )}</text>`
+      );
+    }
+    if (index % labelStep === 0 || index === series.length - 1) {
+      labels.push(
+        `<text x="${x}" y="${svgHeight - 10}" class="trend-x-label" text-anchor="middle">${escapeHtml(
+          String(item.date || "").slice(5)
+        )}</text>`
+      );
+    }
+  });
+
+  chart.innerHTML = `
+    <div class="trend-mixed-wrap">
+      <svg class="trend-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="none" role="img" aria-label="每日帖子采集数量趋势">
+        ${ticks
+          .map(
+            (tick) => `
+              <line x1="${paddingLeft}" y1="${tick.y}" x2="${svgWidth - paddingRight}" y2="${tick.y}" class="trend-grid-line" />
+              <text x="2" y="${tick.y + 4}" class="trend-y-label">${escapeHtml(formatNum(tick.value))}</text>
+            `
+          )
+          .join("")}
+        ${bars.join("")}
+        <polyline points="${points.join(" ")}" class="trend-line" />
+        ${points
+          .map((point) => {
+            const [x, y] = point.split(",");
+            return `<circle cx="${x}" cy="${y}" r="2.6" class="trend-dot"></circle>`;
+          })
+          .join("")}
+        ${valueLabels.join("")}
+        ${labels.join("")}
+      </svg>
+    </div>
+  `;
 }
 
 function renderSiteClassification(channelsData) {
@@ -221,7 +279,7 @@ function renderSiteClassification(channelsData) {
 
 function renderKeywords(keywordData) {
   keywordData = keywordData || { rows: [] };
-  const container = getElementOrWarn("keyword-list");
+  const container = $("keyword-list");
   if (!container) return;
   const rows = keywordData.rows || [];
 
@@ -366,8 +424,8 @@ function renderMergedPagination() {
 
 function renderMergedRows(rows) {
   rows = rows || [];
-  const tbody = getElementOrWarn("merged-table-body");
-  const mergedCount = getElementOrWarn("merged-count");
+  const tbody = $("merged-table-body");
+  const mergedCount = $("merged-count");
   if (!tbody) return;
   state.mergedRows = rows;
   const pageRows = getMergedPageRows();
@@ -480,44 +538,56 @@ async function loadDashboard() {
   state.detailCache.clear();
 
   try {
-    const entries = [
-      {
-        key: "overview",
-        label: "总览",
-        promise: apiGet(`overview?days=${state.days}`),
-        fallback: OVERVIEW_FALLBACK,
-      },
-      {
-        key: "channels",
-        label: "网站分类",
-        promise: apiGet(`channels?days=${state.days}`),
-        fallback: { period_days: state.days, rows: [] },
-      },
-      {
-        key: "trend",
-        label: "趋势",
-        promise: apiGet(`trend?days=${state.days}`),
-        fallback: { period_days: state.days, series: [] },
-      },
-      {
-        key: "keywords",
-        label: "关键词",
-        promise: apiGet(`keywords?days=${state.days}&limit=10`),
-        fallback: { period_days: state.days, limit: 10, rows: [] },
-      },
-      {
-        key: "recent",
-        label: "最近帖子",
-        promise: apiGet(`recent?days=${state.days}&limit=200`),
-        fallback: { period_days: state.days, limit: 200, rows: [] },
-      },
-      {
-        key: "commentGroups",
-        label: "评论归属",
-        promise: apiGet(`comment-groups?days=${state.days}&limit=200`),
-        fallback: { period_days: state.days, limit: 200, rows: [] },
-      },
-    ];
+    const entries = [];
+    const mode = state.pageMode || "all";
+    const includeOverview = mode === "overview" || mode === "all";
+    const includeDetails = mode === "details" || mode === "all";
+
+    if (includeOverview) {
+      entries.push(
+        {
+          key: "overview",
+          label: "总览",
+          promise: apiGet(`overview?days=${state.days}`),
+          fallback: OVERVIEW_FALLBACK,
+        },
+        {
+          key: "channels",
+          label: "网站分类",
+          promise: apiGet(`channels?days=${state.days}`),
+          fallback: { period_days: state.days, rows: [] },
+        },
+        {
+          key: "trend",
+          label: "趋势",
+          promise: apiGet(`trend?days=${state.days}`),
+          fallback: { period_days: state.days, series: [] },
+        }
+      );
+    }
+
+    if (includeDetails) {
+      entries.push(
+        {
+          key: "keywords",
+          label: "关键词",
+          promise: apiGet(`keywords?days=${state.days}&limit=10`),
+          fallback: { period_days: state.days, limit: 10, rows: [] },
+        },
+        {
+          key: "recent",
+          label: "最近帖子",
+          promise: apiGet(`recent?days=${state.days}&limit=200`),
+          fallback: { period_days: state.days, limit: 200, rows: [] },
+        },
+        {
+          key: "commentGroups",
+          label: "评论归属",
+          promise: apiGet(`comment-groups?days=${state.days}&limit=200`),
+          fallback: { period_days: state.days, limit: 200, rows: [] },
+        }
+      );
+    }
     const settled = await Promise.allSettled(entries.map((item) => item.promise));
     const data = {};
     const failedModules = [];
@@ -532,13 +602,16 @@ async function loadDashboard() {
         console.error(`[dashboard] ${entry.label} 加载失败`, result.reason);
       }
     });
-    const mergedRows = mergeRecentAndCommentGroups(data.recent, data.commentGroups);
-
-    renderOverview(data.overview || OVERVIEW_FALLBACK);
-    renderSiteClassification(data.channels);
-    renderTrend(data.trend);
-    renderKeywords(data.keywords);
-    renderMergedRows(mergedRows);
+    if (includeOverview) {
+      renderOverview(data.overview || OVERVIEW_FALLBACK);
+      renderSiteClassification(data.channels);
+      renderTrend(data.trend);
+    }
+    if (includeDetails) {
+      const mergedRows = mergeRecentAndCommentGroups(data.recent, data.commentGroups);
+      renderKeywords(data.keywords);
+      renderMergedRows(mergedRows);
+    }
     if (failedModules.length > 0) {
       showToast(`${failedModules.join("、")}加载失败，其他模块已显示`);
     }
@@ -560,8 +633,6 @@ function bindEvents() {
       state.days = Number(event.target.value) || 7;
       loadDashboard();
     });
-  } else {
-    console.error("[dashboard] Missing #days-select; change filter disabled");
   }
 
   const refreshBtn = $("refresh-btn");
@@ -569,8 +640,6 @@ function bindEvents() {
     refreshBtn.addEventListener("click", () => {
       loadDashboard();
     });
-  } else {
-    console.error("[dashboard] Missing #refresh-btn; manual refresh disabled");
   }
 
   const mergedTableBody = $("merged-table-body");
@@ -582,8 +651,6 @@ function bindEvents() {
       const contentId = button.dataset.contentId || "";
       toggleCommentGroup(channel, contentId);
     });
-  } else {
-    console.error("[dashboard] Missing #merged-table-body; comment detail interaction disabled");
   }
 
   const prevBtn = $("merged-page-prev");
@@ -608,9 +675,11 @@ function bindEvents() {
 }
 
 function bootstrap() {
+  state.pageMode = (document.body && document.body.dataset.dashboardPage) || "all";
   const currentScript = Array.from(document.scripts).find((item) => item.src.includes("/static/dashboard.js"));
   console.info("[dashboard] bootstrap", {
     path: window.location.pathname,
+    pageMode: state.pageMode,
     script: currentScript ? currentScript.src : "unknown",
   });
   bindEvents();

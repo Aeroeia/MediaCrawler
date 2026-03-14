@@ -29,14 +29,14 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 from .routers import crawler_router, data_router, dashboard_router, task_router, websocket_router
 from .services import dashboard_service, task_scheduler_service
 
 app = FastAPI(
-    title="MediaCrawler WebUI API",
-    description="API for controlling MediaCrawler from WebUI",
+    title="数据采集中台 API",
+    description="API for controlling crawler tasks and dashboard",
     version="1.0.0"
 )
 logger = logging.getLogger(__name__)
@@ -45,17 +45,23 @@ logger = logging.getLogger(__name__)
 WEBUI_DIR = os.path.join(os.path.dirname(__file__), "webui")
 
 
-def _dashboard_asset_version() -> str:
-    candidates = [
-        os.path.join(WEBUI_DIR, "dashboard.html"),
-        os.path.join(WEBUI_DIR, "dashboard.js"),
-        os.path.join(WEBUI_DIR, "dashboard.css"),
-    ]
+def _asset_version(candidates: list[str]) -> str:
     latest_mtime = 0
     for path in candidates:
         if os.path.exists(path):
             latest_mtime = max(latest_mtime, int(os.path.getmtime(path)))
     return str(latest_mtime or 1)
+
+
+def _render_html(file_name: str, replacements: dict[str, str] | None = None):
+    file_path = os.path.join(WEBUI_DIR, file_name)
+    if not os.path.exists(file_path):
+        return None
+    with open(file_path, "r", encoding="utf-8") as fp:
+        html = fp.read()
+    for key, value in (replacements or {}).items():
+        html = html.replace(key, value)
+    return HTMLResponse(content=html)
 
 # CORS configuration - allow frontend dev server access
 app.add_middleware(
@@ -101,32 +107,83 @@ async def shutdown_event():
 
 
 @app.get("/")
-async def serve_frontend():
-    """Return frontend page"""
-    index_path = os.path.join(WEBUI_DIR, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
+async def serve_home():
+    return await serve_overview()
+
+
+@app.get("/overview")
+async def serve_overview():
+    """Return overview page."""
+    response = _render_html(
+        "overview.html",
+        replacements={
+            "__DASHBOARD_ASSET_VERSION__": _asset_version(
+                [
+                    os.path.join(WEBUI_DIR, "overview.html"),
+                    os.path.join(WEBUI_DIR, "dashboard.js"),
+                    os.path.join(WEBUI_DIR, "dashboard.css"),
+                ]
+            )
+        },
+    )
+    if response:
+        return response
     return {
-        "message": "MediaCrawler WebUI API",
-        "version": "1.0.0",
-        "docs": "/docs",
-        "note": "WebUI not found, please build it first: cd webui && npm run build"
+        "message": "Overview page not found",
+        "note": "Missing file: api/webui/overview.html",
+    }
+
+
+@app.get("/details")
+async def serve_details():
+    """Return details page."""
+    response = _render_html(
+        "details.html",
+        replacements={
+            "__DASHBOARD_ASSET_VERSION__": _asset_version(
+                [
+                    os.path.join(WEBUI_DIR, "details.html"),
+                    os.path.join(WEBUI_DIR, "dashboard.js"),
+                    os.path.join(WEBUI_DIR, "dashboard.css"),
+                ]
+            )
+        },
+    )
+    if response:
+        return response
+    return {
+        "message": "Details page not found",
+        "note": "Missing file: api/webui/details.html",
+    }
+
+
+@app.get("/tasks")
+async def serve_tasks():
+    """Return task management page."""
+    response = _render_html(
+        "tasks.html",
+        replacements={
+            "__TASK_MANAGER_ASSET_VERSION__": _asset_version(
+                [
+                    os.path.join(WEBUI_DIR, "tasks.html"),
+                    os.path.join(WEBUI_DIR, "task_manager.js"),
+                    os.path.join(WEBUI_DIR, "task_manager.css"),
+                ]
+            )
+        },
+    )
+    if response:
+        return response
+    return {
+        "message": "Task page not found",
+        "note": "Missing file: api/webui/tasks.html",
     }
 
 
 @app.get("/dashboard")
-async def serve_dashboard():
-    """Return dashboard page"""
-    dashboard_path = os.path.join(WEBUI_DIR, "dashboard.html")
-    if os.path.exists(dashboard_path):
-        with open(dashboard_path, "r", encoding="utf-8") as fp:
-            html = fp.read()
-        html = html.replace("__DASHBOARD_ASSET_VERSION__", _dashboard_asset_version())
-        return HTMLResponse(content=html)
-    return {
-        "message": "Dashboard not found",
-        "note": "Missing file: api/webui/dashboard.html",
-    }
+async def redirect_dashboard():
+    """Keep old dashboard entry as alias."""
+    return RedirectResponse(url="/overview", status_code=307)
 
 
 @app.get("/api/health")

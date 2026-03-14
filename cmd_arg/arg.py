@@ -174,6 +174,15 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
                 rich_help_panel="Basic Configuration",
             ),
         ] = config.START_PAGE,
+        resume_mode: Annotated[
+            str,
+            typer.Option(
+                "--resume_mode",
+                help="Resume mode for scheduler runs, supports yes/true/t/y/1 or no/false/f/n/0",
+                rich_help_panel="Basic Configuration",
+                show_default=True,
+            ),
+        ] = str(config.RESUME_MODE),
         keywords: Annotated[
             str,
             typer.Option(
@@ -306,6 +315,7 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
         enable_comment = _to_bool(get_comment)
         enable_sub_comment = _to_bool(get_sub_comment)
         enable_headless = _to_bool(headless)
+        enable_resume_mode = _to_bool(resume_mode)
         enable_ip_proxy_value = _to_bool(enable_ip_proxy)
         init_db_value = init_db.value if init_db else None
 
@@ -318,6 +328,7 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
         config.LOGIN_TYPE = lt.value
         config.CRAWLER_TYPE = crawler_type.value
         config.START_PAGE = start
+        config.RESUME_MODE = enable_resume_mode
         config.KEYWORDS = keywords
         config.ENABLE_GET_COMMENTS = enable_comment
         config.ENABLE_GET_SUB_COMMENTS = enable_sub_comment
@@ -362,6 +373,7 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
             lt=config.LOGIN_TYPE,
             type=config.CRAWLER_TYPE,
             start=config.START_PAGE,
+            resume_mode=config.RESUME_MODE,
             keywords=config.KEYWORDS,
             get_comment=config.ENABLE_GET_COMMENTS,
             get_sub_comment=config.ENABLE_GET_SUB_COMMENTS,

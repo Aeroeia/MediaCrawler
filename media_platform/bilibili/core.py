@@ -186,12 +186,13 @@ class BilibiliCrawler(AbstractCrawler):
         if config.CRAWLER_MAX_NOTES_COUNT < bili_limit_count:
             config.CRAWLER_MAX_NOTES_COUNT = bili_limit_count
         start_page = config.START_PAGE  # start page number
-        for keyword in config.KEYWORDS.split(","):
+        for keyword_index, keyword in enumerate(config.KEYWORDS.split(",")):
+            keyword_start_page = start_page if (not config.RESUME_MODE or keyword_index == 0) else 1
             source_keyword_var.set(keyword)
             utils.logger.info(f"[BilibiliCrawler.search_by_keywords] Current search keyword: {keyword}")
             page = 1
-            while (page - start_page + 1) * bili_limit_count <= config.CRAWLER_MAX_NOTES_COUNT:
-                if page < start_page:
+            while (page - keyword_start_page + 1) * bili_limit_count <= config.CRAWLER_MAX_NOTES_COUNT:
+                if page < keyword_start_page:
                     utils.logger.info(f"[BilibiliCrawler.search_by_keywords] Skip page: {page}")
                     page += 1
                     continue
@@ -242,12 +243,13 @@ class BilibiliCrawler(AbstractCrawler):
         bili_limit_count = 20
         start_page = config.START_PAGE
 
-        for keyword in config.KEYWORDS.split(","):
+        for keyword_index, keyword in enumerate(config.KEYWORDS.split(",")):
+            keyword_start_page = start_page if (not config.RESUME_MODE or keyword_index == 0) else 1
             source_keyword_var.set(keyword)
             utils.logger.info(f"[BilibiliCrawler.search_by_keywords_in_time_range] Current search keyword: {keyword}")
             total_notes_crawled_for_keyword = 0
 
-            for day in pd.date_range(start=config.START_DAY, end=config.END_DAY, freq="D"):
+            for day_index, day in enumerate(pd.date_range(start=config.START_DAY, end=config.END_DAY, freq="D")):
                 if (daily_limit and total_notes_crawled_for_keyword >= config.CRAWLER_MAX_NOTES_COUNT):
                     utils.logger.info(f"[BilibiliCrawler.search] Reached CRAWLER_MAX_NOTES_COUNT limit for keyword '{keyword}', skipping remaining days.")
                     break
@@ -257,7 +259,7 @@ class BilibiliCrawler(AbstractCrawler):
                     break
 
                 pubtime_begin_s, pubtime_end_s = await self.get_pubtime_datetime(start=day.strftime("%Y-%m-%d"), end=day.strftime("%Y-%m-%d"))
-                page = 1
+                page = keyword_start_page if day_index == 0 else 1
                 notes_count_this_day = 0
 
                 while True:

@@ -96,7 +96,6 @@
     root.innerHTML = [
       '<div class="tm-entry">',
       '  <button id="tm-open-btn" class="tm-pill" type="button">任务管理</button>',
-      '  <a class="tm-cta" href="/dashboard" target="_self">Dashboard</a>',
       "</div>",
       '<div id="tm-mask" class="tm-mask"></div>',
       '<aside id="tm-panel" class="tm-panel" aria-label="任务管理">',
@@ -438,15 +437,19 @@
         const busyOther = busy && Number(task.platform_running_task_id) !== Number(task.id);
         const disabledRun = runDisabled(task);
         const platformCls = "tm-platform-tag" + (busy ? " busy" : "");
-        const runBtnText = busyOther ? "平台占用" : "立即执行";
+        const runBtnText = busyOther ? "平台占用" : task.resume_available ? "续爬执行" : "立即执行";
         const stopDisabled = String(task.status) !== "running";
         const pauseAction = task.is_enabled ? "pause" : "resume";
         const pauseText = task.is_enabled ? "暂停" : "恢复";
+        const resumeText = task.resume_available
+          ? "可续爬 · " + String(task.resume_summary || "")
+          : "无断点";
         return [
           "<tr>",
           '  <td><div class="tm-name">' + escapeHtml(task.name) + '</div><div class="tm-small">' + escapeHtml(task.description || "-") + "</div></td>",
           '  <td><span class="' + platformCls + '">' + escapeHtml(task.platform) + "</span></td>",
           '  <td><span class="tm-status ' + statusClass(task.status) + '">' + escapeHtml(task.status) + "</span></td>",
+          "  <td>" + escapeHtml(resumeText) + "</td>",
           "  <td>" + escapeHtml(task.cron_expr || "-") + "</td>",
           "  <td>" + escapeHtml(task.next_run_at_text || "-") + "</td>",
           "  <td>" + escapeHtml(task.last_run_at_text || "-") + "</td>",
@@ -472,6 +475,7 @@
       "      <th>任务</th>",
       "      <th>平台</th>",
       "      <th>状态</th>",
+      "      <th>断点</th>",
       "      <th>Cron</th>",
       "      <th>下次运行</th>",
       "      <th>最近运行</th>",

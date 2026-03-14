@@ -3,18 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>数据采集中台 - 旧版看板入口</title>
+    <title>数据采集中台 - 数据总览</title>
     <link rel="stylesheet" href="/static/dashboard.css?v=__DASHBOARD_ASSET_VERSION__" />
     <script src="/static/dashboard.js?v=__DASHBOARD_ASSET_VERSION__" defer></script>
   </head>
-  <body>
+  <body data-dashboard-page="overview">
     <div class="bg-grid" aria-hidden="true"></div>
     <main class="page">
       <header class="topbar card">
         <div class="title-block">
           <h1>数据采集中台</h1>
-          <p>帖子 + 评论为主口径的跨网站采集分析（MySQL）</p>
+          <p>多平台采集业务数据总览（帖子 + 评论）</p>
         </div>
+        <nav class="top-nav" aria-label="主导航">
+          <a class="top-nav-link active" href="/overview">数据总览</a>
+          <a class="top-nav-link" href="/details">数据详情</a>
+          <a class="top-nav-link" href="/tasks">任务管理</a>
+        </nav>
         <div class="toolbar">
           <label for="days-select">时间范围</label>
           <select id="days-select">
@@ -56,7 +61,7 @@
       <section class="panel-grid two-col">
         <article class="panel card">
           <div class="panel-head">
-            <h2>帖子采集趋势</h2>
+            <h2>每日帖子采集数量</h2>
             <span id="trend-period" class="chip">最近 7 天</span>
           </div>
           <div id="trend-chart" class="trend-chart empty-state">暂无数据</div>
@@ -67,51 +72,6 @@
             <span class="chip">每个网站单独分类</span>
           </div>
           <div id="site-classification" class="site-list empty-state">暂无数据</div>
-        </article>
-      </section>
-
-      <section class="panel-grid full">
-        <article class="panel card">
-          <div class="panel-head">
-            <h2>关键词 Top</h2>
-            <span class="chip">来源关键词</span>
-          </div>
-          <div id="keyword-list" class="keyword-list empty-state">暂无关键词数据</div>
-        </article>
-      </section>
-
-      <section class="panel-grid full">
-        <article class="panel card">
-          <div class="panel-head">
-            <h2>帖子与评论归属</h2>
-            <span id="merged-count" class="chip">0 个帖子</span>
-          </div>
-          <div class="table-wrap">
-            <table class="data-table merged-table">
-              <thead>
-                <tr>
-                  <th>网站</th>
-                  <th>帖子 ID</th>
-                  <th>标题 / 摘要</th>
-                  <th>采集时间</th>
-                  <th>已采评论数</th>
-                  <th>最新评论时间</th>
-                  <th>互动</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody id="merged-table-body">
-                <tr>
-                  <td colspan="8" class="empty-state">暂无数据</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div id="merged-pagination" class="table-pagination hidden">
-            <button id="merged-page-prev" class="page-btn" type="button">上一页</button>
-            <span id="merged-page-text" class="page-text">第 0 / 0 页</span>
-            <button id="merged-page-next" class="page-btn" type="button">下一页</button>
-          </div>
         </article>
       </section>
     </main>

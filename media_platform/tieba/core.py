@@ -154,16 +154,17 @@ class TieBaCrawler(AbstractCrawler):
         if config.CRAWLER_MAX_NOTES_COUNT < tieba_limit_count:
             config.CRAWLER_MAX_NOTES_COUNT = tieba_limit_count
         start_page = config.START_PAGE
-        for keyword in config.KEYWORDS.split(","):
+        for keyword_index, keyword in enumerate(config.KEYWORDS.split(",")):
+            keyword_start_page = start_page if (not config.RESUME_MODE or keyword_index == 0) else 1
             source_keyword_var.set(keyword)
             utils.logger.info(
                 f"[BaiduTieBaCrawler.search] Current search keyword: {keyword}"
             )
             page = 1
             while (
-                page - start_page + 1
+                page - keyword_start_page + 1
             ) * tieba_limit_count <= config.CRAWLER_MAX_NOTES_COUNT:
-                if page < start_page:
+                if page < keyword_start_page:
                     utils.logger.info(f"[BaiduTieBaCrawler.search] Skip page {page}")
                     page += 1
                     continue

@@ -18,6 +18,60 @@ body[data-tm-mode="page"] {
   background: linear-gradient(180deg, #eff4fb 0%, #f8fafd 50%, #f4f7fb 100%);
 }
 
+.tm-topnav-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 10010;
+  border-bottom: 1px solid var(--tm-border);
+  background: rgba(248, 250, 253, 0.94);
+  backdrop-filter: blur(6px);
+}
+
+.tm-topnav-inner {
+  width: min(1200px, calc(100vw - 24px));
+  margin: 0 auto;
+  padding: 10px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tm-brand {
+  color: #173b74;
+  font: 700 19px/1.2 "Fira Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.tm-topnav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tm-topnav-link {
+  text-decoration: none;
+  color: var(--tm-muted);
+  border: 1px solid var(--tm-border);
+  background: #fff;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font: 600 13px/1.2 "Fira Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.tm-topnav-link:hover {
+  border-color: #bfd4ff;
+  color: var(--tm-primary);
+}
+
+.tm-topnav-link.active {
+  border-color: #c7d7ff;
+  color: #173ea6;
+  background: #edf3ff;
+}
+
 .tm-entry {
   position: fixed;
   right: 20px;
@@ -534,6 +588,11 @@ body[data-tm-mode="page"] {
     width: 100vw;
   }
 
+  .tm-topnav-inner {
+    width: calc(100vw - 16px);
+    padding: 8px 0;
+  }
+
   .tm-form {
     grid-template-columns: 1fr;
   }
@@ -546,16 +605,7 @@ body[data-tm-mode="page"] {
 }
 
 body[data-tm-mode="page"] .tm-entry {
-  position: sticky;
-  top: 0;
-  right: auto;
-  bottom: auto;
-  z-index: 10000;
-  justify-content: flex-end;
-  padding: 12px 16px;
-  background: rgba(248, 250, 253, 0.94);
-  border-bottom: 1px solid var(--tm-border);
-  backdrop-filter: blur(6px);
+  display: none;
 }
 
 body[data-tm-mode="page"] #tm-open-btn {
@@ -571,9 +621,9 @@ body[data-tm-mode="page"] .tm-panel {
   top: auto;
   right: auto;
   transform: none !important;
-  width: min(1200px, 100%);
-  margin: 0 auto;
-  min-height: calc(100vh - 70px);
+  width: min(1200px, calc(100vw - 24px));
+  margin: 10px auto 14px;
+  min-height: calc(100vh - 120px);
   height: auto;
   box-shadow: none;
   border-left: 1px solid var(--tm-border);
@@ -586,7 +636,7 @@ body[data-tm-mode="page"] .tm-console {
 
 body[data-tm-mode="page"] .tm-header {
   position: sticky;
-  top: 57px;
+  top: 0;
   z-index: 5;
   background: #fff;
 }

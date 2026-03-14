@@ -3,18 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>数据采集中台 - 旧版看板入口</title>
+    <title>数据采集中台 - 数据详情</title>
     <link rel="stylesheet" href="/static/dashboard.css?v=__DASHBOARD_ASSET_VERSION__" />
     <script src="/static/dashboard.js?v=__DASHBOARD_ASSET_VERSION__" defer></script>
   </head>
-  <body>
+  <body data-dashboard-page="details">
     <div class="bg-grid" aria-hidden="true"></div>
     <main class="page">
       <header class="topbar card">
         <div class="title-block">
           <h1>数据采集中台</h1>
-          <p>帖子 + 评论为主口径的跨网站采集分析（MySQL）</p>
+          <p>按关键词、帖子与评论归属查看采集明细</p>
         </div>
+        <nav class="top-nav" aria-label="主导航">
+          <a class="top-nav-link" href="/overview">数据总览</a>
+          <a class="top-nav-link active" href="/details">数据详情</a>
+          <a class="top-nav-link" href="/tasks">任务管理</a>
+        </nav>
         <div class="toolbar">
           <label for="days-select">时间范围</label>
           <select id="days-select">
@@ -24,51 +29,6 @@
           <button id="refresh-btn" type="button">刷新数据</button>
         </div>
       </header>
-
-      <section class="kpi-grid">
-        <article class="kpi-card card primary">
-          <h2>总爬取量</h2>
-          <div id="total-crawled" class="kpi-value">-</div>
-          <p>帖子 + 评论</p>
-        </article>
-        <article class="kpi-card card accent">
-          <h2>今日新增爬取量</h2>
-          <div id="today-new-crawled" class="kpi-value">-</div>
-          <p>今日帖子 + 今日评论</p>
-        </article>
-        <article class="kpi-card card">
-          <h2>帖子总量</h2>
-          <div id="total-contents" class="kpi-value">-</div>
-          <p>全网站累计</p>
-        </article>
-        <article class="kpi-card card">
-          <h2>评论总量</h2>
-          <div id="total-comments" class="kpi-value">-</div>
-          <p>全网站累计</p>
-        </article>
-        <article class="kpi-card card ghost">
-          <h2>创作者总量</h2>
-          <div id="total-creators" class="kpi-value">-</div>
-          <p>辅助参考</p>
-        </article>
-      </section>
-
-      <section class="panel-grid two-col">
-        <article class="panel card">
-          <div class="panel-head">
-            <h2>帖子采集趋势</h2>
-            <span id="trend-period" class="chip">最近 7 天</span>
-          </div>
-          <div id="trend-chart" class="trend-chart empty-state">暂无数据</div>
-        </article>
-        <article class="panel card">
-          <div class="panel-head">
-            <h2>网站分类统计</h2>
-            <span class="chip">每个网站单独分类</span>
-          </div>
-          <div id="site-classification" class="site-list empty-state">暂无数据</div>
-        </article>
-      </section>
 
       <section class="panel-grid full">
         <article class="panel card">

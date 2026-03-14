@@ -157,12 +157,13 @@ class WeiboCrawler(AbstractCrawler):
             utils.logger.error(f"[WeiboCrawler.search] Invalid WEIBO_SEARCH_TYPE: {config.WEIBO_SEARCH_TYPE}")
             return
 
-        for keyword in config.KEYWORDS.split(","):
+        for keyword_index, keyword in enumerate(config.KEYWORDS.split(",")):
+            keyword_start_page = start_page if (not config.RESUME_MODE or keyword_index == 0) else 1
             source_keyword_var.set(keyword)
             utils.logger.info(f"[WeiboCrawler.search] Current search keyword: {keyword}")
             page = 1
-            while (page - start_page + 1) * weibo_limit_count <= config.CRAWLER_MAX_NOTES_COUNT:
-                if page < start_page:
+            while (page - keyword_start_page + 1) * weibo_limit_count <= config.CRAWLER_MAX_NOTES_COUNT:
+                if page < keyword_start_page:
                     utils.logger.info(f"[WeiboCrawler.search] Skip page: {page}")
                     page += 1
                     continue

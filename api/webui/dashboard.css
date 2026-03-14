@@ -66,8 +66,9 @@ body {
   padding: 18px 20px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 .title-block h1 {
@@ -83,6 +84,36 @@ body {
   margin: 7px 0 0;
   color: var(--muted);
   font-size: 14px;
+}
+
+.top-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.top-nav-link {
+  text-decoration: none;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color 180ms ease, color 180ms ease, background-color 180ms ease;
+}
+
+.top-nav-link:hover {
+  border-color: #bfd4ff;
+  color: var(--primary);
+}
+
+.top-nav-link.active {
+  border-color: #c7d7ff;
+  color: #173ea6;
+  background: #edf3ff;
 }
 
 .toolbar {
@@ -198,7 +229,7 @@ body {
 }
 
 .panel {
-  min-height: 330px;
+  min-height: 260px;
   padding: 15px 16px;
   display: flex;
   flex-direction: column;
@@ -230,48 +261,56 @@ body {
 
 .trend-chart {
   flex: 1;
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 10px 8px 6px;
-}
-
-.trend-item {
-  flex: 1;
-  min-width: 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-.trend-num {
-  font-size: 11px;
-  color: var(--muted);
-  font-family: "Fira Code", "SFMono-Regular", Consolas, monospace;
-}
-
-.trend-bar-wrap {
-  width: 100%;
-  height: 190px;
-  border-radius: 10px;
+  min-height: 260px;
   border: 1px solid #e4ebfa;
+  border-radius: 10px;
   background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
+  padding: 8px 10px;
 }
 
-.trend-bar {
+.trend-mixed-wrap {
   width: 100%;
-  border-radius: 10px 10px 0 0;
-  background: linear-gradient(180deg, #7da6ff 0%, #2f68ee 100%);
-  transition: height 220ms ease;
+  height: 100%;
 }
 
-.trend-date {
-  font-size: 11px;
-  color: var(--muted);
+.trend-svg {
+  width: 100%;
+  height: 240px;
+  display: block;
+}
+
+.trend-grid-line {
+  stroke: rgba(89, 116, 173, 0.18);
+  stroke-width: 1;
+}
+
+.trend-y-label,
+.trend-x-label,
+.trend-value-label {
+  fill: #4b5e7a;
+  font-family: "Fira Code", "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+}
+
+.trend-value-label {
+  fill: #173ea6;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.trend-bar-rect {
+  fill: #7aa2ff;
+  fill-opacity: 0.58;
+}
+
+.trend-line {
+  fill: none;
+  stroke: #1e40af;
+  stroke-width: 1.9;
+}
+
+.trend-dot {
+  fill: #1e40af;
 }
 
 .site-list {
@@ -615,6 +654,10 @@ body {
     flex-direction: column;
     align-items: stretch;
   }
+
+  .top-nav {
+    width: 100%;
+  }
 }
 
 @media (max-width: 640px) {
@@ -636,8 +679,12 @@ body {
     font-size: 18px;
   }
 
-  .trend-bar-wrap {
-    height: 150px;
+  .trend-chart {
+    min-height: 220px;
+  }
+
+  .trend-svg {
+    height: 210px;
   }
 }
 

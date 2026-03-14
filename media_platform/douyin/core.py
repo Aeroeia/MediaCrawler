@@ -120,14 +120,15 @@ class DouYinCrawler(AbstractCrawler):
         if config.CRAWLER_MAX_NOTES_COUNT < dy_limit_count:
             config.CRAWLER_MAX_NOTES_COUNT = dy_limit_count
         start_page = config.START_PAGE  # start page number
-        for keyword in config.KEYWORDS.split(","):
+        for keyword_index, keyword in enumerate(config.KEYWORDS.split(",")):
+            keyword_start_page = start_page if (not config.RESUME_MODE or keyword_index == 0) else 1
             source_keyword_var.set(keyword)
             utils.logger.info(f"[DouYinCrawler.search] Current keyword: {keyword}")
             aweme_list: List[str] = []
             page = 0
             dy_search_id = ""
-            while (page - start_page + 1) * dy_limit_count <= config.CRAWLER_MAX_NOTES_COUNT:
-                if page < start_page:
+            while (page - keyword_start_page + 1) * dy_limit_count <= config.CRAWLER_MAX_NOTES_COUNT:
+                if page < keyword_start_page:
                     utils.logger.info(f"[DouYinCrawler.search] Skip {page}")
                     page += 1
                     continue

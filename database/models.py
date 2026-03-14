@@ -496,3 +496,11 @@ class CrawlerTaskRun(Base):
     exit_code = Column(Integer, default=0, comment='进程退出码')
     pid = Column(Integer, default=0, comment='进程PID')
     error_message = Column(Text, default='', comment='错误信息')
+
+
+class CrawlerTaskCheckpoint(Base):
+    __tablename__ = 'crawler_task_checkpoint'
+    task_id = Column(Integer, primary_key=True, comment='任务ID')
+    crawler_type = Column(String(32), default='search', comment='断点类型')
+    resume_payload = Column(Text, default='', comment='断点数据(JSON)')
+    updated_at = Column(BigInteger, default=0, index=True, comment='更新时间戳')

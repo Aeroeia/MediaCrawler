@@ -82,6 +82,9 @@ USER_DATA_DIR = "%s_user_data_dir"  # %s will be replaced by platform name
 # The number of pages to start crawling starts from the first page by default
 START_PAGE = 1
 
+# Resume mode (for scheduler resume runs)
+RESUME_MODE = False
+
 # Control the number of crawled videos/posts
 CRAWLER_MAX_NOTES_COUNT = 15
 
