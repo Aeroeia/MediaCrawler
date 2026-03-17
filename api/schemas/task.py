@@ -38,6 +38,6 @@ class TaskUpsertRequest(BaseModel):
     headless: bool = False
     priority: str = Field(default="medium", pattern="^(low|medium|high)$")
     timeout_seconds: int = Field(default=30, ge=5, le=3600)
-    cron_expr: str = Field(min_length=5, max_length=128)
+    cron_expr: str = Field(default="", max_length=128)
+    manual_only: bool = False
     is_enabled: bool = True
-

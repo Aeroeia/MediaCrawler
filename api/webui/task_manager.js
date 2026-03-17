@@ -149,7 +149,7 @@
       '      <div class="tm-field"><label>任务名称 *</label><input class="tm-input" name="name" required maxlength="255"></div>',
       '      <div class="tm-field"><label>平台 *</label><select class="tm-select" name="platform"></select></div>',
       '      <div class="tm-field full"><label>任务描述</label><input class="tm-input" name="description"></div>',
-      '      <div class="tm-field"><label>Cron 表达式 *</label><input class="tm-input" name="cron_expr" placeholder="*/10 * * * *" required></div>',
+      '      <div class="tm-field" id="tm-field-cron"><label>Cron 表达式</label><input class="tm-input" name="cron_expr" placeholder="*/10 * * * *"></div>',
       '      <div class="tm-field"><label>启用状态</label><select class="tm-select" name="is_enabled"><option value="true">启用</option><option value="false">暂停</option></select></div>',
       '      <div class="tm-field"><label>优先级</label><select class="tm-select" name="priority"><option value="medium">medium</option><option value="high">high</option><option value="low">low</option></select></div>',
       '      <div class="tm-field"><label>超时（秒）</label><input class="tm-input" name="timeout_seconds" type="number" min="5" max="3600" value="30"></div>',
@@ -161,6 +161,7 @@
       '      <div class="tm-field full" id="tm-field-specified"><label>详情ID（detail）</label><textarea class="tm-textarea" name="specified_ids" placeholder="多个 ID 逗号分隔"></textarea></div>',
       '      <div class="tm-field full" id="tm-field-creator"><label>创作者ID（creator）</label><textarea class="tm-textarea" name="creator_ids" placeholder="多个 ID 逗号分隔"></textarea></div>',
       '      <div class="tm-field full"><label>Cookies（可选）</label><textarea class="tm-textarea" name="cookies"></textarea></div>',
+      '      <input type="hidden" name="manual_only" value="false">',
       '      <div class="tm-field full">',
       '        <label>抓取选项</label>',
       '        <div class="tm-checkline">',
@@ -441,6 +442,8 @@
         const stopDisabled = String(task.status) !== "running";
         const pauseAction = task.is_enabled ? "pause" : "resume";
         const pauseText = task.is_enabled ? "暂停" : "恢复";
+        const cronText = task.manual_only ? "手动任务" : (task.cron_expr || "-");
+        const nextRunText = task.manual_only ? "-" : (task.next_run_at_text || "-");
         const resumeText = task.resume_available
           ? "可续爬 · " + String(task.resume_summary || "")
           : "无断点";
@@ -450,8 +453,8 @@
           '  <td><span class="' + platformCls + '">' + escapeHtml(task.platform) + "</span></td>",
           '  <td><span class="tm-status ' + statusClass(task.status) + '">' + escapeHtml(task.status) + "</span></td>",
           "  <td>" + escapeHtml(resumeText) + "</td>",
-          "  <td>" + escapeHtml(task.cron_expr || "-") + "</td>",
-          "  <td>" + escapeHtml(task.next_run_at_text || "-") + "</td>",
+          "  <td>" + escapeHtml(cronText) + "</td>",
+          "  <td>" + escapeHtml(nextRunText) + "</td>",
           "  <td>" + escapeHtml(task.last_run_at_text || "-") + "</td>",
           "  <td>" + Number(task.success_count || 0) + " / " + Number(task.fail_count || 0) + '<div class="tm-small">命中数据: ' + Number(task.data_hit_count || 0) + "</div></td>",
           '  <td><div class="tm-ops">',
@@ -561,6 +564,7 @@
     form.elements.namedItem("timeout_seconds").value = Number((task && task.timeout_seconds) || 30);
     form.elements.namedItem("cron_expr").value = (task && task.cron_expr) || "*/10 * * * *";
     form.elements.namedItem("is_enabled").value = String(task ? !!task.is_enabled : true);
+    form.elements.namedItem("manual_only").value = String(task ? !!task.manual_only : false);
 
     form.elements.namedItem("crawler_type").value = params.crawler_type || "search";
     form.elements.namedItem("login_type").value = params.login_type || "qrcode";
@@ -574,6 +578,7 @@
     form.elements.namedItem("enable_sub_comments").checked = !!params.enable_sub_comments;
     form.elements.namedItem("headless").checked = !!params.headless;
     form.elements.namedItem("run_now_after_save").checked = false;
+    syncPlatformHint();
     syncCrawlerTypeHint();
 
     els.taskModal.classList.add("show");
@@ -616,24 +621,47 @@
     if (creator) creator.style.display = type === "creator" ? "" : "none";
   }
 
+  function syncPlatformHint() {
+    if (!els.taskForm) {
+      return;
+    }
+    const platform = String(els.taskForm.elements.namedItem("platform").value || "xhs");
+    const cronWrap = document.getElementById("tm-field-cron");
+    const cronInput = els.taskForm.elements.namedItem("cron_expr");
+    const manualInput = els.taskForm.elements.namedItem("manual_only");
+    if (platform === "wx") {
+      if (cronWrap) cronWrap.style.display = "none";
+      if (cronInput) cronInput.value = "";
+      if (manualInput) manualInput.value = "true";
+      return;
+    }
+    if (cronWrap) cronWrap.style.display = "";
+    if (manualInput) manualInput.value = "false";
+    if (cronInput && !String(cronInput.value || "").trim()) {
+      cronInput.value = "*/10 * * * *";
+    }
+  }
+
   function collectPayload() {
     if (!els.taskForm) {
       throw new Error("表单未就绪");
     }
     const form = els.taskForm.elements;
     const name = String(form.namedItem("name").value || "").trim();
+    const platform = String(form.namedItem("platform").value || "xhs");
+    const manualOnly = platform === "wx" || String(form.namedItem("manual_only").value || "false") === "true";
     const cronExpr = String(form.namedItem("cron_expr").value || "").trim();
     if (!name) {
       throw new Error("任务名称不能为空");
     }
-    if (!cronExpr) {
+    if (!manualOnly && !cronExpr) {
       throw new Error("Cron 表达式不能为空");
     }
 
     return {
       name: name,
       description: String(form.namedItem("description").value || "").trim(),
-      platform: String(form.namedItem("platform").value || "xhs"),
+      platform: platform,
       crawler_type: String(form.namedItem("crawler_type").value || "search"),
       login_type: String(form.namedItem("login_type").value || "qrcode"),
       save_option: String(form.namedItem("save_option").value || "jsonl"),
@@ -647,7 +675,8 @@
       headless: !!form.namedItem("headless").checked,
       priority: String(form.namedItem("priority").value || "medium"),
       timeout_seconds: Number(form.namedItem("timeout_seconds").value || 30),
-      cron_expr: cronExpr,
+      cron_expr: manualOnly ? "" : cronExpr,
+      manual_only: manualOnly,
       is_enabled: String(form.namedItem("is_enabled").value || "true") === "true",
     };
   }
@@ -916,6 +945,7 @@
     els.cancelSubmit.addEventListener("click", closeTaskModal);
     els.taskForm.addEventListener("submit", submitTask);
     els.taskForm.elements.namedItem("crawler_type").addEventListener("change", syncCrawlerTypeHint);
+    els.taskForm.elements.namedItem("platform").addEventListener("change", syncPlatformHint);
 
     els.runsClose.addEventListener("click", closeRunsModal);
     els.runsModal.addEventListener("click", function (event) {

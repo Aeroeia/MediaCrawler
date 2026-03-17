@@ -252,6 +252,7 @@ async def get_platforms():
             {"value": "wb", "label": "Weibo", "icon": "message-circle"},
             {"value": "tieba", "label": "Baidu Tieba", "icon": "messages-square"},
             {"value": "zhihu", "label": "Zhihu", "icon": "help-circle"},
+            {"value": "wx", "label": "WeChat OA", "icon": "newspaper"},
         ]
     }
 
@@ -277,6 +278,7 @@ async def get_config_options():
             {"value": "sqlite", "label": "SQLite Database"},
             {"value": "db", "label": "MySQL Database"},
             {"value": "mongodb", "label": "MongoDB Database"},
+            {"value": "postgres", "label": "PostgreSQL Database"},
         ],
     }
 

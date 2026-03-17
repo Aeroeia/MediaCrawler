@@ -1,3 +1,4 @@
+uv run uvicorn api.main:app --host 0.0.0.0 --port 8080 --reload
 # 🔥 MediaCrawler - 自媒体平台爬虫 🕷️
 
 <div align="center">

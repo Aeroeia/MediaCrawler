@@ -30,6 +30,7 @@ class PlatformEnum(str, Enum):
     WEIBO = "wb"
     TIEBA = "tieba"
     ZHIHU = "zhihu"
+    WECHAT = "wx"
 
 
 class LoginTypeEnum(str, Enum):
@@ -55,6 +56,7 @@ class SaveDataOptionEnum(str, Enum):
     SQLITE = "sqlite"
     MONGODB = "mongodb"
     EXCEL = "excel"
+    POSTGRES = "postgres"
 
 
 class CrawlerStartRequest(BaseModel):

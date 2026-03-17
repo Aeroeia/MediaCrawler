@@ -6,6 +6,7 @@ const CHANNEL_LABELS = {
   wb: "微博",
   tieba: "贴吧",
   zhihu: "知乎",
+  wx: "公众号",
 };
 
 const state = {

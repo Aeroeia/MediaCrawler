@@ -32,7 +32,7 @@ from typing import Any, Dict, List, Optional
 from zoneinfo import ZoneInfo
 
 from croniter import croniter
-from sqlalchemy import delete, select, update
+from sqlalchemy import delete, select, text, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
@@ -415,6 +415,7 @@ class TaskSchedulerService:
             "priority": task.priority or "medium",
             "timeout_seconds": int(task.timeout_seconds or 30),
             "cron_expr": task.cron_expr,
+            "manual_only": bool(task.manual_only),
             "is_enabled": bool(task.is_enabled),
             "status": task.status or "idle",
             "next_run_at": int(task.next_run_at or 0),
@@ -438,6 +439,7 @@ class TaskSchedulerService:
                 "enable_comments": bool(task.enable_comments),
                 "enable_sub_comments": bool(task.enable_sub_comments),
                 "headless": bool(task.headless),
+                "manual_only": bool(task.manual_only),
             },
             "resume_available": False,
             "resume_type": "",
@@ -452,6 +454,27 @@ class TaskSchedulerService:
                     tables=[CrawlerTask.__table__, CrawlerTaskRun.__table__, CrawlerTaskCheckpoint.__table__],
                 )
             )
+            # schema compatibility for existing deployments without migration tool
+            exists_result = await conn.execute(
+                text(
+                    """
+                    SELECT COUNT(1)
+                    FROM information_schema.COLUMNS
+                    WHERE TABLE_SCHEMA = DATABASE()
+                      AND TABLE_NAME = 'crawler_task'
+                      AND COLUMN_NAME = 'manual_only'
+                    """
+                )
+            )
+            has_manual_only = int(exists_result.scalar() or 0) > 0
+            if not has_manual_only:
+                await conn.execute(
+                    text(
+                        "ALTER TABLE crawler_task "
+                        "ADD COLUMN manual_only TINYINT(1) NOT NULL DEFAULT 0 COMMENT '仅手动执行'"
+                    )
+                )
+                logger.info("[task_scheduler] added missing column crawler_task.manual_only")
 
     async def _reset_stale_running_tasks(self) -> None:
         now_ts = self._now_ts()
@@ -530,6 +553,7 @@ class TaskSchedulerService:
             result = await session.execute(
                 select(CrawlerTask.id)
                 .where(CrawlerTask.is_enabled.is_(True))
+                .where(CrawlerTask.manual_only.is_(False))
                 .where(CrawlerTask.next_run_at > 0)
                 .where(CrawlerTask.next_run_at <= now_ts)
                 .order_by(CrawlerTask.next_run_at.asc())
@@ -666,11 +690,15 @@ class TaskSchedulerService:
                             error_message="platform_busy",
                         )
                         task.status = "idle"
-                        task.next_run_at = self._next_run_ts(task.cron_expr, now_ts)
+                        if not bool(task.manual_only) and task.cron_expr:
+                            task.next_run_at = self._next_run_ts(task.cron_expr, now_ts)
                         task.last_modify_ts = now_ts
                         await session.commit()
                         raise TaskSchedulerError("Platform is busy", status_code=409)
                     raise TaskSchedulerError("Platform is busy", status_code=409)
+
+                if trigger_type == "cron" and bool(task.manual_only):
+                    raise TaskSchedulerError("Manual-only task cannot be triggered by cron", status_code=400)
 
                 command_overrides: Dict[str, Any] = {}
                 if use_resume_checkpoint and trigger_type == "manual":
@@ -710,7 +738,7 @@ class TaskSchedulerService:
                 task.running_pid = int(process.pid or 0)
                 task.last_run_at = now_ts
                 task.last_modify_ts = now_ts
-                if task.is_enabled:
+                if task.is_enabled and (not bool(task.manual_only)) and task.cron_expr:
                     task.next_run_at = self._next_run_ts(task.cron_expr, now_ts)
                 await session.commit()
 
@@ -819,9 +847,12 @@ class TaskSchedulerService:
             raise TaskSchedulerError(f"MySQL query failed: {exc}", status_code=503) from exc
 
     async def create_task(self, payload: TaskUpsertRequest) -> Dict[str, Any]:
-        self._validate_cron_expr(payload.cron_expr)
+        manual_only = bool(payload.manual_only) or payload.platform.value == "wx"
+        cron_expr = "" if manual_only else payload.cron_expr.strip()
+        if not manual_only:
+            self._validate_cron_expr(cron_expr)
         now_ts = self._now_ts()
-        next_run_at = self._next_run_ts(payload.cron_expr, now_ts) if payload.is_enabled else 0
+        next_run_at = self._next_run_ts(cron_expr, now_ts) if (payload.is_enabled and (not manual_only)) else 0
         task = CrawlerTask(
             name=payload.name.strip(),
             description=payload.description.strip(),
@@ -839,7 +870,8 @@ class TaskSchedulerService:
             headless=bool(payload.headless),
             priority=payload.priority,
             timeout_seconds=int(payload.timeout_seconds),
-            cron_expr=payload.cron_expr.strip(),
+            cron_expr=cron_expr,
+            manual_only=manual_only,
             is_enabled=bool(payload.is_enabled),
             status="idle" if payload.is_enabled else "paused",
             next_run_at=next_run_at,
@@ -861,7 +893,10 @@ class TaskSchedulerService:
             raise TaskSchedulerError(f"MySQL query failed: {exc}", status_code=503) from exc
 
     async def update_task(self, task_id: int, payload: TaskUpsertRequest) -> Dict[str, Any]:
-        self._validate_cron_expr(payload.cron_expr)
+        manual_only = bool(payload.manual_only) or payload.platform.value == "wx"
+        cron_expr = "" if manual_only else payload.cron_expr.strip()
+        if not manual_only:
+            self._validate_cron_expr(cron_expr)
         now_ts = self._now_ts()
         try:
             async with self._lock:
@@ -888,10 +923,11 @@ class TaskSchedulerService:
                     task.headless = bool(payload.headless)
                     task.priority = payload.priority
                     task.timeout_seconds = int(payload.timeout_seconds)
-                    task.cron_expr = payload.cron_expr.strip()
+                    task.cron_expr = cron_expr
+                    task.manual_only = manual_only
                     task.is_enabled = bool(payload.is_enabled)
                     task.status = "idle" if payload.is_enabled else "paused"
-                    task.next_run_at = self._next_run_ts(task.cron_expr, now_ts) if payload.is_enabled else 0
+                    task.next_run_at = self._next_run_ts(task.cron_expr, now_ts) if (payload.is_enabled and (not manual_only)) else 0
                     task.last_modify_ts = now_ts
                     await self._delete_checkpoint(session, task_id)
                     await session.commit()
@@ -949,9 +985,12 @@ class TaskSchedulerService:
                 task = await session.get(CrawlerTask, task_id)
                 if not task:
                     raise TaskSchedulerError("Task not found", status_code=404)
-                self._validate_cron_expr(task.cron_expr)
                 task.is_enabled = True
-                task.next_run_at = self._next_run_ts(task.cron_expr, now_ts)
+                if bool(task.manual_only):
+                    task.next_run_at = 0
+                else:
+                    self._validate_cron_expr(task.cron_expr)
+                    task.next_run_at = self._next_run_ts(task.cron_expr, now_ts)
                 if task_id not in self._running_processes:
                     task.status = "idle"
                 task.last_modify_ts = now_ts

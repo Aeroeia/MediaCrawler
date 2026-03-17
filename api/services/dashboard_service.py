@@ -89,6 +89,7 @@ class DashboardService:
         ChannelTableMap("wb", "weibo_note", "weibo_note_comment", "weibo_creator"),
         ChannelTableMap("tieba", "tieba_note", "tieba_comment", "tieba_creator"),
         ChannelTableMap("zhihu", "zhihu_content", "zhihu_comment", "zhihu_creator"),
+        ChannelTableMap("wx", "wx_article", "wx_article_comment", "wx_account"),
     ]
 
     _RECENT_QUERIES: List[RecentQueryConfig] = [
@@ -159,6 +160,16 @@ class DashboardService:
             title_col="`title`",
             summary_col="`content_text`",
             like_expr="CAST(IFNULL(voteup_count, 0) AS UNSIGNED)",
+            comment_expr="CAST(IFNULL(comment_count, 0) AS UNSIGNED)",
+            share_expr="0",
+        ),
+        RecentQueryConfig(
+            channel="wx",
+            table="wx_article",
+            id_col="`article_id`",
+            title_col="`title`",
+            summary_col="`digest`",
+            like_expr="CAST(IFNULL(like_num, 0) AS UNSIGNED)",
             comment_expr="CAST(IFNULL(comment_count, 0) AS UNSIGNED)",
             share_expr="0",
         ),
@@ -255,6 +266,19 @@ class DashboardService:
             comment_text_col="`content`",
             comment_user_col="`user_nickname`",
             comment_like_expr="CAST(IFNULL(`like_count`, 0) AS SIGNED)",
+        ),
+        CommentQueryConfig(
+            channel="wx",
+            content_table="wx_article",
+            comment_table="wx_article_comment",
+            content_id_col="`sn`",
+            comment_content_id_col="`sn`",
+            title_col="`title`",
+            summary_col="`digest`",
+            comment_id_col="`content_id`",
+            comment_text_col="`content`",
+            comment_user_col="`nick_name`",
+            comment_like_expr="CAST(IFNULL(`like_num`, 0) AS SIGNED)",
         ),
     ]
 

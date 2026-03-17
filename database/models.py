@@ -452,6 +452,99 @@ class ZhihuCreator(Base):
     last_modify_ts = Column(BigInteger, comment='最后修改时间戳')
 
 
+class WxAccount(Base):
+    __tablename__ = 'wx_account'
+    id = Column(Integer, primary_key=True, comment='主键ID')
+    biz = Column(String(64), unique=True, index=True, comment='公众号biz')
+    account = Column(Text, comment='公众号名称')
+    head_url = Column(Text, comment='公众号头像')
+    summary = Column(Text, comment='公众号简介')
+    qr_code = Column(Text, comment='二维码地址')
+    verify = Column(Text, comment='认证信息')
+    spider_time = Column(String(32), comment='抓取时间')
+    add_ts = Column(BigInteger, comment='添加时间戳')
+    last_modify_ts = Column(BigInteger, comment='最后修改时间戳')
+
+
+class WxArticle(Base):
+    __tablename__ = 'wx_article'
+    id = Column(Integer, primary_key=True, comment='主键ID')
+    article_id = Column(String(64), unique=True, index=True, comment='文章唯一ID')
+    sn = Column(String(64), unique=True, index=True, comment='文章sn')
+    biz = Column(String(64), index=True, comment='公众号biz')
+    account = Column(Text, comment='公众号名称')
+    title = Column(Text, comment='文章标题')
+    url = Column(Text, comment='文章链接')
+    author = Column(Text, comment='作者')
+    publish_time = Column(String(32), index=True, comment='发布时间')
+    digest = Column(Text, comment='摘要')
+    cover = Column(Text, comment='封面')
+    pics_url = Column(Text, comment='正文图片列表')
+    content_html = Column(Text, comment='正文HTML')
+    source_url = Column(Text, comment='原文链接')
+    comment_id = Column(String(64), index=True, comment='评论ID')
+    read_num = Column(Integer, default=0, comment='阅读数')
+    like_num = Column(Integer, default=0, comment='点赞数')
+    comment_count = Column(Integer, default=0, comment='评论数')
+    spider_time = Column(String(32), comment='抓取时间')
+    source_keyword = Column(Text, default='', comment='来源关键词')
+    add_ts = Column(BigInteger, comment='添加时间戳')
+    last_modify_ts = Column(BigInteger, comment='最后修改时间戳')
+
+
+class WxArticleDynamic(Base):
+    __tablename__ = 'wx_article_dynamic'
+    id = Column(Integer, primary_key=True, comment='主键ID')
+    sn = Column(String(64), unique=True, index=True, comment='文章sn')
+    biz = Column(String(64), index=True, comment='公众号biz')
+    read_num = Column(Integer, default=0, comment='阅读数')
+    like_num = Column(Integer, default=0, comment='点赞数')
+    comment_count = Column(Integer, default=0, comment='评论数')
+    spider_time = Column(String(32), comment='抓取时间')
+    add_ts = Column(BigInteger, comment='添加时间戳')
+    last_modify_ts = Column(BigInteger, comment='最后修改时间戳')
+
+
+class WxArticleComment(Base):
+    __tablename__ = 'wx_article_comment'
+    id = Column(Integer, primary_key=True, comment='主键ID')
+    content_id = Column(String(64), unique=True, index=True, comment='评论内容ID')
+    comment_id = Column(String(64), index=True, comment='文章评论ID')
+    sn = Column(String(64), index=True, comment='文章sn')
+    biz = Column(String(64), index=True, comment='公众号biz')
+    nick_name = Column(Text, comment='昵称')
+    logo_url = Column(Text, comment='头像')
+    content = Column(Text, comment='评论内容')
+    create_time = Column(String(32), comment='评论时间')
+    like_num = Column(Integer, default=0, comment='点赞数')
+    is_top = Column(Integer, default=0, comment='是否置顶')
+    spider_time = Column(String(32), comment='抓取时间')
+    add_ts = Column(BigInteger, comment='添加时间戳')
+    last_modify_ts = Column(BigInteger, comment='最后修改时间戳')
+
+
+class WxAccountTask(Base):
+    __tablename__ = 'wx_account_task'
+    id = Column(Integer, primary_key=True, comment='任务ID')
+    biz = Column(String(64), unique=True, index=True, comment='公众号biz')
+    last_publish_time = Column(String(32), default='', comment='上次采集发布时间')
+    last_spider_time = Column(String(32), default='', comment='上次采集时间')
+    is_zombie = Column(Boolean, default=False, comment='是否僵尸号')
+    add_ts = Column(BigInteger, comment='添加时间戳')
+    last_modify_ts = Column(BigInteger, comment='最后修改时间戳')
+
+
+class WxArticleTask(Base):
+    __tablename__ = 'wx_article_task'
+    id = Column(Integer, primary_key=True, comment='任务ID')
+    sn = Column(String(64), unique=True, index=True, comment='文章sn')
+    article_url = Column(Text, comment='文章URL')
+    biz = Column(String(64), index=True, comment='公众号biz')
+    state = Column(Integer, default=0, index=True, comment='任务状态 0待抓取 1完成 2抓取中 -1失败')
+    add_ts = Column(BigInteger, comment='添加时间戳')
+    last_modify_ts = Column(BigInteger, comment='最后修改时间戳')
+
+
 class CrawlerTask(Base):
     __tablename__ = 'crawler_task'
     id = Column(Integer, primary_key=True, comment='任务ID')
@@ -471,7 +564,8 @@ class CrawlerTask(Base):
     headless = Column(Boolean, default=False, comment='是否无头模式')
     priority = Column(String(16), default='medium', comment='优先级')
     timeout_seconds = Column(Integer, default=30, comment='超时时间（秒）')
-    cron_expr = Column(String(128), nullable=False, comment='Cron表达式')
+    cron_expr = Column(String(128), nullable=True, default='', comment='Cron表达式')
+    manual_only = Column(Boolean, default=False, comment='仅手动执行')
     is_enabled = Column(Boolean, default=True, comment='是否启用调度')
     status = Column(String(32), default='idle', comment='任务状态')
     next_run_at = Column(BigInteger, default=0, index=True, comment='下次执行时间戳')
