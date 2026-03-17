@@ -185,6 +185,9 @@
   },
   "active": "101ec5f89af3e9b2",
   "lastOpenFiles": [
+    "tests/__pycache__/test_task_scheduler_resume.cpython-311-pytest-9.0.1.pyc",
+    "docs/断点续爬技术总结.md",
+    "tests/test_task_scheduler_resume.py",
     "tests/__pycache__/test_task_schema_manual_only.cpython-311-pytest-9.0.1.pyc",
     "tests/test_task_schema_manual_only.py",
     "data/xhs",
@@ -194,8 +197,6 @@
     "tests/__pycache__/test_wechat_parser.cpython-311-pytest-9.0.1.pyc",
     "tests/__pycache__/test_wechat_store_factory.cpython-311.pyc",
     "tests/__pycache__/test_wechat_parser.cpython-311.pyc",
-    "tests/__pycache__/test_wechat_cmd_arg.cpython-311.pyc",
-    "tests/__pycache__/test_store_factory.cpython-311.pyc",
     "docs/原生环境管理文档.md",
     "docs/知识付费介绍.md",
     "docs/作者介绍.md",

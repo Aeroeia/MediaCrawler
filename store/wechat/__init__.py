@@ -57,6 +57,11 @@ async def update_wx_account(account_item: dict) -> None:
     now_ts = utils.get_current_timestamp()
     local_item.setdefault("add_ts", now_ts)
     local_item["last_modify_ts"] = now_ts
+    utils.logger.info(
+        "[store.wechat.update_wx_account] biz:%s account:%s",
+        str(local_item.get("biz") or ""),
+        str(local_item.get("account") or ""),
+    )
     await WxStoreFactory.create_store().store_creator(local_item)
 
 
@@ -66,6 +71,13 @@ async def update_wx_article(article_item: dict) -> None:
     local_item.setdefault("add_ts", now_ts)
     local_item["last_modify_ts"] = now_ts
     local_item["source_keyword"] = str(local_item.get("source_keyword") or source_keyword_var.get() or "")
+    utils.logger.info(
+        "[store.wechat.update_wx_article] article_id:%s sn:%s biz:%s url:%s",
+        str(local_item.get("article_id") or ""),
+        str(local_item.get("sn") or ""),
+        str(local_item.get("biz") or ""),
+        str(local_item.get("url") or ""),
+    )
     await WxStoreFactory.create_store().store_content(local_item)
 
 
@@ -74,6 +86,14 @@ async def update_wx_article_dynamic(dynamic_item: dict) -> None:
     now_ts = utils.get_current_timestamp()
     local_item.setdefault("add_ts", now_ts)
     local_item["last_modify_ts"] = now_ts
+    utils.logger.info(
+        "[store.wechat.update_wx_article_dynamic] sn:%s biz:%s read_num:%s like_num:%s comment_count:%s",
+        str(local_item.get("sn") or ""),
+        str(local_item.get("biz") or ""),
+        str(local_item.get("read_num") or ""),
+        str(local_item.get("like_num") or ""),
+        str(local_item.get("comment_count") or ""),
+    )
     store = WxStoreFactory.create_store()
     if hasattr(store, "store_dynamic"):
         await store.store_dynamic(local_item)  # type: ignore[attr-defined]
@@ -84,6 +104,12 @@ async def update_wx_article_comment(comment_item: dict) -> None:
     now_ts = utils.get_current_timestamp()
     local_item.setdefault("add_ts", now_ts)
     local_item["last_modify_ts"] = now_ts
+    utils.logger.info(
+        "[store.wechat.update_wx_article_comment] content_id:%s sn:%s article_id:%s",
+        str(local_item.get("content_id") or ""),
+        str(local_item.get("sn") or ""),
+        str(local_item.get("article_id") or ""),
+    )
     await WxStoreFactory.create_store().store_comment(local_item)
 
 

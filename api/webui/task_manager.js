@@ -438,15 +438,18 @@
         const busyOther = busy && Number(task.platform_running_task_id) !== Number(task.id);
         const disabledRun = runDisabled(task);
         const platformCls = "tm-platform-tag" + (busy ? " busy" : "");
-        const runBtnText = busyOther ? "平台占用" : task.resume_available ? "续爬执行" : "立即执行";
+        const isWx = String(task.platform || "").toLowerCase() === "wx";
+        const runBtnText = busyOther ? "平台占用" : (!isWx && task.resume_available ? "续爬执行" : "立即执行");
         const stopDisabled = String(task.status) !== "running";
         const pauseAction = task.is_enabled ? "pause" : "resume";
         const pauseText = task.is_enabled ? "暂停" : "恢复";
         const cronText = task.manual_only ? "手动任务" : (task.cron_expr || "-");
         const nextRunText = task.manual_only ? "-" : (task.next_run_at_text || "-");
-        const resumeText = task.resume_available
-          ? "可续爬 · " + String(task.resume_summary || "")
-          : "无断点";
+        const resumeText = isWx
+          ? "实时监听（不续爬）"
+          : (task.resume_available
+            ? "可续爬 · " + String(task.resume_summary || "")
+            : "无断点");
         return [
           "<tr>",
           '  <td><div class="tm-name">' + escapeHtml(task.name) + '</div><div class="tm-small">' + escapeHtml(task.description || "-") + "</div></td>",

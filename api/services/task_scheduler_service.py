@@ -60,10 +60,10 @@ class TaskSchedulerService:
     _SKIP_PAGE_RE = re.compile(r"Skip page[:\s]+(\d+)|Skip[:\s]+(\d+)", re.IGNORECASE)
     _ID_CANDIDATE_PATTERNS = (
         re.compile(
-            r"\b(?:note_id|aweme_id|video_id|content_id|creator_id|user_id|sec_user_id|bvid|aid|article_id|answer_id)\s*[:=]\s*['\"]?([A-Za-z0-9_\-]+)",
+            r"\b(?:note_id|aweme_id|video_id|content_id|creator_id|user_id|sec_user_id|bvid|aid|article_id|answer_id|biz|__biz|sn)\s*[:=]\s*['\"]?([A-Za-z0-9_\-=+/]+)",
             re.IGNORECASE,
         ),
-        re.compile(r"['\"](?:note_id|aweme_id|video_id|content_id|user_id|id)['\"]\s*:\s*['\"]([^'\"]+)['\"]", re.IGNORECASE),
+        re.compile(r"['\"](?:note_id|aweme_id|video_id|content_id|user_id|id|biz|__biz|sn)['\"]\s*:\s*['\"]([^'\"]+)['\"]", re.IGNORECASE),
     )
 
     def __init__(self) -> None:
@@ -135,6 +135,10 @@ class TaskSchedulerService:
             return payload if isinstance(payload, dict) else {}
         except Exception:
             return {}
+
+    @staticmethod
+    def _is_resume_supported(platform: str) -> bool:
+        return str(platform or "").lower() != "wx"
 
     @classmethod
     def _id_token_match(cls, target: str, candidate: str) -> bool:
@@ -701,7 +705,7 @@ class TaskSchedulerService:
                     raise TaskSchedulerError("Manual-only task cannot be triggered by cron", status_code=400)
 
                 command_overrides: Dict[str, Any] = {}
-                if use_resume_checkpoint and trigger_type == "manual":
+                if use_resume_checkpoint and trigger_type == "manual" and self._is_resume_supported(task.platform):
                     checkpoint = await self._get_checkpoint(session, task.id)
                     checkpoint_payload = self._safe_json_loads(checkpoint.resume_payload if checkpoint else "")
                     if checkpoint and checkpoint_payload:
@@ -806,9 +810,13 @@ class TaskSchedulerService:
                 if task:
                     task.running_pid = 0
                     task.last_modify_ts = now_ts
+                    resume_supported = self._is_resume_supported(task.platform)
                     if was_stopped:
                         task.status = "paused" if not bool(task.is_enabled) else "idle"
-                        await self._save_checkpoint(session, task, checkpoint_payload, now_ts)
+                        if resume_supported:
+                            await self._save_checkpoint(session, task, checkpoint_payload, now_ts)
+                        else:
+                            await self._delete_checkpoint(session, task.id)
                     elif data_hits > 0:
                         task.status = "idle"
                         task.success_count = int(task.success_count or 0) + 1
@@ -818,7 +826,10 @@ class TaskSchedulerService:
                         task.status = "error"
                         task.fail_count = int(task.fail_count or 0) + 1
                         task.last_error = f"no_data_crawled (exit_code={int(exit_code or 0)})"
-                        await self._save_checkpoint(session, task, checkpoint_payload, now_ts)
+                        if resume_supported:
+                            await self._save_checkpoint(session, task, checkpoint_payload, now_ts)
+                        else:
+                            await self._delete_checkpoint(session, task.id)
 
                 await session.commit()
 
@@ -839,7 +850,7 @@ class TaskSchedulerService:
                 task["platform_busy"] = bool(platform_status.get("busy", False))
                 task["platform_running_task_id"] = int(platform_status.get("running_task_id", 0))
                 checkpoint = checkpoint_rows.get(int(task["id"]))
-                if checkpoint:
+                if checkpoint and self._is_resume_supported(task["platform"]):
                     payload = self._safe_json_loads(checkpoint.resume_payload or "")
                     task.update(self._checkpoint_fields(checkpoint.crawler_type, payload))
             return {"rows": tasks}
