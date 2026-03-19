@@ -545,6 +545,25 @@ class WxArticleTask(Base):
     last_modify_ts = Column(BigInteger, comment='最后修改时间戳')
 
 
+class GovArticle(Base):
+    __tablename__ = 'gov_article'
+    id = Column(Integer, primary_key=True, comment='主键ID')
+    site_code = Column(String(64), index=True, comment='站点代号')
+    site_name = Column(String(255), comment='站点名称')
+    channel = Column(String(64), index=True, comment='栏目代号')
+    title = Column(Text, comment='标题')
+    url = Column(Text, comment='详情链接')
+    publish_time = Column(String(64), index=True, comment='发布时间原文')
+    source = Column(String(255), comment='来源')
+    content_html = Column(Text, comment='正文HTML')
+    content_text = Column(Text, comment='正文纯文本')
+    attachments_json = Column(Text, default='[]', comment='附件JSON数组')
+    crawl_time = Column(String(64), comment='抓取时间')
+    fingerprint = Column(String(40), unique=True, index=True, comment='去重指纹')
+    add_ts = Column(BigInteger, index=True, comment='添加时间戳')
+    last_modify_ts = Column(BigInteger, comment='最后修改时间戳')
+
+
 class CrawlerTask(Base):
     __tablename__ = 'crawler_task'
     id = Column(Integer, primary_key=True, comment='任务ID')
@@ -557,6 +576,10 @@ class CrawlerTask(Base):
     keywords = Column(Text, default='', comment='搜索关键词')
     specified_ids = Column(Text, default='', comment='详情ID列表')
     creator_ids = Column(Text, default='', comment='创作者ID列表')
+    gov_site = Column(String(64), default='', comment='gov站点代号')
+    gov_channel = Column(String(64), default='', comment='gov栏目代号')
+    gov_max_pages = Column(Integer, default=1, comment='gov列表最大页数')
+    gov_rule_path = Column(Text, default='', comment='gov规则目录或文件路径')
     cookies = Column(Text, default='', comment='Cookies')
     start_page = Column(Integer, default=1, comment='起始页')
     enable_comments = Column(Boolean, default=True, comment='是否抓取评论')

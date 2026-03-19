@@ -31,6 +31,7 @@ class PlatformEnum(str, Enum):
     TIEBA = "tieba"
     ZHIHU = "zhihu"
     WECHAT = "wx"
+    GOV = "gov"
 
 
 class LoginTypeEnum(str, Enum):
@@ -73,6 +74,10 @@ class CrawlerStartRequest(BaseModel):
     save_option: SaveDataOptionEnum = SaveDataOptionEnum.JSONL
     cookies: str = ""
     headless: bool = False
+    gov_site: str = ""
+    gov_channel: str = ""
+    gov_max_pages: int = 1
+    gov_rule_path: str = ""
 
 
 class CrawlerStatusResponse(BaseModel):

@@ -34,3 +34,6 @@ WX_ZOMBIE_ACCOUNT_DAYS = 90
 
 # enable auto html injection for next-page redirect
 WX_ENABLE_AUTO_NAV = True
+
+# verbose runtime logs for mitm parsing pipeline
+WX_VERBOSE_LOG = True

@@ -47,6 +47,7 @@ class PlatformEnum(str, Enum):
     TIEBA = "tieba"
     ZHIHU = "zhihu"
     WECHAT = "wx"
+    GOV = "gov"
 
 
 class LoginTypeEnum(str, Enum):
@@ -147,7 +148,7 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
             PlatformEnum,
             typer.Option(
                 "--platform",
-                help="Media platform selection (xhs=XiaoHongShu | dy=Douyin | ks=Kuaishou | bili=Bilibili | wb=Weibo | tieba=Baidu Tieba | zhihu=Zhihu | wx=WeChat OA)",
+                help="Media platform selection (xhs=XiaoHongShu | dy=Douyin | ks=Kuaishou | bili=Bilibili | wb=Weibo | tieba=Baidu Tieba | zhihu=Zhihu | wx=WeChat OA | gov=Government Sites)",
                 rich_help_panel="Basic Configuration",
             ),
         ] = _coerce_enum(PlatformEnum, config.PLATFORM, PlatformEnum.XHS),
@@ -192,6 +193,38 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
                 rich_help_panel="Basic Configuration",
             ),
         ] = config.KEYWORDS,
+        gov_site: Annotated[
+            str,
+            typer.Option(
+                "--gov_site",
+                help="Government site code, maps to media_platform/gov/rules/<site>.*",
+                rich_help_panel="Basic Configuration",
+            ),
+        ] = config.GOV_SITE,
+        gov_channel: Annotated[
+            str,
+            typer.Option(
+                "--gov_channel",
+                help="Government channel name, must exist in selected site rule",
+                rich_help_panel="Basic Configuration",
+            ),
+        ] = config.GOV_CHANNEL,
+        gov_max_pages: Annotated[
+            int,
+            typer.Option(
+                "--gov_max_pages",
+                help="Max list pages to crawl in gov search mode",
+                rich_help_panel="Basic Configuration",
+            ),
+        ] = config.GOV_MAX_PAGES,
+        gov_rule_path: Annotated[
+            str,
+            typer.Option(
+                "--gov_rule_path",
+                help="Optional custom gov rule path (file or directory)",
+                rich_help_panel="Basic Configuration",
+            ),
+        ] = config.GOV_RULE_PATH,
         get_comment: Annotated[
             str,
             typer.Option(
@@ -331,6 +364,10 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
         config.START_PAGE = start
         config.RESUME_MODE = enable_resume_mode
         config.KEYWORDS = keywords
+        config.GOV_SITE = gov_site.strip() or config.GOV_SITE
+        config.GOV_CHANNEL = gov_channel.strip() or config.GOV_CHANNEL
+        config.GOV_MAX_PAGES = max(1, int(gov_max_pages))
+        config.GOV_RULE_PATH = gov_rule_path.strip()
         config.ENABLE_GET_COMMENTS = enable_comment
         config.ENABLE_GET_SUB_COMMENTS = enable_sub_comment
         config.HEADLESS = enable_headless
@@ -358,6 +395,8 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
                 config.KS_SPECIFIED_ID_LIST = specified_id_list
             elif platform == PlatformEnum.WECHAT:
                 config.WX_SPECIFIED_ID_LIST = specified_id_list
+            elif platform == PlatformEnum.GOV:
+                config.GOV_SPECIFIED_URL_LIST = specified_id_list
 
         if creator_id_list:
             if platform == PlatformEnum.XHS:
@@ -380,6 +419,10 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
             start=config.START_PAGE,
             resume_mode=config.RESUME_MODE,
             keywords=config.KEYWORDS,
+            gov_site=config.GOV_SITE,
+            gov_channel=config.GOV_CHANNEL,
+            gov_max_pages=config.GOV_MAX_PAGES,
+            gov_rule_path=config.GOV_RULE_PATH,
             get_comment=config.ENABLE_GET_COMMENTS,
             get_sub_comment=config.ENABLE_GET_SUB_COMMENTS,
             headless=config.HEADLESS,

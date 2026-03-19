@@ -1,0 +1,45 @@
+{
+  "site": {
+    "code": "szfb",
+    "name": "深圳市财政局",
+    "base_url": "https://szfb.sz.gov.cn"
+  },
+  "channels": {
+    "tzgg": {
+      "start_urls": [
+        "https://szfb.sz.gov.cn/xwzx/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://szfb.sz.gov.cn/xwzx/tzgg/index_{page}.html",
+        "start_page": 2
+      }
+    }
+  },
+  "extract": {
+    "list": {
+      "item_xpath": "//div[contains(@class,'mainContent')]/ul/li",
+      "title_xpath": "./a/text()",
+      "link_xpath": "./a/@href",
+      "date_xpath": "./a/i[contains(@class,'time')]/text()"
+    },
+    "detail": {
+      "title_xpath": [
+        "//meta[@name='ArticleTitle']/@content",
+        "//div[contains(@class,'detailContent')]//h2[contains(@class,'tBox')]/text()"
+      ],
+      "source_xpath": [
+        "//meta[@name='ContentSource']/@content",
+        "//div[contains(@class,'infoBox')]//div[contains(@class,'sourceBox')]/em/text()"
+      ],
+      "pub_time_xpath": [
+        "//meta[@name='PubDate']/@content",
+        "//div[contains(@class,'infoBox')]//div[contains(@class,'publishTime')]/em/text()"
+      ],
+      "content_xpath": "//div[contains(@class,'detailContent')]//div[contains(@class,'detailBox')]",
+      "attachments_xpath": [
+        "//p[@id='appendix']//a/@href",
+        "//div[contains(@class,'detailBox')]//a/@href"
+      ]
+    }
+  }
+}

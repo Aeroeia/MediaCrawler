@@ -40,6 +40,7 @@ from sqlalchemy.pool import NullPool
 from api.schemas import PlatformEnum, TaskUpsertRequest
 from config.db_config import mysql_db_config
 from database.models import Base, CrawlerTask, CrawlerTaskCheckpoint, CrawlerTaskRun
+from media_platform.gov.site_registry import GovSiteRegistry
 
 
 logger = logging.getLogger(__name__)
@@ -139,6 +140,111 @@ class TaskSchedulerService:
     @staticmethod
     def _is_resume_supported(platform: str) -> bool:
         return str(platform or "").lower() != "wx"
+
+    def _normalize_task_upsert_payload(self, payload: TaskUpsertRequest) -> Dict[str, Any]:
+        platform = payload.platform.value
+        is_wx = platform == "wx"
+        is_gov = platform == "gov"
+        normalized = {
+            "name": payload.name.strip(),
+            "description": payload.description.strip(),
+            "platform": platform,
+            "crawler_type": payload.crawler_type.value,
+            "login_type": payload.login_type.value,
+            "save_option": payload.save_option.value,
+            "keywords": payload.keywords.strip(),
+            "specified_ids": payload.specified_ids.strip(),
+            "creator_ids": payload.creator_ids.strip(),
+            "gov_site": payload.gov_site.strip(),
+            "gov_channel": payload.gov_channel.strip(),
+            "gov_max_pages": max(1, int(payload.gov_max_pages or 1)),
+            "gov_rule_path": payload.gov_rule_path.strip(),
+            "cookies": payload.cookies.strip(),
+            "start_page": int(payload.start_page),
+            "enable_comments": bool(payload.enable_comments),
+            "enable_sub_comments": bool(payload.enable_sub_comments),
+            "headless": bool(payload.headless),
+            "priority": payload.priority,
+            "timeout_seconds": int(payload.timeout_seconds),
+            "is_enabled": bool(payload.is_enabled),
+            "manual_only": bool(payload.manual_only) or is_wx,
+            "cron_expr": payload.cron_expr.strip(),
+        }
+
+        if is_wx:
+            normalized.update(
+                {
+                    "description": "",
+                    "crawler_type": "detail",
+                    "keywords": "",
+                    "creator_ids": "",
+                    "gov_site": "",
+                    "gov_channel": "",
+                    "gov_max_pages": 1,
+                    "gov_rule_path": "",
+                    "login_type": "qrcode",
+                    "cookies": "",
+                    "start_page": 1,
+                    "enable_comments": True,
+                    "enable_sub_comments": False,
+                    "headless": False,
+                    "priority": "medium",
+                    "timeout_seconds": 30,
+                    "manual_only": True,
+                    "cron_expr": "",
+                }
+            )
+        elif is_gov:
+            if normalized["crawler_type"] == "creator":
+                raise TaskSchedulerError("gov platform does not support creator mode", status_code=400)
+            if normalized["crawler_type"] not in ("search", "detail"):
+                raise TaskSchedulerError(
+                    f"Unsupported gov crawler_type: {normalized['crawler_type']}",
+                    status_code=400,
+                )
+            if not normalized["gov_site"]:
+                raise TaskSchedulerError("gov_site is required for gov platform tasks", status_code=400)
+
+            try:
+                site_info = GovSiteRegistry.get_site(site_code=normalized["gov_site"])
+            except Exception:
+                if normalized["gov_rule_path"]:
+                    site_info = {"default_channel": "main"}
+                else:
+                    raise TaskSchedulerError(
+                        f"gov_site '{normalized['gov_site']}' is not in gov manifest",
+                        status_code=400,
+                    )
+            if not normalized["gov_channel"]:
+                normalized["gov_channel"] = str(site_info.get("default_channel") or "main")
+
+            normalized.update(
+                {
+                    "keywords": "",
+                    "creator_ids": "",
+                    "login_type": "qrcode",
+                    "cookies": "",
+                    "start_page": 1,
+                    "enable_comments": False,
+                    "enable_sub_comments": False,
+                    "headless": True,
+                }
+            )
+        else:
+            normalized.update(
+                {
+                    "gov_site": "",
+                    "gov_channel": "",
+                    "gov_max_pages": 1,
+                    "gov_rule_path": "",
+                }
+            )
+
+        if normalized["manual_only"]:
+            normalized["cron_expr"] = ""
+        else:
+            self._validate_cron_expr(str(normalized["cron_expr"]))
+        return normalized
 
     @classmethod
     def _id_token_match(cls, target: str, candidate: str) -> bool:
@@ -245,7 +351,8 @@ class TaskSchedulerService:
     def _build_command(self, task: CrawlerTask, override_params: Optional[Dict[str, Any]] = None) -> tuple[List[str], Dict[str, Any]]:
         override_params = override_params or {}
         cmd = ["uv", "run", "python", "main.py"]
-        cmd.extend(["--platform", str(task.platform)])
+        platform = str(task.platform or "")
+        cmd.extend(["--platform", platform])
         cmd.extend(["--lt", str(task.login_type or "qrcode")])
         cmd.extend(["--type", str(task.crawler_type or "search")])
         cmd.extend(["--save_data_option", str(task.save_option or "jsonl")])
@@ -266,6 +373,19 @@ class TaskSchedulerService:
         if start_page != 1:
             cmd.extend(["--start", str(start_page)])
 
+        gov_site = str(getattr(task, "gov_site", "") or "")
+        gov_channel = str(getattr(task, "gov_channel", "") or "")
+        gov_max_pages = max(1, int(getattr(task, "gov_max_pages", 1) or 1))
+        gov_rule_path = str(getattr(task, "gov_rule_path", "") or "")
+        if platform == "gov":
+            if gov_site:
+                cmd.extend(["--gov_site", gov_site])
+            if gov_channel:
+                cmd.extend(["--gov_channel", gov_channel])
+            cmd.extend(["--gov_max_pages", str(gov_max_pages)])
+            if gov_rule_path:
+                cmd.extend(["--gov_rule_path", gov_rule_path])
+
         cmd.extend(["--get_comment", "true" if bool(task.enable_comments) else "false"])
         cmd.extend(["--get_sub_comment", "true" if bool(task.enable_sub_comments) else "false"])
         if task.cookies:
@@ -280,6 +400,10 @@ class TaskSchedulerService:
             "specified_ids": specified_ids,
             "creator_ids": creator_ids,
             "start_page": start_page,
+            "gov_site": gov_site,
+            "gov_channel": gov_channel,
+            "gov_max_pages": gov_max_pages,
+            "gov_rule_path": gov_rule_path,
             "resume_mode": bool(override_params.get("resume_mode", False)),
         }
 
@@ -438,6 +562,10 @@ class TaskSchedulerService:
                 "keywords": task.keywords or "",
                 "specified_ids": task.specified_ids or "",
                 "creator_ids": task.creator_ids or "",
+                "gov_site": task.gov_site or "",
+                "gov_channel": task.gov_channel or "",
+                "gov_max_pages": int(task.gov_max_pages or 1),
+                "gov_rule_path": task.gov_rule_path or "",
                 "cookies": task.cookies or "",
                 "start_page": int(task.start_page or 1),
                 "enable_comments": bool(task.enable_comments),
@@ -451,6 +579,21 @@ class TaskSchedulerService:
         }
 
     async def ensure_tables(self) -> None:
+        async def _has_column(conn: AsyncConnection, table: str, column: str) -> bool:
+            result = await conn.execute(
+                text(
+                    """
+                    SELECT COUNT(1)
+                    FROM information_schema.COLUMNS
+                    WHERE TABLE_SCHEMA = DATABASE()
+                      AND TABLE_NAME = :table_name
+                      AND COLUMN_NAME = :column_name
+                    """
+                ),
+                {"table_name": table, "column_name": column},
+            )
+            return int(result.scalar() or 0) > 0
+
         async with self.engine.begin() as conn:
             await conn.run_sync(
                 lambda sync_conn: Base.metadata.create_all(
@@ -459,19 +602,7 @@ class TaskSchedulerService:
                 )
             )
             # schema compatibility for existing deployments without migration tool
-            exists_result = await conn.execute(
-                text(
-                    """
-                    SELECT COUNT(1)
-                    FROM information_schema.COLUMNS
-                    WHERE TABLE_SCHEMA = DATABASE()
-                      AND TABLE_NAME = 'crawler_task'
-                      AND COLUMN_NAME = 'manual_only'
-                    """
-                )
-            )
-            has_manual_only = int(exists_result.scalar() or 0) > 0
-            if not has_manual_only:
+            if not await _has_column(conn, "crawler_task", "manual_only"):
                 await conn.execute(
                     text(
                         "ALTER TABLE crawler_task "
@@ -479,6 +610,42 @@ class TaskSchedulerService:
                     )
                 )
                 logger.info("[task_scheduler] added missing column crawler_task.manual_only")
+
+            if not await _has_column(conn, "crawler_task", "gov_site"):
+                await conn.execute(
+                    text(
+                        "ALTER TABLE crawler_task "
+                        "ADD COLUMN gov_site VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'gov站点代号'"
+                    )
+                )
+                logger.info("[task_scheduler] added missing column crawler_task.gov_site")
+
+            if not await _has_column(conn, "crawler_task", "gov_channel"):
+                await conn.execute(
+                    text(
+                        "ALTER TABLE crawler_task "
+                        "ADD COLUMN gov_channel VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'gov栏目代号'"
+                    )
+                )
+                logger.info("[task_scheduler] added missing column crawler_task.gov_channel")
+
+            if not await _has_column(conn, "crawler_task", "gov_max_pages"):
+                await conn.execute(
+                    text(
+                        "ALTER TABLE crawler_task "
+                        "ADD COLUMN gov_max_pages INT NOT NULL DEFAULT 1 COMMENT 'gov列表最大页数'"
+                    )
+                )
+                logger.info("[task_scheduler] added missing column crawler_task.gov_max_pages")
+
+            if not await _has_column(conn, "crawler_task", "gov_rule_path"):
+                await conn.execute(
+                    text(
+                        "ALTER TABLE crawler_task "
+                        "ADD COLUMN gov_rule_path TEXT NULL COMMENT 'gov规则目录或文件路径'"
+                    )
+                )
+                logger.info("[task_scheduler] added missing column crawler_task.gov_rule_path")
 
     async def _reset_stale_running_tasks(self) -> None:
         now_ts = self._now_ts()
@@ -858,33 +1025,38 @@ class TaskSchedulerService:
             raise TaskSchedulerError(f"MySQL query failed: {exc}", status_code=503) from exc
 
     async def create_task(self, payload: TaskUpsertRequest) -> Dict[str, Any]:
-        manual_only = bool(payload.manual_only) or payload.platform.value == "wx"
-        cron_expr = "" if manual_only else payload.cron_expr.strip()
-        if not manual_only:
-            self._validate_cron_expr(cron_expr)
+        normalized = self._normalize_task_upsert_payload(payload)
         now_ts = self._now_ts()
-        next_run_at = self._next_run_ts(cron_expr, now_ts) if (payload.is_enabled and (not manual_only)) else 0
+        next_run_at = (
+            self._next_run_ts(str(normalized["cron_expr"]), now_ts)
+            if (bool(normalized["is_enabled"]) and (not bool(normalized["manual_only"])))
+            else 0
+        )
         task = CrawlerTask(
-            name=payload.name.strip(),
-            description=payload.description.strip(),
-            platform=payload.platform.value,
-            crawler_type=payload.crawler_type.value,
-            login_type=payload.login_type.value,
-            save_option=payload.save_option.value,
-            keywords=payload.keywords.strip(),
-            specified_ids=payload.specified_ids.strip(),
-            creator_ids=payload.creator_ids.strip(),
-            cookies=payload.cookies.strip(),
-            start_page=int(payload.start_page),
-            enable_comments=bool(payload.enable_comments),
-            enable_sub_comments=bool(payload.enable_sub_comments),
-            headless=bool(payload.headless),
-            priority=payload.priority,
-            timeout_seconds=int(payload.timeout_seconds),
-            cron_expr=cron_expr,
-            manual_only=manual_only,
-            is_enabled=bool(payload.is_enabled),
-            status="idle" if payload.is_enabled else "paused",
+            name=str(normalized["name"]),
+            description=str(normalized["description"]),
+            platform=str(normalized["platform"]),
+            crawler_type=str(normalized["crawler_type"]),
+            login_type=str(normalized["login_type"]),
+            save_option=str(normalized["save_option"]),
+            keywords=str(normalized["keywords"]),
+            specified_ids=str(normalized["specified_ids"]),
+            creator_ids=str(normalized["creator_ids"]),
+            gov_site=str(normalized["gov_site"]),
+            gov_channel=str(normalized["gov_channel"]),
+            gov_max_pages=int(normalized["gov_max_pages"]),
+            gov_rule_path=str(normalized["gov_rule_path"]),
+            cookies=str(normalized["cookies"]),
+            start_page=int(normalized["start_page"]),
+            enable_comments=bool(normalized["enable_comments"]),
+            enable_sub_comments=bool(normalized["enable_sub_comments"]),
+            headless=bool(normalized["headless"]),
+            priority=str(normalized["priority"]),
+            timeout_seconds=int(normalized["timeout_seconds"]),
+            cron_expr=str(normalized["cron_expr"]),
+            manual_only=bool(normalized["manual_only"]),
+            is_enabled=bool(normalized["is_enabled"]),
+            status="idle" if bool(normalized["is_enabled"]) else "paused",
             next_run_at=next_run_at,
             last_run_at=0,
             success_count=0,
@@ -904,10 +1076,7 @@ class TaskSchedulerService:
             raise TaskSchedulerError(f"MySQL query failed: {exc}", status_code=503) from exc
 
     async def update_task(self, task_id: int, payload: TaskUpsertRequest) -> Dict[str, Any]:
-        manual_only = bool(payload.manual_only) or payload.platform.value == "wx"
-        cron_expr = "" if manual_only else payload.cron_expr.strip()
-        if not manual_only:
-            self._validate_cron_expr(cron_expr)
+        normalized = self._normalize_task_upsert_payload(payload)
         now_ts = self._now_ts()
         try:
             async with self._lock:
@@ -918,27 +1087,35 @@ class TaskSchedulerService:
                     if not task:
                         raise TaskSchedulerError("Task not found", status_code=404)
 
-                    task.name = payload.name.strip()
-                    task.description = payload.description.strip()
-                    task.platform = payload.platform.value
-                    task.crawler_type = payload.crawler_type.value
-                    task.login_type = payload.login_type.value
-                    task.save_option = payload.save_option.value
-                    task.keywords = payload.keywords.strip()
-                    task.specified_ids = payload.specified_ids.strip()
-                    task.creator_ids = payload.creator_ids.strip()
-                    task.cookies = payload.cookies.strip()
-                    task.start_page = int(payload.start_page)
-                    task.enable_comments = bool(payload.enable_comments)
-                    task.enable_sub_comments = bool(payload.enable_sub_comments)
-                    task.headless = bool(payload.headless)
-                    task.priority = payload.priority
-                    task.timeout_seconds = int(payload.timeout_seconds)
-                    task.cron_expr = cron_expr
-                    task.manual_only = manual_only
-                    task.is_enabled = bool(payload.is_enabled)
-                    task.status = "idle" if payload.is_enabled else "paused"
-                    task.next_run_at = self._next_run_ts(task.cron_expr, now_ts) if (payload.is_enabled and (not manual_only)) else 0
+                    task.name = str(normalized["name"])
+                    task.description = str(normalized["description"])
+                    task.platform = str(normalized["platform"])
+                    task.crawler_type = str(normalized["crawler_type"])
+                    task.login_type = str(normalized["login_type"])
+                    task.save_option = str(normalized["save_option"])
+                    task.keywords = str(normalized["keywords"])
+                    task.specified_ids = str(normalized["specified_ids"])
+                    task.creator_ids = str(normalized["creator_ids"])
+                    task.gov_site = str(normalized["gov_site"])
+                    task.gov_channel = str(normalized["gov_channel"])
+                    task.gov_max_pages = int(normalized["gov_max_pages"])
+                    task.gov_rule_path = str(normalized["gov_rule_path"])
+                    task.cookies = str(normalized["cookies"])
+                    task.start_page = int(normalized["start_page"])
+                    task.enable_comments = bool(normalized["enable_comments"])
+                    task.enable_sub_comments = bool(normalized["enable_sub_comments"])
+                    task.headless = bool(normalized["headless"])
+                    task.priority = str(normalized["priority"])
+                    task.timeout_seconds = int(normalized["timeout_seconds"])
+                    task.cron_expr = str(normalized["cron_expr"])
+                    task.manual_only = bool(normalized["manual_only"])
+                    task.is_enabled = bool(normalized["is_enabled"])
+                    task.status = "idle" if bool(normalized["is_enabled"]) else "paused"
+                    task.next_run_at = (
+                        self._next_run_ts(task.cron_expr, now_ts)
+                        if (bool(normalized["is_enabled"]) and (not bool(normalized["manual_only"])))
+                        else 0
+                    )
                     task.last_modify_ts = now_ts
                     await self._delete_checkpoint(session, task_id)
                     await session.commit()

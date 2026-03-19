@@ -11,6 +11,7 @@ from collections import deque
 
 import pytest
 
+from api.schemas.task import TaskUpsertRequest
 from api.services.task_scheduler_service import TaskSchedulerService
 from database.models import CrawlerTask, CrawlerTaskRun
 
@@ -123,6 +124,71 @@ def test_data_hit_line_with_wechat_store_log():
     assert service._is_data_hit_line("[store.wechat.update_wx_article] article_id:wx_1")
     assert service._is_data_hit_line("[store.wechat.update_wx_account] biz:MzA==")
     assert not service._is_data_hit_line("[WechatCrawler.start] starting mitm proxy")
+
+
+def test_normalize_task_upsert_payload_for_wx_forces_defaults():
+    service = TaskSchedulerService()
+    payload = TaskUpsertRequest(
+        name=" wx-task ",
+        description="should-be-cleared",
+        platform="wx",
+        crawler_type="search",
+        login_type="cookie",
+        save_option="db",
+        keywords="kw1,kw2",
+        specified_ids="https://mp.weixin.qq.com/s?sn=xx",
+        creator_ids="bizA,bizB",
+        cookies="bad-cookie",
+        start_page=99,
+        enable_comments=False,
+        enable_sub_comments=True,
+        headless=True,
+        priority="high",
+        timeout_seconds=300,
+        cron_expr="*/5 * * * *",
+        manual_only=False,
+        is_enabled=True,
+    )
+    normalized = service._normalize_task_upsert_payload(payload)
+    assert normalized["platform"] == "wx"
+    assert normalized["manual_only"] is True
+    assert normalized["cron_expr"] == ""
+    assert normalized["crawler_type"] == "detail"
+    assert normalized["keywords"] == ""
+    assert normalized["creator_ids"] == ""
+    assert normalized["specified_ids"] == "https://mp.weixin.qq.com/s?sn=xx"
+    assert normalized["login_type"] == "qrcode"
+    assert normalized["cookies"] == ""
+    assert normalized["start_page"] == 1
+    assert normalized["headless"] is False
+    assert normalized["enable_comments"] is True
+    assert normalized["enable_sub_comments"] is False
+    assert normalized["priority"] == "medium"
+    assert normalized["timeout_seconds"] == 30
+
+
+def test_normalize_task_upsert_payload_for_non_wx_preserves_values():
+    service = TaskSchedulerService()
+    payload = TaskUpsertRequest(
+        name="xhs-task",
+        description="desc",
+        platform="xhs",
+        crawler_type="search",
+        login_type="qrcode",
+        save_option="jsonl",
+        keywords="a,b",
+        cron_expr="*/10 * * * *",
+        manual_only=False,
+        is_enabled=True,
+        priority="high",
+        timeout_seconds=45,
+    )
+    normalized = service._normalize_task_upsert_payload(payload)
+    assert normalized["platform"] == "xhs"
+    assert normalized["manual_only"] is False
+    assert normalized["cron_expr"] == "*/10 * * * *"
+    assert normalized["priority"] == "high"
+    assert normalized["timeout_seconds"] == 45
 
 
 @pytest.mark.asyncio

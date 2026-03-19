@@ -16,6 +16,8 @@
   const state = {
     tasks: [],
     platforms: [],
+    govSites: [],
+    govChannels: [],
     options: {
       login_types: [],
       crawler_types: [],
@@ -160,6 +162,10 @@
       '      <div class="tm-field full" id="tm-field-keywords"><label>关键词（search）</label><textarea class="tm-textarea" name="keywords" placeholder="多个关键词可逗号分隔"></textarea></div>',
       '      <div class="tm-field full" id="tm-field-specified"><label>详情ID（detail）</label><textarea class="tm-textarea" name="specified_ids" placeholder="多个 ID 逗号分隔"></textarea></div>',
       '      <div class="tm-field full" id="tm-field-creator"><label>创作者ID（creator）</label><textarea class="tm-textarea" name="creator_ids" placeholder="多个 ID 逗号分隔"></textarea></div>',
+      '      <div class="tm-field" id="tm-field-gov-site"><label>Gov 站点</label><select class="tm-select" name="gov_site"></select></div>',
+      '      <div class="tm-field" id="tm-field-gov-channel"><label>Gov 栏目</label><select class="tm-select" name="gov_channel"></select></div>',
+      '      <div class="tm-field" id="tm-field-gov-pages"><label>Gov 最大页数</label><input class="tm-input" name="gov_max_pages" type="number" min="1" value="1"></div>',
+      '      <div class="tm-field full" id="tm-field-gov-rule"><label>Gov 规则路径（可选）</label><input class="tm-input" name="gov_rule_path" placeholder="media_platform/gov/rules"></div>',
       '      <div class="tm-field full"><label>Cookies（可选）</label><textarea class="tm-textarea" name="cookies"></textarea></div>',
       '      <input type="hidden" name="manual_only" value="false">',
       '      <div class="tm-field full">',
@@ -233,6 +239,8 @@
     els.consoleMeta = document.getElementById("tm-console-meta");
     els.consoleOutput = document.getElementById("tm-console-output");
     els.toastWrap = document.getElementById("tm-toast-wrap");
+    els.govSiteHint = document.getElementById("tm-field-gov-site");
+    els.govChannelHint = document.getElementById("tm-field-gov-channel");
   }
 
   function setSelectOptions(selectName, rows) {
@@ -249,10 +257,66 @@
       .join("");
   }
 
+  function setGovSiteOptions(rows) {
+    const node = els.taskForm ? els.taskForm.elements.namedItem("gov_site") : null;
+    if (!node) {
+      return;
+    }
+    node.innerHTML = (rows || [])
+      .map(function (item) {
+        const value = escapeHtml(item.value);
+        const status = String(item.status || "pending_dynamic");
+        const suffix = status === "ready" ? "" : " (" + status + ")";
+        const label = escapeHtml((item.label || item.value) + suffix);
+        return '<option value="' + value + '">' + label + "</option>";
+      })
+      .join("");
+  }
+
+  function setGovChannelOptions(rows) {
+    const node = els.taskForm ? els.taskForm.elements.namedItem("gov_channel") : null;
+    if (!node) {
+      return;
+    }
+    node.innerHTML = (rows || [])
+      .map(function (item) {
+        const value = escapeHtml(item.value);
+        const label = escapeHtml(item.label || item.value);
+        return '<option value="' + value + '">' + label + "</option>";
+      })
+      .join("");
+  }
+
+  async function loadGovChannels(siteCode, preferred) {
+    const code = String(siteCode || "").trim();
+    if (!code) {
+      state.govChannels = [];
+      setGovChannelOptions([]);
+      return;
+    }
+    try {
+      const data = await fetchJson("/api/config/gov/channels?site=" + encodeURIComponent(code));
+      state.govChannels = data.channels || [];
+      setGovChannelOptions(state.govChannels);
+      const node = els.taskForm ? els.taskForm.elements.namedItem("gov_channel") : null;
+      if (node) {
+        const target = String(preferred || data.default_channel || "").trim();
+        if (target) {
+          node.value = target;
+        }
+      }
+    } catch (error) {
+      state.govChannels = [];
+      setGovChannelOptions([]);
+      showToast("Gov 栏目加载失败：" + String(error.message || error), "error");
+    }
+  }
+
   async function loadMeta() {
     const results = await Promise.allSettled([
       fetchJson("/api/config/platforms"),
       fetchJson("/api/config/options"),
+      fetchJson("/api/config/gov/sites"),
     ]);
 
     if (results[0].status === "fulfilled") {
@@ -265,8 +329,18 @@
       setSelectOptions("login_type", state.options.login_types || []);
       setSelectOptions("save_option", state.options.save_options || []);
     }
+    if (results[2].status === "fulfilled") {
+      state.govSites = results[2].value.sites || [];
+      setGovSiteOptions(state.govSites);
+      const govSiteNode = els.taskForm ? els.taskForm.elements.namedItem("gov_site") : null;
+      if (govSiteNode && state.govSites.length) {
+        const picked = String(govSiteNode.value || state.govSites[0].value || "").trim();
+        govSiteNode.value = picked || state.govSites[0].value;
+        await loadGovChannels(govSiteNode.value);
+      }
+    }
 
-    if (results[0].status !== "fulfilled" || results[1].status !== "fulfilled") {
+    if (results[0].status !== "fulfilled" || results[1].status !== "fulfilled" || results[2].status !== "fulfilled") {
       showToast("配置项加载失败，任务表单可能不完整", "error");
     }
   }
@@ -575,12 +649,22 @@
     form.elements.namedItem("keywords").value = params.keywords || "";
     form.elements.namedItem("specified_ids").value = params.specified_ids || "";
     form.elements.namedItem("creator_ids").value = params.creator_ids || "";
+    form.elements.namedItem("gov_site").value =
+      params.gov_site ||
+      (state.govSites[0] && state.govSites[0].value) ||
+      "";
+    form.elements.namedItem("gov_channel").value = params.gov_channel || "";
+    form.elements.namedItem("gov_max_pages").value = Number(params.gov_max_pages || 1);
+    form.elements.namedItem("gov_rule_path").value = params.gov_rule_path || "";
     form.elements.namedItem("cookies").value = params.cookies || "";
     form.elements.namedItem("start_page").value = Number(params.start_page || 1);
     form.elements.namedItem("enable_comments").checked = !!params.enable_comments || !isEdit;
     form.elements.namedItem("enable_sub_comments").checked = !!params.enable_sub_comments;
     form.elements.namedItem("headless").checked = !!params.headless;
     form.elements.namedItem("run_now_after_save").checked = false;
+    loadGovChannels(form.elements.namedItem("gov_site").value, params.gov_channel || "").catch(function () {
+      // no-op
+    });
     syncPlatformHint();
     syncCrawlerTypeHint();
 
@@ -615,6 +699,26 @@
     if (!els.taskForm) {
       return;
     }
+    const platform = String(els.taskForm.elements.namedItem("platform").value || "xhs");
+    if (platform === "gov") {
+      const typeGov = String(els.taskForm.elements.namedItem("crawler_type").value || "search");
+      const keyGov = document.getElementById("tm-field-keywords");
+      const detailGov = document.getElementById("tm-field-specified");
+      const creatorGov = document.getElementById("tm-field-creator");
+      if (keyGov) keyGov.style.display = "none";
+      if (detailGov) detailGov.style.display = typeGov === "detail" ? "" : "none";
+      if (creatorGov) creatorGov.style.display = "none";
+      return;
+    }
+    if (platform === "wx") {
+      const keyWx = document.getElementById("tm-field-keywords");
+      const detailWx = document.getElementById("tm-field-specified");
+      const creatorWx = document.getElementById("tm-field-creator");
+      if (keyWx) keyWx.style.display = "none";
+      if (detailWx) detailWx.style.display = "";
+      if (creatorWx) creatorWx.style.display = "none";
+      return;
+    }
     const type = String(els.taskForm.elements.namedItem("crawler_type").value || "search");
     const key = document.getElementById("tm-field-keywords");
     const detail = document.getElementById("tm-field-specified");
@@ -624,25 +728,251 @@
     if (creator) creator.style.display = type === "creator" ? "" : "none";
   }
 
+  function setFieldVisibleByName(name, visible) {
+    if (!els.taskForm) {
+      return;
+    }
+    const node = els.taskForm.elements.namedItem(name);
+    if (!(node instanceof HTMLElement)) {
+      return;
+    }
+    const wrap = node.closest(".tm-field");
+    if (wrap) {
+      wrap.style.display = visible ? "" : "none";
+    }
+    if (!(node instanceof HTMLInputElement && node.type === "hidden")) {
+      node.disabled = !visible;
+    }
+  }
+
+  function setCheckOptionVisible(name, visible) {
+    if (!els.taskForm) {
+      return;
+    }
+    const node = els.taskForm.elements.namedItem(name);
+    if (!(node instanceof HTMLInputElement)) {
+      return;
+    }
+    const label = node.closest("label");
+    if (label) {
+      label.style.display = visible ? "" : "none";
+    }
+    node.disabled = !visible;
+  }
+
+  function setFieldLabelAndPlaceholder(fieldId, labelText, placeholderText) {
+    const field = document.getElementById(fieldId);
+    if (!field) {
+      return;
+    }
+    const label = field.querySelector("label");
+    if (label) {
+      label.textContent = labelText;
+    }
+    const textarea = field.querySelector("textarea");
+    if (textarea instanceof HTMLTextAreaElement) {
+      textarea.placeholder = placeholderText;
+    }
+  }
+
+  function setCrawlerTypeOptionsForPlatform(platform) {
+    const node = els.taskForm ? els.taskForm.elements.namedItem("crawler_type") : null;
+    if (!(node instanceof HTMLSelectElement)) {
+      return;
+    }
+    const allRows = state.options.crawler_types || [];
+    let rows = allRows;
+    if (platform === "gov") {
+      rows = allRows.filter(function (item) {
+        return item.value === "search" || item.value === "detail";
+      });
+    } else if (platform === "wx") {
+      rows = allRows.filter(function (item) {
+        return item.value === "detail";
+      });
+    }
+    const current = String(node.value || "");
+    node.innerHTML = rows
+      .map(function (item) {
+        const value = escapeHtml(item.value);
+        const label = escapeHtml(item.label || item.value);
+        return '<option value="' + value + '">' + label + "</option>";
+      })
+      .join("");
+    if (rows.some(function (item) { return item.value === current; })) {
+      node.value = current;
+    } else if (rows.length) {
+      node.value = rows[0].value;
+    }
+  }
+
   function syncPlatformHint() {
     if (!els.taskForm) {
       return;
     }
     const platform = String(els.taskForm.elements.namedItem("platform").value || "xhs");
+    const isGov = platform === "gov";
+    const isWx = platform === "wx";
+    setCrawlerTypeOptionsForPlatform(platform);
+    const crawlerTypeInput = els.taskForm.elements.namedItem("crawler_type");
     const cronWrap = document.getElementById("tm-field-cron");
     const cronInput = els.taskForm.elements.namedItem("cron_expr");
     const manualInput = els.taskForm.elements.namedItem("manual_only");
-    if (platform === "wx") {
-      if (cronWrap) cronWrap.style.display = "none";
-      if (cronInput) cronInput.value = "";
-      if (manualInput) manualInput.value = "true";
-      return;
+
+    setFieldLabelAndPlaceholder(
+      "tm-field-keywords",
+      "关键词（search）",
+      "多个关键词可逗号分隔"
+    );
+    setFieldLabelAndPlaceholder(
+      "tm-field-specified",
+      isWx ? "监听目标（可选）" : (isGov ? "详情URL（detail）" : "详情ID（detail）"),
+      isWx ? "可留空；如需定向可填文章 URL 或 SN，多个逗号分隔" : (isGov ? "多个详情 URL 逗号分隔" : "多个 ID 逗号分隔")
+    );
+    setFieldLabelAndPlaceholder(
+      "tm-field-creator",
+      "创作者ID（creator）",
+      "多个 ID 逗号分隔"
+    );
+
+    if (crawlerTypeInput instanceof HTMLSelectElement) {
+      if (isWx) {
+        crawlerTypeInput.value = "detail";
+      }
+      crawlerTypeInput.disabled = isWx;
     }
-    if (cronWrap) cronWrap.style.display = "";
-    if (manualInput) manualInput.value = "false";
-    if (cronInput && !String(cronInput.value || "").trim()) {
-      cronInput.value = "*/10 * * * *";
+    setFieldVisibleByName("crawler_type", !isWx);
+
+    if (cronWrap) {
+      cronWrap.style.display = isWx ? "none" : "";
     }
+    if (cronInput instanceof HTMLInputElement) {
+      cronInput.disabled = isWx;
+      if (isWx) {
+        cronInput.value = "";
+      } else if (!String(cronInput.value || "").trim()) {
+        cronInput.value = "*/10 * * * *";
+      }
+    }
+    if (manualInput instanceof HTMLInputElement) {
+      manualInput.value = isWx ? "true" : "false";
+    }
+
+    // wx 仅保留必要字段，其余隐藏并禁用
+    const wxHiddenFields = [
+      "description",
+      "priority",
+      "timeout_seconds",
+      "login_type",
+      "start_page",
+      "cookies",
+      "keywords",
+      "creator_ids",
+    ];
+    wxHiddenFields.forEach(function (name) {
+      setFieldVisibleByName(name, !isWx);
+    });
+    const govHiddenFields = [
+      "login_type",
+      "cookies",
+      "start_page",
+      "keywords",
+      "creator_ids",
+    ];
+    govHiddenFields.forEach(function (name) {
+      setFieldVisibleByName(name, !isGov && !isWx);
+    });
+    setFieldVisibleByName("specified_ids", true);
+    setFieldVisibleByName("gov_site", isGov);
+    setFieldVisibleByName("gov_channel", isGov);
+    setFieldVisibleByName("gov_max_pages", isGov);
+    setFieldVisibleByName("gov_rule_path", isGov);
+
+    setCheckOptionVisible("enable_comments", !isWx && !isGov);
+    setCheckOptionVisible("enable_sub_comments", !isWx && !isGov);
+    setCheckOptionVisible("headless", !isWx && !isGov);
+    setCheckOptionVisible("run_now_after_save", true);
+
+    if (isWx) {
+      const description = els.taskForm.elements.namedItem("description");
+      if (description instanceof HTMLInputElement) {
+        description.value = "";
+      }
+      const priority = els.taskForm.elements.namedItem("priority");
+      if (priority instanceof HTMLSelectElement) {
+        priority.value = "medium";
+      }
+      const timeout = els.taskForm.elements.namedItem("timeout_seconds");
+      if (timeout instanceof HTMLInputElement) {
+        timeout.value = "30";
+      }
+      const loginType = els.taskForm.elements.namedItem("login_type");
+      if (loginType instanceof HTMLSelectElement) {
+        loginType.value = "qrcode";
+      }
+      const cookies = els.taskForm.elements.namedItem("cookies");
+      if (cookies instanceof HTMLTextAreaElement) {
+        cookies.value = "";
+      }
+      const startPage = els.taskForm.elements.namedItem("start_page");
+      if (startPage instanceof HTMLInputElement) {
+        startPage.value = "1";
+      }
+      const enableComments = els.taskForm.elements.namedItem("enable_comments");
+      if (enableComments instanceof HTMLInputElement) {
+        enableComments.checked = true;
+      }
+      const enableSubComments = els.taskForm.elements.namedItem("enable_sub_comments");
+      if (enableSubComments instanceof HTMLInputElement) {
+        enableSubComments.checked = false;
+      }
+      const headless = els.taskForm.elements.namedItem("headless");
+      if (headless instanceof HTMLInputElement) {
+        headless.checked = false;
+      }
+    }
+
+    if (isGov) {
+      const description = els.taskForm.elements.namedItem("description");
+      if (description instanceof HTMLInputElement) {
+        description.value = "";
+      }
+      const loginType = els.taskForm.elements.namedItem("login_type");
+      if (loginType instanceof HTMLSelectElement) {
+        loginType.value = "qrcode";
+      }
+      const cookies = els.taskForm.elements.namedItem("cookies");
+      if (cookies instanceof HTMLTextAreaElement) {
+        cookies.value = "";
+      }
+      const startPage = els.taskForm.elements.namedItem("start_page");
+      if (startPage instanceof HTMLInputElement) {
+        startPage.value = "1";
+      }
+      const enableComments = els.taskForm.elements.namedItem("enable_comments");
+      if (enableComments instanceof HTMLInputElement) {
+        enableComments.checked = false;
+      }
+      const enableSubComments = els.taskForm.elements.namedItem("enable_sub_comments");
+      if (enableSubComments instanceof HTMLInputElement) {
+        enableSubComments.checked = false;
+      }
+      const headless = els.taskForm.elements.namedItem("headless");
+      if (headless instanceof HTMLInputElement) {
+        headless.checked = true;
+      }
+      const siteNode = els.taskForm.elements.namedItem("gov_site");
+      if (siteNode instanceof HTMLSelectElement) {
+        if (!siteNode.value && state.govSites.length) {
+          siteNode.value = state.govSites[0].value;
+        }
+        const currentChannel = String(els.taskForm.elements.namedItem("gov_channel").value || "");
+        loadGovChannels(siteNode.value, currentChannel).catch(function () {
+          // no-op
+        });
+      }
+    }
+    syncCrawlerTypeHint();
   }
 
   function collectPayload() {
@@ -652,6 +982,8 @@
     const form = els.taskForm.elements;
     const name = String(form.namedItem("name").value || "").trim();
     const platform = String(form.namedItem("platform").value || "xhs");
+    const isWx = platform === "wx";
+    const isGov = platform === "gov";
     const manualOnly = platform === "wx" || String(form.namedItem("manual_only").value || "false") === "true";
     const cronExpr = String(form.namedItem("cron_expr").value || "").trim();
     if (!name) {
@@ -661,7 +993,7 @@
       throw new Error("Cron 表达式不能为空");
     }
 
-    return {
+    const payload = {
       name: name,
       description: String(form.namedItem("description").value || "").trim(),
       platform: platform,
@@ -671,6 +1003,10 @@
       keywords: String(form.namedItem("keywords").value || "").trim(),
       specified_ids: String(form.namedItem("specified_ids").value || "").trim(),
       creator_ids: String(form.namedItem("creator_ids").value || "").trim(),
+      gov_site: String(form.namedItem("gov_site").value || "").trim(),
+      gov_channel: String(form.namedItem("gov_channel").value || "").trim(),
+      gov_max_pages: Number(form.namedItem("gov_max_pages").value || 1),
+      gov_rule_path: String(form.namedItem("gov_rule_path").value || "").trim(),
       cookies: String(form.namedItem("cookies").value || "").trim(),
       start_page: Number(form.namedItem("start_page").value || 1),
       enable_comments: !!form.namedItem("enable_comments").checked,
@@ -682,6 +1018,41 @@
       manual_only: manualOnly,
       is_enabled: String(form.namedItem("is_enabled").value || "true") === "true",
     };
+
+    if (isWx) {
+      payload.crawler_type = "detail";
+      payload.keywords = "";
+      payload.creator_ids = "";
+      payload.description = "";
+      payload.login_type = "qrcode";
+      payload.cookies = "";
+      payload.start_page = 1;
+      payload.enable_comments = true;
+      payload.enable_sub_comments = false;
+      payload.headless = false;
+      payload.priority = "medium";
+      payload.timeout_seconds = 30;
+      payload.cron_expr = "";
+      payload.manual_only = true;
+    }
+
+    if (isGov) {
+      if (!payload.gov_site) {
+        throw new Error("Gov 站点不能为空");
+      }
+      payload.crawler_type = payload.crawler_type === "detail" ? "detail" : "search";
+      payload.keywords = "";
+      payload.creator_ids = "";
+      payload.cookies = "";
+      payload.start_page = 1;
+      payload.enable_comments = false;
+      payload.enable_sub_comments = false;
+      payload.login_type = "qrcode";
+      payload.headless = true;
+      payload.gov_max_pages = Math.max(1, Number(payload.gov_max_pages || 1));
+    }
+
+    return payload;
   }
 
   async function submitTask(event) {
@@ -949,6 +1320,12 @@
     els.taskForm.addEventListener("submit", submitTask);
     els.taskForm.elements.namedItem("crawler_type").addEventListener("change", syncCrawlerTypeHint);
     els.taskForm.elements.namedItem("platform").addEventListener("change", syncPlatformHint);
+    els.taskForm.elements.namedItem("gov_site").addEventListener("change", function () {
+      const site = String(els.taskForm.elements.namedItem("gov_site").value || "");
+      loadGovChannels(site).catch(function () {
+        // no-op
+      });
+    });
 
     els.runsClose.addEventListener("click", closeRunsModal);
     els.runsModal.addEventListener("click", function (event) {

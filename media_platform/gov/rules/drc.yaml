@@ -1,0 +1,78 @@
+{
+  "site": {
+    "code": "drc",
+    "name": "深圳市发展研究中心",
+    "base_url": "https://drc.sz.gov.cn",
+    "fetch_mode": "http"
+  },
+  "channels": {
+    "main": {
+      "start_urls": [
+        "https://drc.sz.gov.cn/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://drc.sz.gov.cn/tzgg/index_{page}.html",
+        "start_page": 2
+      }
+    }
+  },
+  "extract": {
+    "list": {
+      "item_xpath": [
+        "//ul[contains(@class,'list')]/li[.//a[contains(@href,'content/post_')]]",
+        "//div[contains(@class,'list')]//li[.//a[contains(@href,'content/post_')]]",
+        "//ul/li[.//a[contains(@href,'content/post_')]]",
+        "//table//tr[.//a[contains(@href,'content/post_')]]"
+      ],
+      "title_xpath": [
+        ".//a[contains(@href,'content/post_')][1]/@title",
+        ".//a[contains(@href,'content/post_')][1]/text()",
+        ".//a[1]/@title",
+        ".//a[1]/text()"
+      ],
+      "link_xpath": [
+        ".//a[contains(@href,'content/post_')][1]/@href",
+        ".//a[1]/@href"
+      ],
+      "date_xpath": [
+        ".//span[contains(@class,'time')]/text()",
+        ".//span[contains(@class,'date')]/text()",
+        ".//span[contains(@class,'f-fr')]/text()",
+        ".//span[last()]/text()",
+        ".//em/text()"
+      ]
+    },
+    "detail": {
+      "title_xpath": [
+        "//meta[@name='ArticleTitle']/@content",
+        "//h1/text()",
+        "//h2/text()"
+      ],
+      "source_xpath": [
+        "//meta[@name='ContentSource']/@content",
+        "//span[contains(text(),'信息来源')]/text()",
+        "//span[contains(text(),'来源')]/text()",
+        "//*[contains(text(),'信息来源')]/text()"
+      ],
+      "pub_time_xpath": [
+        "//meta[@name='PubDate']/@content",
+        "//span[contains(text(),'发布时间')]/text()",
+        "//*[contains(text(),'发布时间')]/text()"
+      ],
+      "content_xpath": [
+        "//div[@id='content']",
+        "//div[@id='ContentRegion']",
+        "//div[contains(@class,'articleBox')]",
+        "//div[contains(@class,'acontent')]",
+        "//div[contains(@class,'detailBox')]",
+        "//div[contains(@class,'text-content')]",
+        "//div[contains(@class,'content')]"
+      ],
+      "attachments_xpath": [
+        "//a[contains(@class,'doc')]/@href",
+        "//*[contains(text(),'附件')]/ancestor::*[1]//a/@href",
+        "//a[contains(@href,'.pdf') or contains(@href,'.doc') or contains(@href,'.docx') or contains(@href,'.xls') or contains(@href,'.xlsx') or contains(@href,'.zip')]/@href"
+      ]
+    }
+  }
+}

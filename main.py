@@ -38,6 +38,7 @@ from database import db
 from base.base_crawler import AbstractCrawler
 from media_platform.bilibili import BilibiliCrawler
 from media_platform.douyin import DouYinCrawler
+from media_platform.gov import GovCrawler
 from media_platform.kuaishou import KuaishouCrawler
 from media_platform.tieba import TieBaCrawler
 from media_platform.weibo import WeiboCrawler
@@ -58,6 +59,7 @@ class CrawlerFactory:
         "tieba": TieBaCrawler,
         "zhihu": ZhihuCrawler,
         "wx": WechatCrawler,
+        "gov": GovCrawler,
     }
 
     @staticmethod

@@ -31,6 +31,10 @@ class TaskUpsertRequest(BaseModel):
     keywords: str = ""
     specified_ids: str = ""
     creator_ids: str = ""
+    gov_site: str = ""
+    gov_channel: str = ""
+    gov_max_pages: int = Field(default=1, ge=1)
+    gov_rule_path: str = ""
     cookies: str = ""
     start_page: int = Field(default=1, ge=1)
     enable_comments: bool = True

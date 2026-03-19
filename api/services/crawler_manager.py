@@ -206,7 +206,8 @@ class CrawlerManager:
         """Build main.py command line arguments"""
         cmd = ["uv", "run", "python", "main.py"]
 
-        cmd.extend(["--platform", config.platform.value])
+        platform = config.platform.value
+        cmd.extend(["--platform", platform])
         cmd.extend(["--lt", config.login_type.value])
         cmd.extend(["--type", config.crawler_type.value])
         cmd.extend(["--save_data_option", config.save_option.value])
@@ -221,6 +222,16 @@ class CrawlerManager:
 
         if config.start_page != 1:
             cmd.extend(["--start", str(config.start_page)])
+
+        if platform == "gov":
+            if config.gov_site:
+                cmd.extend(["--gov_site", config.gov_site])
+            if config.gov_channel:
+                cmd.extend(["--gov_channel", config.gov_channel])
+            if int(config.gov_max_pages or 1) > 0:
+                cmd.extend(["--gov_max_pages", str(max(1, int(config.gov_max_pages)))])
+            if config.gov_rule_path:
+                cmd.extend(["--gov_rule_path", config.gov_rule_path])
 
         cmd.extend(["--get_comment", "true" if config.enable_comments else "false"])
         cmd.extend(["--get_sub_comment", "true" if config.enable_sub_comments else "false"])

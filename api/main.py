@@ -27,12 +27,16 @@ import os
 import subprocess
 import uvicorn
 from fastapi import FastAPI
+from fastapi import Query
+from fastapi import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from .routers import crawler_router, data_router, dashboard_router, task_router, websocket_router
 from .services import dashboard_service, task_scheduler_service
+from media_platform.gov.rule_loader import GovRuleLoader
+from media_platform.gov.site_registry import GovSiteRegistry
 
 app = FastAPI(
     title="数据采集中台 API",
@@ -253,6 +257,7 @@ async def get_platforms():
             {"value": "tieba", "label": "Baidu Tieba", "icon": "messages-square"},
             {"value": "zhihu", "label": "Zhihu", "icon": "help-circle"},
             {"value": "wx", "label": "WeChat OA", "icon": "newspaper"},
+            {"value": "gov", "label": "Government", "icon": "landmark"},
         ]
     }
 
@@ -280,6 +285,55 @@ async def get_config_options():
             {"value": "mongodb", "label": "MongoDB Database"},
             {"value": "postgres", "label": "PostgreSQL Database"},
         ],
+    }
+
+
+@app.get("/api/config/gov/sites")
+async def get_gov_sites():
+    rows = []
+    for site in GovSiteRegistry.list_sites():
+        code = str(site.get("site_code") or "").strip()
+        status = str(site.get("status") or "pending_dynamic").strip()
+        rows.append(
+            {
+                "value": code,
+                "label": str(site.get("site_name") or code),
+                "status": status,
+                "default_channel": str(site.get("default_channel") or "main"),
+                "base_url": str(site.get("base_url") or ""),
+            }
+        )
+    return {"sites": rows}
+
+
+@app.get("/api/config/gov/channels")
+async def get_gov_channels(site: str = Query(..., min_length=1)):
+    try:
+        site_info = GovSiteRegistry.get_site(site_code=site)
+    except Exception as exc:
+        raise HTTPException(status_code=404, detail=f"Unknown gov site: {site}") from exc
+    default_channel = str(site_info.get("default_channel") or "main")
+    status = str(site_info.get("status") or "pending_dynamic")
+    rows = []
+
+    if status == "ready":
+        try:
+            rule = GovRuleLoader().load_site_rule(site=site)
+            channels = rule.get("channels") or {}
+            if isinstance(channels, dict):
+                for channel_name in sorted(channels.keys()):
+                    rows.append({"value": str(channel_name), "label": str(channel_name), "status": status})
+        except Exception:
+            rows = []
+
+    if not rows:
+        rows = [{"value": default_channel, "label": default_channel, "status": status}]
+
+    return {
+        "site": site,
+        "status": status,
+        "default_channel": default_channel,
+        "channels": rows,
     }
 
 

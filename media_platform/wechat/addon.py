@@ -36,6 +36,10 @@ class WechatMitmAddon:
         asyncio.run_coroutine_threadsafe(self.enqueue_handler(kind, payload), self.loop)
 
     @staticmethod
+    def _verbose_enabled() -> bool:
+        return bool(getattr(config, "WX_VERBOSE_LOG", False))
+
+    @staticmethod
     def _request_text(flow: Any) -> str:
         request = getattr(flow, "request", None)
         if request is None:
@@ -83,6 +87,14 @@ class WechatMitmAddon:
 
         text = self._response_text(flow)
         request_text = self._request_text(flow)
+        content_type = str(getattr(flow.response.headers, "get", lambda *_: "")("content-type", "") or "").lower()
+        if self._verbose_enabled():
+            utils.logger.info(
+                "[WechatMitmAddon.response] hit url=%s content_type=%s body_len=%s",
+                url,
+                content_type or "-",
+                len(text or ""),
+            )
         next_url = ""
         tip = ""
         try:
@@ -101,6 +113,14 @@ class WechatMitmAddon:
                 next_url = str(parsed.get("next_url") or "")
                 if not next_url:
                     next_url = self.task_manager.pop_next_task_url()
+                if self._verbose_enabled():
+                    utils.logger.info(
+                        "[WechatMitmAddon.list] account_biz=%s article_count=%s article_url_count=%s has_next=%s",
+                        (account or {}).get("biz", ""),
+                        len(articles),
+                        len(article_urls),
+                        bool(next_url),
+                    )
                 tip = "正在抓取列表"
                 if config.WX_ENABLE_AUTO_NAV:
                     self._set_html_response(
@@ -112,6 +132,7 @@ class WechatMitmAddon:
 
             if (
                 "/s?__biz=" in url
+                or "mp.weixin.qq.com/s?" in url
                 or "mp.weixin.qq.com/s/" in url
                 or "/mp/appmsg/show?__biz=" in url
                 or "/mp/rumor" in url
@@ -119,6 +140,20 @@ class WechatMitmAddon:
                 article = self.parser.parse_article_detail(req_url=url, text=text)
                 if article.get("article_id"):
                     self._enqueue("article", article)
+                    if self._verbose_enabled():
+                        utils.logger.info(
+                            "[WechatMitmAddon.article] parsed article_id=%s sn=%s biz=%s title=%s",
+                            str(article.get("article_id") or ""),
+                            str(article.get("sn") or ""),
+                            str(article.get("biz") or ""),
+                            str(article.get("title") or "").strip()[:80],
+                        )
+                elif self._verbose_enabled():
+                    utils.logger.warning(
+                        "[WechatMitmAddon.article] parse empty url=%s text_sample=%s",
+                        url,
+                        str(text or "")[:120].replace("\n", " "),
+                    )
                 next_url = self.task_manager.pop_next_task_url()
                 tip = "正在抓取详情"
                 if config.WX_ENABLE_AUTO_NAV:
@@ -133,20 +168,47 @@ class WechatMitmAddon:
                 dynamic = self.parser.parse_article_dynamic(request_body=request_text, text=text)
                 if dynamic.get("sn"):
                     self._enqueue("dynamic", dynamic)
+                    if self._verbose_enabled():
+                        utils.logger.info(
+                            "[WechatMitmAddon.dynamic] sn=%s biz=%s read_num=%s like_num=%s comment_count=%s",
+                            str(dynamic.get("sn") or ""),
+                            str(dynamic.get("biz") or ""),
+                            int(dynamic.get("read_num") or 0),
+                            int(dynamic.get("like_num") or 0),
+                            int(dynamic.get("comment_count") or 0),
+                        )
+                elif self._verbose_enabled():
+                    utils.logger.warning(
+                        "[WechatMitmAddon.dynamic] parse empty url=%s req_body_sample=%s",
+                        url,
+                        str(request_text or "")[:120].replace("\n", " "),
+                    )
                 return
 
             if "/mp/appmsg_comment" in url:
                 comments = self.parser.parse_comment(req_url=url, text=text)
                 for comment in comments:
                     self._enqueue("comment", comment)
+                if self._verbose_enabled():
+                    utils.logger.info(
+                        "[WechatMitmAddon.comment] parsed comment_count=%s url=%s",
+                        len(comments),
+                        url,
+                    )
                 return
 
             # fallback for updated body URLs
-            content_type = str(getattr(flow.response.headers, "get", lambda *_: "")("content-type", "") or "").lower()
             if "text/html" in content_type and ("rich_media_content" in text or 'id="js_content"' in text):
                 article = self.parser.parse_article_detail(req_url=url, text=text)
                 if article.get("article_id"):
                     self._enqueue("article", article)
+                    if self._verbose_enabled():
+                        utils.logger.info(
+                            "[WechatMitmAddon.fallback_article] parsed article_id=%s sn=%s biz=%s",
+                            str(article.get("article_id") or ""),
+                            str(article.get("sn") or ""),
+                            str(article.get("biz") or ""),
+                        )
                     if config.WX_ENABLE_AUTO_NAV:
                         next_url = self.task_manager.pop_next_task_url()
                         self._set_html_response(
@@ -154,5 +216,7 @@ class WechatMitmAddon:
                             self.task_manager.build_navigation_html(next_url=next_url, tip="命中兜底文章解析"),
                             self.parser.sanitize_response_html(text),
                         )
+                elif self._verbose_enabled():
+                    utils.logger.warning("[WechatMitmAddon.fallback_article] parse empty url=%s", url)
         except Exception as exc:
             utils.logger.error("[WechatMitmAddon.response] parse failed url=%s err=%s", url, exc)
