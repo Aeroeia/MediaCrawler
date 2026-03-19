@@ -3,7 +3,17 @@
     "code": "szcredit",
     "name": "深圳信用网",
     "base_url": "https://www.szcredit.org.cn",
-    "fetch_mode": "browser"
+    "fetch_mode": "browser",
+    "allow_inline_detail": true,
+    "browser": {
+      "wait_until": "networkidle",
+      "timeout_ms": 45000,
+      "actions": [
+        {
+          "wait_ms": 1500
+        }
+      ]
+    }
   },
   "channels": {
     "main": {
@@ -11,7 +21,7 @@
         "https://www.szcredit.org.cn/"
       ],
       "pagination": {
-        "pattern": "https://www.szcredit.org.cn/#/index?page={page}",
+        "pattern": "",
         "start_page": 2
       }
     }
@@ -40,6 +50,24 @@
         ".//span[contains(@class,'f-fr')]/text()",
         ".//span[last()]/text()",
         ".//em/text()"
+      ]
+    },
+    "inline_list": {
+      "item_xpath": [
+        "//div[contains(@class,'list-item-wrap')]"
+      ],
+      "title_xpath": [
+        ".//*[contains(@class,'title')]//p/text()",
+        ".//*[contains(@class,'title')]//text()"
+      ],
+      "date_xpath": [
+        ".//*[contains(@class,'date')]/text()"
+      ],
+      "source_xpath": [
+        ".//*[contains(@class,'author')]/text()"
+      ],
+      "summary_xpath": [
+        ".//*[contains(@class,'content')]/text()"
       ]
     },
     "detail": {

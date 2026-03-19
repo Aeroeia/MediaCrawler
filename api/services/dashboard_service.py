@@ -43,7 +43,7 @@ class DashboardServiceError(RuntimeError):
 class ChannelTableMap:
     channel: str
     content_table: str
-    comment_table: str
+    comment_table: Optional[str]
     creator_table: Optional[str]
 
 
@@ -90,7 +90,10 @@ class DashboardService:
         ChannelTableMap("tieba", "tieba_note", "tieba_comment", "tieba_creator"),
         ChannelTableMap("zhihu", "zhihu_content", "zhihu_comment", "zhihu_creator"),
         ChannelTableMap("wx", "wx_article", "wx_article_comment", "wx_account"),
+        ChannelTableMap("gov", "gov_article", None, None),
     ]
+
+    _KEYWORD_CHANNELS = {"xhs", "dy", "ks", "bili", "wb", "tieba", "zhihu", "wx"}
 
     _RECENT_QUERIES: List[RecentQueryConfig] = [
         RecentQueryConfig(
@@ -171,6 +174,16 @@ class DashboardService:
             summary_col="`digest`",
             like_expr="CAST(IFNULL(like_num, 0) AS UNSIGNED)",
             comment_expr="CAST(IFNULL(comment_count, 0) AS UNSIGNED)",
+            share_expr="0",
+        ),
+        RecentQueryConfig(
+            channel="gov",
+            table="gov_article",
+            id_col="`fingerprint`",
+            title_col="`title`",
+            summary_col="`content_text`",
+            like_expr="0",
+            comment_expr="0",
             share_expr="0",
         ),
     ]
@@ -343,6 +356,8 @@ class DashboardService:
         return int(value or 0)
 
     async def _safe_scalar(self, conn: AsyncConnection, table: str, period: bool, start_ts: int = 0, end_ts: int = 0) -> int:
+        if not table:
+            return 0
         if period:
             sql = (
                 f"SELECT COUNT(1) FROM {table} "
@@ -370,12 +385,16 @@ class DashboardService:
 
                 for channel in self._CHANNEL_TABLES:
                     total_contents += await self._safe_scalar(conn, channel.content_table, period=False)
-                    total_comments += await self._safe_scalar(conn, channel.comment_table, period=False)
+                    if channel.comment_table:
+                        total_comments += await self._safe_scalar(conn, channel.comment_table, period=False)
                     if channel.creator_table:
                         total_creators += await self._safe_scalar(conn, channel.creator_table, period=False)
 
                     period_contents += await self._safe_scalar(conn, channel.content_table, period=True, start_ts=start_ts, end_ts=end_ts)
-                    period_comments += await self._safe_scalar(conn, channel.comment_table, period=True, start_ts=start_ts, end_ts=end_ts)
+                    if channel.comment_table:
+                        period_comments += await self._safe_scalar(
+                            conn, channel.comment_table, period=True, start_ts=start_ts, end_ts=end_ts
+                        )
                     if channel.creator_table:
                         period_creators += await self._safe_scalar(
                             conn, channel.creator_table, period=True, start_ts=start_ts, end_ts=end_ts
@@ -388,13 +407,14 @@ class DashboardService:
                         start_ts=today_start_ts,
                         end_ts=tomorrow_start_ts,
                     )
-                    today_new_comments += await self._safe_scalar(
-                        conn,
-                        channel.comment_table,
-                        period=True,
-                        start_ts=today_start_ts,
-                        end_ts=tomorrow_start_ts,
-                    )
+                    if channel.comment_table:
+                        today_new_comments += await self._safe_scalar(
+                            conn,
+                            channel.comment_table,
+                            period=True,
+                            start_ts=today_start_ts,
+                            end_ts=tomorrow_start_ts,
+                        )
 
                 return {
                     "period_days": days,
@@ -431,9 +451,15 @@ class DashboardService:
                             "content_count": (content_count := await self._safe_scalar(
                                 conn, channel.content_table, period=True, start_ts=start_ts, end_ts=end_ts
                             )),
-                            "comment_count": (comment_count := await self._safe_scalar(
-                                conn, channel.comment_table, period=True, start_ts=start_ts, end_ts=end_ts
-                            )),
+                            "comment_count": (
+                                comment_count := (
+                                    await self._safe_scalar(
+                                        conn, channel.comment_table, period=True, start_ts=start_ts, end_ts=end_ts
+                                    )
+                                    if channel.comment_table
+                                    else 0
+                                )
+                            ),
                             "creator_count": (
                                 await self._safe_scalar(
                                     conn, channel.creator_table, period=True, start_ts=start_ts, end_ts=end_ts
@@ -506,6 +532,8 @@ class DashboardService:
         try:
             async with self.engine.connect() as conn:
                 for channel in self._CHANNEL_TABLES:
+                    if channel.channel not in self._KEYWORD_CHANNELS:
+                        continue
                     sql = (
                         f"SELECT source_keyword, COUNT(1) AS cnt "
                         f"FROM {channel.content_table} "

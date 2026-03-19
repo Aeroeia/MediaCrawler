@@ -7,6 +7,7 @@ const CHANNEL_LABELS = {
   tieba: "贴吧",
   zhihu: "知乎",
   wx: "公众号",
+  gov: "政府网站",
 };
 
 const state = {
@@ -150,7 +151,8 @@ function renderTrend(trendData) {
   const values = series.map((item) => Number(item.total || 0));
   const maxValue = Math.max(...values, 1);
   const svgWidth = Math.max(700, series.length * 34);
-  const svgHeight = 220;
+  const chartHeight = Math.max(220, Number(chart.clientHeight || 300));
+  const svgHeight = Math.max(210, Math.floor(chartHeight - 16));
   const paddingLeft = 16;
   const paddingRight = 12;
   const paddingTop = 16;

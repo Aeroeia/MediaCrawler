@@ -29,6 +29,7 @@ from database.db_session import get_session
 from database.models import GovArticle
 from tools.async_file_writer import AsyncFileWriter
 from tools.time_util import get_current_timestamp
+from tools import utils
 from var import crawler_type_var
 
 
@@ -64,6 +65,7 @@ class GovDbStoreImplement(AbstractStore):
         payload = dict(content_item)
         fingerprint = str(payload.get("fingerprint") or "").strip()
         if not fingerprint:
+            utils.logger.warning("[GovDbStoreImplement] skip content without fingerprint, url=%s", payload.get("url"))
             return
 
         now_ts = int(get_current_timestamp())
@@ -71,12 +73,14 @@ class GovDbStoreImplement(AbstractStore):
         if not isinstance(attachments, list):
             attachments = []
         attachments_json = json.dumps(attachments, ensure_ascii=False)
+        action = "skip"
 
         async with get_session() as session:
             stmt = select(GovArticle).where(GovArticle.fingerprint == fingerprint)
             res = await session.execute(stmt)
             db_item = res.scalar_one_or_none()
             if db_item:
+                action = "update"
                 db_item.site_code = str(payload.get("site_code") or "")
                 db_item.site_name = str(payload.get("site_name") or "")
                 db_item.channel = str(payload.get("channel") or "")
@@ -90,6 +94,7 @@ class GovDbStoreImplement(AbstractStore):
                 db_item.crawl_time = str(payload.get("crawl_time") or "")
                 db_item.last_modify_ts = now_ts
             else:
+                action = "insert"
                 session.add(
                     GovArticle(
                         site_code=str(payload.get("site_code") or ""),
@@ -108,6 +113,13 @@ class GovDbStoreImplement(AbstractStore):
                         last_modify_ts=now_ts,
                     )
                 )
+        utils.logger.info(
+            "[GovDbStoreImplement] %s site=%s channel=%s title=%s",
+            action,
+            str(payload.get("site_code") or ""),
+            str(payload.get("channel") or ""),
+            str(payload.get("title") or "")[:60],
+        )
 
     async def store_comment(self, comment_item: Dict):
         return

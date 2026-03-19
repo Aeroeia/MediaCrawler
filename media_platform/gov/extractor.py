@@ -19,6 +19,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 from typing import Any, Iterable
 from urllib.parse import urljoin
@@ -40,7 +41,9 @@ def _clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", str(value or "")).strip()
 
 
-_DATE_PATTERN = re.compile(r"(20\d{2}[-/.年]\d{1,2}[-/.月]\d{1,2}(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?)")
+_DATE_PATTERN = re.compile(
+    r"(20\d{2}[-/.年]\d{1,2}[-/.月]\d{1,2}(?:[日]?(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?)?)"
+)
 
 
 class GovExtractor:
@@ -116,10 +119,16 @@ class GovExtractor:
         value = str(href or "").strip().lower()
         if not value:
             return False
-        if value.startswith("javascript:") or value.startswith("#"):
+        if value.startswith("javascript:") or value.startswith("#") or value.startswith("mailto:"):
             return False
+        if "toarticledetails" in value:
+            return True
+        if "/portal/notice?id=" in value:
+            return True
+        if "/notice?id=" in value:
+            return True
         if not value.endswith(".html"):
-            return False
+            return "/article/" in value or "/info/" in value or "/detail" in value
         if "content/post_" in value or "/content/" in value:
             return True
         if "/index" in value or value.endswith("/index.html"):
@@ -165,7 +174,17 @@ class GovExtractor:
                 )
             )
             publish_time = cls._extract_date_from_text(nearby)
-            if "content/post_" not in href.lower() and not publish_time:
+            lowered = href.lower()
+            keep_without_date = any(
+                token in lowered
+                for token in (
+                    "content/post_",
+                    "toarticledetails",
+                    "/portal/notice?id=",
+                    "/notice?id=",
+                )
+            )
+            if not keep_without_date and not publish_time:
                 continue
             items.append(
                 {
@@ -185,19 +204,89 @@ class GovExtractor:
             if not url or url in seen_urls:
                 continue
             seen_urls.add(url)
-            deduped.append(
-                {
-                    "title": _clean_text(row.get("title", "")),
-                    "url": url,
-                    "publish_time": _clean_text(row.get("publish_time", "")),
-                }
-            )
+            normalized = {
+                "title": _clean_text(row.get("title", "")),
+                "url": url,
+                "publish_time": _clean_text(row.get("publish_time", "")),
+            }
+            for key in ("source", "content_text", "content_html", "inline_mode"):
+                value = row.get(key)
+                if value is None:
+                    continue
+                normalized[key] = _clean_text(value) if key != "content_html" else str(value)
+            deduped.append(normalized)
 
         if len(deduped) > 30:
             with_date = [row for row in deduped if row["publish_time"]]
             if len(with_date) >= 5:
                 return with_date
+        with_date = [row for row in deduped if row["publish_time"]]
+        if len(with_date) >= 3 and len(with_date) >= int(len(deduped) * 0.6):
+            return with_date
         return deduped
+
+    def extract_inline_list_items(
+        self,
+        html: str,
+        page_url: str,
+        inline_rule: dict[str, Any],
+    ) -> list[dict[str, str]]:
+        root = Selector(text=html or "")
+        item_xpath_list = _to_xpath_list(inline_rule.get("item_xpath"))
+        if not item_xpath_list:
+            return []
+
+        nodes = []
+        for item_xpath in item_xpath_list:
+            nodes = root.xpath(item_xpath)
+            if nodes:
+                break
+
+        title_xpath = inline_rule.get("title_xpath")
+        date_xpath = inline_rule.get("date_xpath")
+        source_xpath = inline_rule.get("source_xpath")
+        summary_xpath = inline_rule.get("summary_xpath")
+        link_xpath = inline_rule.get("link_xpath")
+
+        rows: list[dict[str, str]] = []
+        for node in nodes:
+            title = self._extract_first_text(node, title_xpath)
+            if not title:
+                for token in [_clean_text(item) for item in node.xpath(".//text()").getall()]:
+                    if not token:
+                        continue
+                    if self._extract_date_from_text(token):
+                        continue
+                    title = token
+                    break
+            if not title:
+                continue
+            publish_time = self._extract_first_text(node, date_xpath)
+            source = self._extract_first_text(node, source_xpath)
+            summary = self._extract_first_text(node, summary_xpath)
+            node_text = _clean_text(" ".join(node.xpath(".//text()").getall()))
+            if not publish_time:
+                publish_time = self._extract_date_from_text(node_text)
+            link = self._extract_first_text(node, link_xpath)
+            item_url = urljoin(page_url, link) if link else ""
+            if not item_url:
+                fingerprint = hashlib.sha1(
+                    f"{page_url}|{title}|{publish_time}|{source}|{summary}".encode("utf-8")
+                ).hexdigest()
+                item_url = f"{page_url}#inline-{fingerprint}"
+            rows.append(
+                {
+                    "title": _clean_text(title),
+                    "url": _clean_text(item_url),
+                    "publish_time": _clean_text(publish_time),
+                    "source": _clean_text(source),
+                    "content_text": _clean_text(summary or node_text),
+                    "content_html": node.get() or "",
+                    "inline_mode": "1",
+                }
+            )
+
+        return self._post_process_items(rows)
 
     def extract_detail(
         self,
@@ -209,6 +298,8 @@ class GovExtractor:
         title = self._extract_first_text(root, detail_rule.get("title_xpath"))
         source = self._extract_first_text(root, detail_rule.get("source_xpath"))
         publish_time = self._extract_first_text(root, detail_rule.get("pub_time_xpath"))
+        if not publish_time:
+            publish_time = self._extract_date_from_text(" ".join(root.xpath("//body//text()").getall()))
         content_html = self._extract_first_html(root, detail_rule.get("content_xpath"))
         content_text = utils.extract_text_from_html(content_html)
 

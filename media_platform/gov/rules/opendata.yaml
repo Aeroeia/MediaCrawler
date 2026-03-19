@@ -1,29 +1,17 @@
 {
   "site": {
-    "code": "gdzwfw",
-    "name": "广东政务服务网深圳",
-    "base_url": "https://www.gdzwfw.gov.cn",
-    "fetch_mode": "browser",
-    "browser": {
-      "wait_until": "networkidle",
-      "timeout_ms": 45000,
-      "actions": [
-        {
-          "click_text": "历史公告"
-        },
-        {
-          "wait_ms": 1200
-        }
-      ]
-    }
+    "code": "opendata",
+    "name": "深圳市政府数据开放平台",
+    "base_url": "https://opendata.sz.gov.cn/",
+    "fetch_mode": "http"
   },
   "channels": {
     "main": {
       "start_urls": [
-        "https://www.gdzwfw.gov.cn/portal/v2/notices?region=440300"
+        "https://opendata.sz.gov.cn/"
       ],
       "pagination": {
-        "pattern": "https://www.gdzwfw.gov.cn/portal/v2/notices?region=440300&page={page}",
+        "pattern": "",
         "start_page": 2
       }
     }
@@ -31,9 +19,12 @@
   "extract": {
     "list": {
       "item_xpath": [
+        "//ul[contains(@class,'tzgg_content')]/li[.//a[contains(@href,'content/post_')]]",
+        "//div[contains(@class,'ListconC')][.//a[contains(@href,'content/post_')]]",
         "//ul[contains(@class,'list')]/li[.//a[contains(@href,'content/post_')]]",
         "//div[contains(@class,'list')]//li[.//a[contains(@href,'content/post_')]]",
         "//ul/li[.//a[contains(@href,'content/post_')]]",
+        "//div[.//a[contains(@href,'content/post_')] and .//span[contains(.,'-')]]",
         "//table//tr[.//a[contains(@href,'content/post_')]]"
       ],
       "title_xpath": [

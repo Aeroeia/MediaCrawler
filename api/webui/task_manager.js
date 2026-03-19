@@ -164,6 +164,7 @@
       '      <div class="tm-field full" id="tm-field-creator"><label>创作者ID（creator）</label><textarea class="tm-textarea" name="creator_ids" placeholder="多个 ID 逗号分隔"></textarea></div>',
       '      <div class="tm-field" id="tm-field-gov-site"><label>Gov 站点</label><select class="tm-select" name="gov_site"></select></div>',
       '      <div class="tm-field" id="tm-field-gov-channel"><label>Gov 栏目</label><select class="tm-select" name="gov_channel"></select></div>',
+      '      <div class="tm-field full" id="tm-field-gov-status"><label>Gov 站点状态</label><div id="tm-gov-status-text" class="tm-meta">-</div></div>',
       '      <div class="tm-field" id="tm-field-gov-pages"><label>Gov 最大页数</label><input class="tm-input" name="gov_max_pages" type="number" min="1" value="1"></div>',
       '      <div class="tm-field full" id="tm-field-gov-rule"><label>Gov 规则路径（可选）</label><input class="tm-input" name="gov_rule_path" placeholder="media_platform/gov/rules"></div>',
       '      <div class="tm-field full"><label>Cookies（可选）</label><textarea class="tm-textarea" name="cookies"></textarea></div>',
@@ -241,6 +242,8 @@
     els.toastWrap = document.getElementById("tm-toast-wrap");
     els.govSiteHint = document.getElementById("tm-field-gov-site");
     els.govChannelHint = document.getElementById("tm-field-gov-channel");
+    els.govStatusHint = document.getElementById("tm-field-gov-status");
+    els.govStatusText = document.getElementById("tm-gov-status-text");
   }
 
   function setSelectOptions(selectName, rows) {
@@ -285,6 +288,55 @@
         return '<option value="' + value + '">' + label + "</option>";
       })
       .join("");
+  }
+
+  function getGovSiteMeta(siteCode) {
+    const code = String(siteCode || "").trim();
+    if (!code) {
+      return null;
+    }
+    return (
+      (state.govSites || []).find(function (row) {
+        return String(row.value || "").trim() === code;
+      }) || null
+    );
+  }
+
+  function getGovSiteStatus(siteCode) {
+    const meta = getGovSiteMeta(siteCode);
+    return meta ? String(meta.status || "pending_dynamic").trim() : "";
+  }
+
+  function syncGovSiteHint() {
+    if (!els.taskForm || !els.govStatusText) {
+      return;
+    }
+    const platform = String(els.taskForm.elements.namedItem("platform").value || "xhs");
+    if (platform !== "gov") {
+      els.govStatusText.textContent = "-";
+      return;
+    }
+    const code = String(els.taskForm.elements.namedItem("gov_site").value || "").trim();
+    const meta = getGovSiteMeta(code);
+    if (!meta) {
+      els.govStatusText.textContent = "站点未在 manifest 注册";
+      return;
+    }
+    const status = String(meta.status || "pending_dynamic");
+    const verifiedMode = String(meta.verified_mode || "");
+    const lastVerified = String(meta.last_verified_at || "");
+    const verifyError = String(meta.verify_error || "");
+    let message = "status=" + status;
+    if (verifiedMode) {
+      message += " | mode=" + verifiedMode;
+    }
+    if (lastVerified) {
+      message += " | verified_at=" + lastVerified;
+    }
+    if (verifyError) {
+      message += " | reason=" + verifyError;
+    }
+    els.govStatusText.textContent = message;
   }
 
   async function loadGovChannels(siteCode, preferred) {
@@ -337,6 +389,7 @@
         const picked = String(govSiteNode.value || state.govSites[0].value || "").trim();
         govSiteNode.value = picked || state.govSites[0].value;
         await loadGovChannels(govSiteNode.value);
+        syncGovSiteHint();
       }
     }
 
@@ -510,10 +563,17 @@
       .map(function (task) {
         const busy = !!task.platform_busy;
         const busyOther = busy && Number(task.platform_running_task_id) !== Number(task.id);
-        const disabledRun = runDisabled(task);
-        const platformCls = "tm-platform-tag" + (busy ? " busy" : "");
         const isWx = String(task.platform || "").toLowerCase() === "wx";
-        const runBtnText = busyOther ? "平台占用" : (!isWx && task.resume_available ? "续爬执行" : "立即执行");
+        const govSiteCode = String(
+          task && task.crawler_params && task.crawler_params.gov_site ? task.crawler_params.gov_site : ""
+        ).trim();
+        const govStatus = isWx ? "" : getGovSiteStatus(govSiteCode);
+        const govNotReady = String(task.platform || "").toLowerCase() === "gov" && govStatus !== "ready";
+        const disabledRun = runDisabled(task) || govNotReady;
+        const platformCls = "tm-platform-tag" + (busy ? " busy" : "");
+        const runBtnText = govNotReady
+          ? "站点未就绪"
+          : (busyOther ? "平台占用" : (!isWx && task.resume_available ? "续爬执行" : "立即执行"));
         const stopDisabled = String(task.status) !== "running";
         const pauseAction = task.is_enabled ? "pause" : "resume";
         const pauseText = task.is_enabled ? "暂停" : "恢复";
@@ -524,12 +584,13 @@
           : (task.resume_available
             ? "可续爬 · " + String(task.resume_summary || "")
             : "无断点");
+        const govStatusText = govNotReady ? (" | gov_status=" + govStatus) : "";
         return [
           "<tr>",
           '  <td><div class="tm-name">' + escapeHtml(task.name) + '</div><div class="tm-small">' + escapeHtml(task.description || "-") + "</div></td>",
           '  <td><span class="' + platformCls + '">' + escapeHtml(task.platform) + "</span></td>",
           '  <td><span class="tm-status ' + statusClass(task.status) + '">' + escapeHtml(task.status) + "</span></td>",
-          "  <td>" + escapeHtml(resumeText) + "</td>",
+          "  <td>" + escapeHtml(resumeText + govStatusText) + "</td>",
           "  <td>" + escapeHtml(cronText) + "</td>",
           "  <td>" + escapeHtml(nextRunText) + "</td>",
           "  <td>" + escapeHtml(task.last_run_at_text || "-") + "</td>",
@@ -665,6 +726,7 @@
     loadGovChannels(form.elements.namedItem("gov_site").value, params.gov_channel || "").catch(function () {
       // no-op
     });
+    syncGovSiteHint();
     syncPlatformHint();
     syncCrawlerTypeHint();
 
@@ -885,6 +947,9 @@
     setFieldVisibleByName("specified_ids", true);
     setFieldVisibleByName("gov_site", isGov);
     setFieldVisibleByName("gov_channel", isGov);
+    if (els.govStatusHint) {
+      els.govStatusHint.style.display = isGov ? "" : "none";
+    }
     setFieldVisibleByName("gov_max_pages", isGov);
     setFieldVisibleByName("gov_rule_path", isGov);
 
@@ -971,6 +1036,7 @@
           // no-op
         });
       }
+      syncGovSiteHint();
     }
     syncCrawlerTypeHint();
   }
@@ -1222,6 +1288,22 @@
       return;
     }
 
+    if (action === "run" && String(task.platform || "").toLowerCase() === "gov") {
+      const siteCode = String(
+        task && task.crawler_params && task.crawler_params.gov_site ? task.crawler_params.gov_site : ""
+      ).trim();
+      const meta = getGovSiteMeta(siteCode);
+      const status = String((meta && meta.status) || "");
+      if (status && status !== "ready") {
+        const reason = String((meta && meta.verify_error) || "");
+        showToast(
+          "Gov 站点未就绪: " + status + (reason ? " (" + reason + ")" : ""),
+          "error"
+        );
+        return;
+      }
+    }
+
     const actionMap = {
       run: { path: "/api/tasks/" + id + "/run-now", text: "任务已启动" },
       stop: { path: "/api/tasks/" + id + "/stop", text: "任务停止请求已发送" },
@@ -1325,6 +1407,7 @@
       loadGovChannels(site).catch(function () {
         // no-op
       });
+      syncGovSiteHint();
     });
 
     els.runsClose.addEventListener("click", closeRunsModal);

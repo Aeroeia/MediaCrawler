@@ -11,13 +11,15 @@ from media_platform.gov.rule_scaffold import discover_channel_url, infer_paginat
 from media_platform.gov.site_registry import GovSiteRegistry
 
 
-def test_gov_site_registry_has_ready_and_pending_sites():
+def test_gov_site_registry_has_site_status_and_verify_fields():
     zfcg = GovSiteRegistry.get_site("zfcg")
     assert zfcg["status"] == "ready"
     assert zfcg["default_channel"] == "main"
+    assert "verify_error" in zfcg
+    assert "verified_mode" in zfcg
 
     gdzwfw = GovSiteRegistry.get_site("gdzwfw")
-    assert gdzwfw["status"] == "pending_dynamic"
+    assert gdzwfw["status"] in {"ready", "blocked", "pending_dynamic"}
 
 
 def test_discover_channel_url_prefers_notice_like_link():

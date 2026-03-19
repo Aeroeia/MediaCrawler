@@ -125,3 +125,24 @@ class GovRuleLoader:
         self._require(rule, "extract.detail.pub_time_xpath")
         self._require(rule, "extract.detail.content_xpath")
         self._require(rule, "extract.detail.attachments_xpath")
+        site = rule.get("site") or {}
+        fetch_mode = str(site.get("fetch_mode") or "http").strip().lower()
+        if fetch_mode not in ("http", "browser"):
+            raise ValueError(f"[GovRuleLoader] unsupported site.fetch_mode: {fetch_mode}")
+        browser_cfg = site.get("browser") or {}
+        if browser_cfg and not isinstance(browser_cfg, dict):
+            raise ValueError("[GovRuleLoader] site.browser must be an object")
+        actions = browser_cfg.get("actions") if isinstance(browser_cfg, dict) else None
+        if actions is not None:
+            if not isinstance(actions, list):
+                raise ValueError("[GovRuleLoader] site.browser.actions must be a list")
+            for idx, action in enumerate(actions):
+                if not isinstance(action, dict):
+                    raise ValueError(f"[GovRuleLoader] site.browser.actions[{idx}] must be an object")
+
+        allow_inline_detail = site.get("allow_inline_detail")
+        if allow_inline_detail is not None and not isinstance(allow_inline_detail, bool):
+            raise ValueError("[GovRuleLoader] site.allow_inline_detail must be bool")
+        if bool(allow_inline_detail):
+            self._require(rule, "extract.inline_list.item_xpath")
+            self._require(rule, "extract.inline_list.title_xpath")

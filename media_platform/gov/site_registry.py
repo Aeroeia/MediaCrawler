@@ -10,8 +10,16 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+
+def _safe_float(value: Any) -> float:
+    try:
+        return float(value or 0.0)
+    except Exception:
+        return 0.0
 
 
 class GovSiteRegistry:
@@ -52,8 +60,12 @@ class GovSiteRegistry:
                     "site_code": str(row.get("site_code") or "").strip(),
                     "site_name": str(row.get("site_name") or "").strip(),
                     "base_url": str(row.get("base_url") or "").strip(),
-                    "status": str(row.get("status") or "pending_dynamic").strip(),
+                    "status": str(row.get("status") or "pending_dynamic").strip() or "pending_dynamic",
                     "default_channel": str(row.get("default_channel") or "main").strip() or "main",
+                    "verified_mode": str(row.get("verified_mode") or "").strip(),
+                    "verify_error": str(row.get("verify_error") or "").strip(),
+                    "last_verified_at": str(row.get("last_verified_at") or "").strip(),
+                    "verify_success_rate": _safe_float(row.get("verify_success_rate")),
                 }
             )
         return [row for row in output if row["site_code"]]
@@ -69,3 +81,39 @@ class GovSiteRegistry:
                 return row
         raise ValueError(f"[GovSiteRegistry] site '{site_code}' not found in manifest")
 
+    @classmethod
+    def update_sites(
+        cls,
+        updates: dict[str, dict[str, Any]],
+        manifest_path: str = "",
+    ) -> dict[str, Any]:
+        payload = cls.load_manifest(manifest_path)
+        rows = payload.get("sites") or []
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            code = str(row.get("site_code") or "").strip()
+            if not code:
+                continue
+            update_row = updates.get(code)
+            if not isinstance(update_row, dict):
+                continue
+            for field in (
+                "status",
+                "default_channel",
+                "verified_mode",
+                "verify_error",
+                "last_verified_at",
+                "verify_success_rate",
+            ):
+                if field in update_row:
+                    row[field] = update_row[field]
+            if "last_verified_at" not in update_row:
+                row["last_verified_at"] = now
+
+        path = Path(manifest_path).expanduser() if manifest_path else cls.default_manifest_path()
+        if not path.is_absolute():
+            path = Path.cwd() / path
+        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        return payload

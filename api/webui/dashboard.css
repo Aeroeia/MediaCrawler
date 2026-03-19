@@ -222,6 +222,7 @@ body {
 
 .panel-grid.two-col {
   grid-template-columns: 1fr 1fr;
+  align-items: start;
 }
 
 .panel-grid.full {
@@ -260,8 +261,8 @@ body {
 }
 
 .trend-chart {
-  flex: 1;
   min-height: 260px;
+  height: clamp(260px, 34vh, 360px);
   border: 1px solid #e4ebfa;
   border-radius: 10px;
   background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
@@ -275,7 +276,7 @@ body {
 
 .trend-svg {
   width: 100%;
-  height: 240px;
+  height: 100%;
   display: block;
 }
 
@@ -681,10 +682,11 @@ body {
 
   .trend-chart {
     min-height: 220px;
+    height: clamp(220px, 38vh, 300px);
   }
 
   .trend-svg {
-    height: 210px;
+    height: 100%;
   }
 }
 

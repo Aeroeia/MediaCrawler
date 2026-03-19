@@ -301,6 +301,10 @@ async def get_gov_sites():
                 "status": status,
                 "default_channel": str(site.get("default_channel") or "main"),
                 "base_url": str(site.get("base_url") or ""),
+                "verified_mode": str(site.get("verified_mode") or ""),
+                "verify_error": str(site.get("verify_error") or ""),
+                "last_verified_at": str(site.get("last_verified_at") or ""),
+                "verify_success_rate": float(site.get("verify_success_rate") or 0.0),
             }
         )
     return {"sites": rows}

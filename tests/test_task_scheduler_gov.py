@@ -9,6 +9,7 @@
 
 import pytest
 
+from media_platform.gov.site_registry import GovSiteRegistry
 from api.schemas.task import TaskUpsertRequest
 from api.services.task_scheduler_service import TaskSchedulerError, TaskSchedulerService
 from database.models import CrawlerTask
@@ -90,3 +91,31 @@ def test_build_command_for_gov_contains_gov_args():
     assert "--gov_rule_path /tmp/rules" in command_text
     assert runtime_params["gov_site"] == "dpxq"
     assert runtime_params["gov_max_pages"] == 2
+
+
+def test_normalize_task_upsert_payload_for_non_ready_gov_rejected(monkeypatch: pytest.MonkeyPatch):
+    service = TaskSchedulerService()
+    monkeypatch.setattr(
+        GovSiteRegistry,
+        "get_site",
+        staticmethod(
+            lambda site_code: {
+                "site_code": site_code,
+                "default_channel": "main",
+                "status": "pending_dynamic",
+                "verify_error": "captcha required",
+            }
+        ),
+    )
+    payload = TaskUpsertRequest(
+        name="gov-pending",
+        platform="gov",
+        crawler_type="search",
+        login_type="qrcode",
+        save_option="jsonl",
+        gov_site="dummy-site",
+        manual_only=True,
+    )
+    with pytest.raises(TaskSchedulerError) as exc_info:
+        service._normalize_task_upsert_payload(payload)
+    assert "not ready" in str(exc_info.value)

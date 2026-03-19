@@ -39,7 +39,7 @@ from sqlalchemy.pool import NullPool
 
 from api.schemas import PlatformEnum, TaskUpsertRequest
 from config.db_config import mysql_db_config
-from database.models import Base, CrawlerTask, CrawlerTaskCheckpoint, CrawlerTaskRun
+from database.models import Base, CrawlerTask, CrawlerTaskCheckpoint, CrawlerTaskRun, GovArticle
 from media_platform.gov.site_registry import GovSiteRegistry
 
 
@@ -209,7 +209,7 @@ class TaskSchedulerService:
                 site_info = GovSiteRegistry.get_site(site_code=normalized["gov_site"])
             except Exception:
                 if normalized["gov_rule_path"]:
-                    site_info = {"default_channel": "main"}
+                    site_info = {"default_channel": "main", "status": "ready"}
                 else:
                     raise TaskSchedulerError(
                         f"gov_site '{normalized['gov_site']}' is not in gov manifest",
@@ -217,6 +217,14 @@ class TaskSchedulerService:
                     )
             if not normalized["gov_channel"]:
                 normalized["gov_channel"] = str(site_info.get("default_channel") or "main")
+            status = str(site_info.get("status") or "").strip().lower()
+            if status != "ready":
+                verify_error = str(site_info.get("verify_error") or "").strip()
+                raise TaskSchedulerError(
+                    f"gov_site '{normalized['gov_site']}' is not ready (status={status or 'unknown'})"
+                    + (f", reason={verify_error}" if verify_error else ""),
+                    status_code=400,
+                )
 
             normalized.update(
                 {
@@ -598,7 +606,12 @@ class TaskSchedulerService:
             await conn.run_sync(
                 lambda sync_conn: Base.metadata.create_all(
                     sync_conn,
-                    tables=[CrawlerTask.__table__, CrawlerTaskRun.__table__, CrawlerTaskCheckpoint.__table__],
+                    tables=[
+                        CrawlerTask.__table__,
+                        CrawlerTaskRun.__table__,
+                        CrawlerTaskCheckpoint.__table__,
+                        GovArticle.__table__,
+                    ],
                 )
             )
             # schema compatibility for existing deployments without migration tool
@@ -1012,10 +1025,16 @@ class TaskSchedulerService:
 
             status_map = await self.get_platform_status()
             status_by_platform = {item["platform"]: item for item in status_map["rows"]}
+            gov_site_map = {row["site_code"]: row for row in GovSiteRegistry.list_sites()}
             for task in tasks:
                 platform_status = status_by_platform.get(task["platform"], {"busy": False, "running_task_id": 0})
                 task["platform_busy"] = bool(platform_status.get("busy", False))
                 task["platform_running_task_id"] = int(platform_status.get("running_task_id", 0))
+                if task["platform"] == "gov":
+                    gov_site = str((task.get("crawler_params") or {}).get("gov_site") or "")
+                    gov_meta = gov_site_map.get(gov_site, {})
+                    task["gov_site_status"] = str(gov_meta.get("status") or "")
+                    task["gov_verify_error"] = str(gov_meta.get("verify_error") or "")
                 checkpoint = checkpoint_rows.get(int(task["id"]))
                 if checkpoint and self._is_resume_supported(task["platform"]):
                     payload = self._safe_json_loads(checkpoint.resume_payload or "")
