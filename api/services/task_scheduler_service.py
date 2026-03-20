@@ -40,6 +40,7 @@ from sqlalchemy.pool import NullPool
 from api.schemas import PlatformEnum, TaskUpsertRequest
 from config.db_config import mysql_db_config
 from database.models import Base, CrawlerTask, CrawlerTaskCheckpoint, CrawlerTaskRun, GovArticle
+from media_platform.gov.rule_loader import GovRuleLoader
 from media_platform.gov.site_registry import GovSiteRegistry
 
 
@@ -215,9 +216,24 @@ class TaskSchedulerService:
                         f"gov_site '{normalized['gov_site']}' is not in gov manifest",
                         status_code=400,
                     )
-            if not normalized["gov_channel"]:
-                normalized["gov_channel"] = str(site_info.get("default_channel") or "main")
+            raw_channel = normalized["gov_channel"]
+            channels = self._split_csv_values(raw_channel)
+            if not channels:
+                channels = [str(site_info.get("default_channel") or "main").strip() or "main"]
+
             status = str(site_info.get("status") or "").strip().lower()
+            if status == "ready" and not normalized["gov_rule_path"]:
+                try:
+                    rule = GovRuleLoader().load_site_rule(site=normalized["gov_site"])
+                    for ch in channels:
+                        GovRuleLoader.get_channel_rule(rule=rule, channel=ch)
+                except Exception as exc:
+                    raise TaskSchedulerError(
+                        f"gov_channel '{','.join(channels)}' is not valid for site '{normalized['gov_site']}'",
+                        status_code=400,
+                    ) from exc
+
+            normalized["gov_channel"] = ",".join(channels)
             if status != "ready":
                 verify_error = str(site_info.get("verify_error") or "").strip()
                 raise TaskSchedulerError(
@@ -1159,12 +1175,12 @@ class TaskSchedulerService:
         except SQLAlchemyError as exc:
             raise TaskSchedulerError(f"MySQL query failed: {exc}", status_code=503) from exc
 
-    async def run_now(self, task_id: int) -> Dict[str, Any]:
+    async def run_now(self, task_id: int, use_resume_checkpoint: bool = True) -> Dict[str, Any]:
         return await self._start_task(
             task_id,
             trigger_type="manual",
             allow_busy_skip=False,
-            use_resume_checkpoint=True,
+            use_resume_checkpoint=bool(use_resume_checkpoint),
         )
 
     async def pause_task(self, task_id: int) -> Dict[str, Any]:

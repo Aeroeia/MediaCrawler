@@ -3,10 +3,12 @@
     "code": "xfj",
     "name": "深圳市信访局",
     "base_url": "http://xfj.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "http://xfj.sz.gov.cn/zwgk/qt/tzgg"
       ],
@@ -14,6 +16,37 @@
         "pattern": "http://xfj.sz.gov.cn/zwgk/qt/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://xfj.sz.gov.cn/zwgk/zcfgjzcjd/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://xfj.sz.gov.cn/zwgk/zcfgjzcjd/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "http://xfj.sz.gov.cn/zwgk/qt/gzdt"
+      ],
+      "pagination": {
+        "pattern": "http://xfj.sz.gov.cn/zwgk/qt/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "http://xfj.sz.gov.cn/zwgk/qt/tzgg"
+      ],
+      "pagination": {
+        "pattern": "http://xfj.sz.gov.cn/zwgk/qt/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

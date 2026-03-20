@@ -3,17 +3,40 @@
     "code": "cgj",
     "name": "深圳市城市管理和综合执法局",
     "base_url": "http://cgj.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://cgj.sz.gov.cn/zwgk/zcfg/agws/content/post_12458433.html"
+        "https://cgj.sz.gov.cn/zwgk/tzgg/index.html"
       ],
       "pagination": {
-        "pattern": "https://cgj.sz.gov.cn/zwgk/zcfg/agws/content/post_12458433_index_{page}.html",
+        "pattern": "https://cgj.sz.gov.cn/zwgk/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://cgj.sz.gov.cn/zwgk/zcfg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://cgj.sz.gov.cn/zwgk/zcfg/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://cgj.sz.gov.cn/zwgk/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://cgj.sz.gov.cn/zwgk/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

@@ -3,17 +3,50 @@
     "code": "yjgl",
     "name": "深圳市应急管理局",
     "base_url": "http://yjgl.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://yjgl.sz.gov.cn/zwgk/xxgkml/zcfgjjd/zcfg/content/post_12688642.html"
+        "https://yjgl.sz.gov.cn/zwgk/xxgkml/qt/tzgg/index.html"
       ],
       "pagination": {
-        "pattern": "https://yjgl.sz.gov.cn/zwgk/xxgkml/zcfgjjd/zcfg/content/post_12688642_index_{page}.html",
+        "pattern": "https://yjgl.sz.gov.cn/zwgk/xxgkml/qt/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://yjgl.sz.gov.cn/zwgk/gfxwjcx/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://yjgl.sz.gov.cn/zwgk/gfxwjcx/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://yjgl.sz.gov.cn/zwgk/xxgkml/qt/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://yjgl.sz.gov.cn/zwgk/xxgkml/qt/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://yjgl.sz.gov.cn/zwgk/xxgkml/qt/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://yjgl.sz.gov.cn/zwgk/xxgkml/qt/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

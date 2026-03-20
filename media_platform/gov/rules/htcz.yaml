@@ -3,10 +3,12 @@
     "code": "htcz",
     "name": "深圳市航天产业投资控股",
     "base_url": "https://htcz.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://htcz.sz.gov.cn/zfxx/cg/index.html"
       ],
@@ -14,6 +16,17 @@
         "pattern": "https://htcz.sz.gov.cn/zfxx/cg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://htcz.sz.gov.cn/zfxx/cg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://htcz.sz.gov.cn/zfxx/cg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

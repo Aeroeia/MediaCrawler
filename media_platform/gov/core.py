@@ -64,18 +64,28 @@ class GovCrawler(AbstractCrawler):
         site_code = str(config.GOV_SITE or "").strip()
         self._ensure_site_ready(site_code)
         rule = self.rule_loader.load_site_rule(site=site_code, custom_rule_path=str(config.GOV_RULE_PATH or "").strip())
-        channel = str(config.GOV_CHANNEL or "").strip() or self.rule_loader.get_default_channel(site=site_code)
+        raw_channel = str(config.GOV_CHANNEL or "").strip()
+        channels = [c.strip() for c in raw_channel.split(",") if c.strip()]
+        if not channels:
+            channels = [self.rule_loader.get_default_channel(site=site_code)]
         fetch_mode = str((rule.get("site") or {}).get("fetch_mode") or "http").strip().lower()
         self.fetcher = self._create_fetcher(rule=rule, fetch_mode=fetch_mode)
         await self.fetcher.start()
+        global_seen_urls: set[str] = set()
         try:
-            await self._crawl_by_channel(rule=rule, channel=channel)
+            for channel in channels:
+                await self._crawl_by_channel(rule=rule, channel=channel, global_seen_urls=global_seen_urls)
         finally:
             if self.fetcher:
                 await self.fetcher.close()
                 self.fetcher = None
 
-    async def _crawl_by_channel(self, rule: dict[str, Any], channel: str) -> None:
+    async def _crawl_by_channel(
+        self,
+        rule: dict[str, Any],
+        channel: str,
+        global_seen_urls: set[str] | None = None,
+    ) -> None:
         channel_rule = self.rule_loader.get_channel_rule(rule=rule, channel=channel)
         page_urls = self._build_list_page_urls(rule=rule, channel_rule=channel_rule, max_pages=config.GOV_MAX_PAGES)
         utils.logger.info(
@@ -85,10 +95,11 @@ class GovCrawler(AbstractCrawler):
             len(page_urls),
         )
 
-        seen_urls: set[str] = set()
+        seen_urls = global_seen_urls if global_seen_urls is not None else set()
         list_item_count = 0
         success_count = 0
         fail_count = 0
+        duplicate_skip_count = 0
 
         for page_url in page_urls:
             if not self.fetcher:
@@ -108,6 +119,8 @@ class GovCrawler(AbstractCrawler):
                 detail_url = str(list_item.get("url") or "").strip()
                 inline_mode = str(list_item.get("inline_mode") or "").strip().lower() in {"1", "true", "yes"}
                 if not detail_url or detail_url in seen_urls:
+                    if detail_url in seen_urls:
+                        duplicate_skip_count += 1
                     continue
                 seen_urls.add(detail_url)
 
@@ -148,10 +161,12 @@ class GovCrawler(AbstractCrawler):
                     )
 
         utils.logger.info(
-            "[GovCrawler] completed. list_items=%s success=%s failed=%s",
+            "[GovCrawler] completed. channel=%s list_items=%s success=%s failed=%s duplicate_skipped=%s",
+            channel,
             list_item_count,
             success_count,
             fail_count,
+            duplicate_skip_count,
         )
 
     def _extract_page_items(self, rule: dict[str, Any], page_url: str, page_html: str) -> list[dict[str, Any]]:
@@ -235,15 +250,21 @@ class GovCrawler(AbstractCrawler):
         fetch_mode = str((rule.get("site") or {}).get("fetch_mode") or "http").strip().lower()
         self.fetcher = self._create_fetcher(rule=rule, fetch_mode=fetch_mode)
         await self.fetcher.start()
-        channel = str(config.GOV_CHANNEL or "").strip() or self.rule_loader.get_default_channel(site=site_code)
+        raw_channel = str(config.GOV_CHANNEL or "").strip()
+        channels = [c.strip() for c in raw_channel.split(",") if c.strip()]
+        if not channels:
+            channels = [self.rule_loader.get_default_channel(site=site_code)]
+        primary_channel = channels[0]
+        global_seen_urls: set[str] = set()
 
         try:
             if config.CRAWLER_TYPE == "search":
-                await self._crawl_by_channel(rule=rule, channel=channel)
+                for channel in channels:
+                    await self._crawl_by_channel(rule=rule, channel=channel, global_seen_urls=global_seen_urls)
                 return
 
             if config.CRAWLER_TYPE == "detail":
-                await self._crawl_detail_urls(rule=rule, channel=channel)
+                await self._crawl_detail_urls(rule=rule, channel=primary_channel)
                 return
 
             if config.CRAWLER_TYPE == "creator":

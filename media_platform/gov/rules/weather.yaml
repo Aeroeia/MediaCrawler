@@ -3,10 +3,12 @@
     "code": "weather",
     "name": "深圳市气象局",
     "base_url": "http://weather.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://weather.sz.gov.cn/xingxigongkai/tongzhigonggao/index.html"
       ],
@@ -14,6 +16,27 @@
         "pattern": "https://weather.sz.gov.cn/xingxigongkai/tongzhigonggao/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://weather.sz.gov.cn/xingxigongkai/zhengcefagui/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://weather.sz.gov.cn/xingxigongkai/zhengcefagui/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://weather.sz.gov.cn/xingxigongkai/tongzhigonggao/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://weather.sz.gov.cn/xingxigongkai/tongzhigonggao/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

@@ -3,10 +3,12 @@
     "code": "gzw",
     "name": "深圳市国资委",
     "base_url": "https://gzw.sz.gov.cn",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://gzw.sz.gov.cn/zwgk/qt/tzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://gzw.sz.gov.cn/zwgk/qt/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://gzw.sz.gov.cn/zwgk/zcfgjzcjd/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://gzw.sz.gov.cn/zwgk/zcfgjzcjd/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://gzw.sz.gov.cn/gzjg/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://gzw.sz.gov.cn/gzjg/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://gzw.sz.gov.cn/zwgk/qt/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://gzw.sz.gov.cn/zwgk/qt/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

@@ -3,17 +3,50 @@
     "code": "szeb",
     "name": "深圳市教育局",
     "base_url": "http://szeb.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://szeb.sz.gov.cn/home/xxgk/flzy/wjtz/content/post_12645570.html"
+        "https://szeb.sz.gov.cn/home/jyfw/jyyj/tzgg/index.html"
       ],
       "pagination": {
-        "pattern": "https://szeb.sz.gov.cn/home/xxgk/flzy/wjtz/content/post_12645570_index_{page}.html",
+        "pattern": "https://szeb.sz.gov.cn/home/jyfw/jyyj/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://szeb.sz.gov.cn/home/gfxwj/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://szeb.sz.gov.cn/home/gfxwj/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://szeb.sz.gov.cn/home/jyfw/jyyj/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://szeb.sz.gov.cn/home/jyfw/jyyj/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://szeb.sz.gov.cn/home/jyfw/jyyj/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://szeb.sz.gov.cn/home/jyfw/jyyj/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

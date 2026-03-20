@@ -3,17 +3,30 @@
     "code": "opendata",
     "name": "深圳市政府数据开放平台",
     "base_url": "https://opendata.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://opendata.sz.gov.cn/"
+        "https://opendata.sz.gov.cn/index.html"
       ],
       "pagination": {
-        "pattern": "",
+        "pattern": "https://opendata.sz.gov.cn/index_{page}.html",
         "start_page": 2
       }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://opendata.sz.gov.cn/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://opendata.sz.gov.cn/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

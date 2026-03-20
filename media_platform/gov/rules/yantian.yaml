@@ -3,10 +3,12 @@
     "code": "yantian",
     "name": "盐田区",
     "base_url": "http://www.yantian.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://www.yantian.gov.cn/cn/zwgk/tzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://www.yantian.gov.cn/cn/zwgk/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://www.yantian.gov.cn/cn/zjyt/zcjd/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.yantian.gov.cn/cn/zjyt/zcjd/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://www.yantian.gov.cn/cn/zwgk/zwdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.yantian.gov.cn/cn/zwgk/zwdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://www.yantian.gov.cn/cn/zwgk/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.yantian.gov.cn/cn/zwgk/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

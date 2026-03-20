@@ -3,10 +3,12 @@
     "code": "commerce",
     "name": "深圳市商务局",
     "base_url": "https://commerce.sz.gov.cn",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://commerce.sz.gov.cn/xxgk/qt/tzgg_1/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://commerce.sz.gov.cn/xxgk/qt/tzgg_1/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://commerce.sz.gov.cn/xxgk/qt/gfxwjmljcx/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://commerce.sz.gov.cn/xxgk/qt/gfxwjmljcx/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://commerce.sz.gov.cn/xxgk/qt/gzdt_1/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://commerce.sz.gov.cn/xxgk/qt/gzdt_1/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://commerce.sz.gov.cn/xxgk/qt/tzgg_1/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://commerce.sz.gov.cn/xxgk/qt/tzgg_1/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

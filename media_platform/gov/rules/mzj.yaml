@@ -3,10 +3,12 @@
     "code": "mzj",
     "name": "深圳市民政局",
     "base_url": "http://mzj.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://mzj.sz.gov.cn/szmz/pc/zwgk/jcxxgk/tzgg/index.html"
       ],
@@ -14,6 +16,17 @@
         "pattern": "https://mzj.sz.gov.cn/szmz/pc/zwgk/jcxxgk/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://mzj.sz.gov.cn/szmz/pc/zwgk/jcxxgk/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://mzj.sz.gov.cn/szmz/pc/zwgk/jcxxgk/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

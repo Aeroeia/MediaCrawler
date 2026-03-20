@@ -311,12 +311,16 @@ async def get_gov_sites():
 
 
 @app.get("/api/config/gov/channels")
-async def get_gov_channels(site: str = Query(..., min_length=1)):
+async def get_gov_channels(
+    site: str = Query(..., min_length=1),
+    include_compat: bool = Query(False, description="Include compatibility-only channels such as main alias"),
+):
     try:
         site_info = GovSiteRegistry.get_site(site_code=site)
     except Exception as exc:
         raise HTTPException(status_code=404, detail=f"Unknown gov site: {site}") from exc
-    default_channel = str(site_info.get("default_channel") or "main")
+    raw_default_channel = str(site_info.get("default_channel") or "main")
+    default_channel = raw_default_channel
     status = str(site_info.get("status") or "pending_dynamic")
     rows = []
 
@@ -326,16 +330,44 @@ async def get_gov_channels(site: str = Query(..., min_length=1)):
             channels = rule.get("channels") or {}
             if isinstance(channels, dict):
                 for channel_name in sorted(channels.keys()):
-                    rows.append({"value": str(channel_name), "label": str(channel_name), "status": status})
+                    channel_cfg = channels.get(channel_name) or {}
+                    if not isinstance(channel_cfg, dict):
+                        channel_cfg = {}
+                    compat_alias = bool(channel_cfg.get("compat_alias")) or str(channel_name).strip() == "main"
+                    if compat_alias and not include_compat:
+                        continue
+                    label = str(channel_cfg.get("label") or channel_name)
+                    rows.append(
+                        {
+                            "value": str(channel_name),
+                            "label": label,
+                            "status": status,
+                            "compat_alias": compat_alias,
+                            "recommended": not compat_alias,
+                        }
+                    )
         except Exception:
             rows = []
 
     if not rows:
-        rows = [{"value": default_channel, "label": default_channel, "status": status}]
+        rows = [
+            {
+                "value": default_channel,
+                "label": default_channel,
+                "status": status,
+                "compat_alias": False,
+                "recommended": True,
+            }
+        ]
+
+    available_values = {str(item.get("value") or "").strip() for item in rows}
+    if default_channel not in available_values and rows:
+        default_channel = str(rows[0].get("value") or "").strip()
 
     return {
         "site": site,
         "status": status,
+        "raw_default_channel": raw_default_channel,
         "default_channel": default_channel,
         "channels": rows,
     }

@@ -86,9 +86,12 @@ async def delete_task(task_id: int = Path(..., ge=1)):
 
 
 @router.post("/{task_id}/run-now")
-async def run_now(task_id: int = Path(..., ge=1)):
+async def run_now(
+    task_id: int = Path(..., ge=1),
+    resume: bool = Query(default=True, description="Use saved checkpoint to resume when available"),
+):
     try:
-        return _ok(data=await task_scheduler_service.run_now(task_id), message="task started")
+        return _ok(data=await task_scheduler_service.run_now(task_id, use_resume_checkpoint=resume), message="task started")
     except Exception as exc:
         return _error(exc)
 

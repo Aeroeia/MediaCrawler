@@ -130,13 +130,13 @@ def _extract_rows_for_page(
 
 async def _verify_once(
     rule: dict[str, Any],
+    channel_name: str,
     mode: str,
     max_pages: int,
     detail_sample: int,
     min_interval_seconds: float,
 ) -> tuple[int, int, int, str]:
     site = rule.get("site") or {}
-    channel_name = sorted((rule.get("channels") or {}).keys())[0]
     channel_rule = GovRuleLoader.get_channel_rule(rule, channel_name)
     page_urls = GovCrawler._build_list_page_urls(rule=rule, channel_rule=channel_rule, max_pages=max_pages)
     extractor = GovExtractor()
@@ -214,6 +214,70 @@ async def _verify_once(
     return list_count, detail_attempt, detail_success, verify_error
 
 
+def _iter_verify_channels(rule: dict[str, Any]) -> list[str]:
+    channels = rule.get("channels") or {}
+    if not isinstance(channels, dict):
+        return []
+    rows: list[str] = []
+    for channel_name in sorted(channels.keys()):
+        cfg = channels.get(channel_name) or {}
+        if not isinstance(cfg, dict):
+            cfg = {}
+        if bool(cfg.get("compat_alias")):
+            continue
+        if not cfg.get("start_urls"):
+            continue
+        rows.append(str(channel_name))
+    if rows:
+        return rows
+    if "main" in channels:
+        return ["main"]
+    return []
+
+
+async def _verify_site_by_mode(
+    rule: dict[str, Any],
+    channel_names: list[str],
+    mode: str,
+    max_pages: int,
+    detail_sample: int,
+    min_interval_seconds: float,
+) -> tuple[list[dict[str, Any]], int, int, int, str]:
+    results: list[dict[str, Any]] = []
+    total_list_count = 0
+    total_detail_attempt = 0
+    total_detail_success = 0
+    first_error = ""
+
+    for channel_name in channel_names:
+        list_count, detail_attempt, detail_success, verify_error = await _verify_once(
+            rule=rule,
+            channel_name=channel_name,
+            mode=mode,
+            max_pages=max_pages,
+            detail_sample=detail_sample,
+            min_interval_seconds=min_interval_seconds,
+        )
+        total_list_count += int(list_count)
+        total_detail_attempt += int(detail_attempt)
+        total_detail_success += int(detail_success)
+        if verify_error and not first_error:
+            first_error = verify_error
+        results.append(
+            {
+                "channel": channel_name,
+                "list_count": int(list_count),
+                "detail_attempt": int(detail_attempt),
+                "detail_success": int(detail_success),
+                "verify_success_rate": round((float(detail_success) / float(detail_attempt)) if detail_attempt > 0 else 0.0, 4),
+                "verify_error": verify_error,
+                "verify_error_code": verify_error.split(":", 1)[0].strip() if verify_error else "",
+            }
+        )
+
+    return results, total_list_count, total_detail_attempt, total_detail_success, first_error
+
+
 async def verify_site(
     site: dict[str, Any],
     loader: GovRuleLoader,
@@ -225,36 +289,38 @@ async def verify_site(
     site_code = str(site.get("site_code") or "")
     rule_path = await _ensure_rule(site_code=site_code, rules_dir=rules_dir, channel_name="main")
     rule = loader.load_site_rule(site=site_code, custom_rule_path=str(rules_dir))
+    channel_names = _iter_verify_channels(rule)
+    if not channel_names:
+        raise ValueError(f"[gov-batch] site={site_code} has no valid channels to verify")
     mode = str((rule.get("site") or {}).get("fetch_mode") or "http").strip().lower()
-    list_count, detail_attempt, detail_success, verify_error = await _verify_once(
+
+    channel_results, list_count, detail_attempt, detail_success, verify_error = await _verify_site_by_mode(
         rule=rule,
+        channel_names=channel_names,
         mode=mode,
         max_pages=max_pages,
         detail_sample=detail_sample,
         min_interval_seconds=min_interval_seconds,
     )
-    success = list_count > 0 and detail_success > 0
+    success = detail_success > 0 and list_count > 0
 
     if (verify_error or not success) and mode != "browser":
-        list_count2, detail_attempt2, detail_success2, verify_error2 = await _verify_once(
+        channel_results2, list_count2, detail_attempt2, detail_success2, verify_error2 = await _verify_site_by_mode(
             rule=rule,
+            channel_names=channel_names,
             mode="browser",
             max_pages=max_pages,
             detail_sample=detail_sample,
             min_interval_seconds=min_interval_seconds,
         )
-        if detail_success2 > 0:
+        if detail_success2 > detail_success:
             mode = "browser"
-            list_count, detail_attempt, detail_success, verify_error = (
-                list_count2,
-                detail_attempt2,
-                detail_success2,
-                "",
-            )
+            channel_results = channel_results2
+            list_count, detail_attempt, detail_success, verify_error = (list_count2, detail_attempt2, detail_success2, verify_error2)
             _set_rule_fetch_mode(rule_path, "browser")
-            success = True
+            success = detail_success > 0 and list_count > 0
 
-    success = list_count > 0 and detail_success > 0
+    success = detail_success > 0 and list_count > 0
     if success:
         status = "ready"
         verify_error = ""
@@ -288,6 +354,9 @@ async def verify_site(
             "base_url": str(site.get("base_url") or ""),
             "status": status,
             "verified_mode": mode,
+            "channel_count": len(channel_names),
+            "channels_verified": channel_names,
+            "channel_results": channel_results,
             "list_count": list_count,
             "detail_attempt": detail_attempt,
             "detail_success": detail_success,

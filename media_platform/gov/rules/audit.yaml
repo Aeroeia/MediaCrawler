@@ -3,10 +3,12 @@
     "code": "audit",
     "name": "深圳市审计局",
     "base_url": "http://audit.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://audit.sz.gov.cn/zwxx/sjxx/tzgk/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://audit.sz.gov.cn/zwxx/sjxx/tzgk/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://audit.sz.gov.cn/zwxx/flfg/fgcwkj/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://audit.sz.gov.cn/zwxx/flfg/fgcwkj/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://audit.sz.gov.cn/zwxx/sjxx/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://audit.sz.gov.cn/zwxx/sjxx/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://audit.sz.gov.cn/zwxx/sjxx/tzgk/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://audit.sz.gov.cn/zwxx/sjxx/tzgk/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

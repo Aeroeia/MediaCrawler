@@ -3,17 +3,50 @@
     "code": "zjj",
     "name": "深圳市住房和建设局",
     "base_url": "http://zjj.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://zjj.sz.gov.cn/xxgk/tzgg/content/post_12691518.html"
+        "http://zjj.sz.gov.cn/xxgk/tzgg"
       ],
       "pagination": {
-        "pattern": "https://zjj.sz.gov.cn/xxgk/tzgg/content/post_12691518_index_{page}.html",
+        "pattern": "http://zjj.sz.gov.cn/xxgk/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "http://zjj.sz.gov.cn/xxgk/zcfgs/zcfg"
+      ],
+      "pagination": {
+        "pattern": "http://zjj.sz.gov.cn/xxgk/zcfgs/zcfg/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://zjj.sz.gov.cn/xxgk/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://zjj.sz.gov.cn/xxgk/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "http://zjj.sz.gov.cn/xxgk/tzgg"
+      ],
+      "pagination": {
+        "pattern": "http://zjj.sz.gov.cn/xxgk/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

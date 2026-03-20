@@ -3,10 +3,12 @@
     "code": "wjw",
     "name": "深圳市卫生健康委员会",
     "base_url": "https://wjw.sz.gov.cn",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://wjw.sz.gov.cn/wjtz/index.html"
       ],
@@ -14,6 +16,27 @@
         "pattern": "https://wjw.sz.gov.cn/wjtz/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://wjw.sz.gov.cn/xxgk/zcfggfxwj/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://wjw.sz.gov.cn/xxgk/zcfggfxwj/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://wjw.sz.gov.cn/wjtz/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://wjw.sz.gov.cn/wjtz/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

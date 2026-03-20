@@ -3,17 +3,30 @@
     "code": "hsa",
     "name": "深圳市医疗保障局",
     "base_url": "http://hsa.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://hsa.sz.gov.cn/zwgk/zcfgjzcjd/zcfg/ylbx/content/post_12517861.html"
+        "https://hsa.sz.gov.cn/zwgk/zcfgjzcjd/zcfg/ylbx/index.html"
       ],
       "pagination": {
-        "pattern": "https://hsa.sz.gov.cn/zwgk/zcfgjzcjd/zcfg/ylbx/content/post_12517861_index_{page}.html",
+        "pattern": "https://hsa.sz.gov.cn/zwgk/zcfgjzcjd/zcfg/ylbx/index_{page}.html",
         "start_page": 2
       }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://hsa.sz.gov.cn/zwgk/zcfgjzcjd/zcfg/ylbx/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://hsa.sz.gov.cn/zwgk/zcfgjzcjd/zcfg/ylbx/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

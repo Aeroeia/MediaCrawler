@@ -19,10 +19,13 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from media_platform.gov.core import GovCrawler
 from media_platform.gov.extractor import GovExtractor
 from media_platform.gov.fetcher import GovBrowserFetcher, GovHttpFetcher
 from media_platform.gov.rule_loader import GovRuleLoader
+from store import gov as gov_store
 
 
 def _read_fixture(file_name: str) -> str:
@@ -36,6 +39,13 @@ def test_gov_rule_loader_loads_szfb_rule():
     assert rule["site"]["code"] == "szfb"
     assert "tzgg" in rule["channels"]
     assert rule["extract"]["list"]["item_xpath"]
+
+
+def test_gov_rule_loader_main_alias_still_available():
+    loader = GovRuleLoader()
+    rule = loader.load_site_rule(site="szfb")
+    main_rule = loader.get_channel_rule(rule=rule, channel="main")
+    assert bool(main_rule.get("compat_alias")) is True
 
 
 def test_gov_extract_list_items_with_20_records():
@@ -252,3 +262,72 @@ def test_gov_extract_inline_list_items_generate_inline_url():
     assert rows[0]["source"] == "宝安区"
     assert rows[0]["publish_time"] == "2026-03-17 16:23:43"
     assert rows[0]["url"].startswith("https://www.szcredit.org.cn/#/index#inline-")
+
+
+@pytest.mark.asyncio
+async def test_gov_crawler_multichannel_global_dedupe_keeps_first_channel(monkeypatch: pytest.MonkeyPatch):
+    list_html = """
+    <html><body><ul>
+      <li><a href="/detail/1001.html" title="同一条公告">同一条公告</a><span class="date">2026-03-20</span></li>
+    </ul></body></html>
+    """
+    detail_html = """
+    <html><body>
+      <h1>同一条公告</h1>
+      <span>信息来源：测试站点</span>
+      <span>发布时间：2026-03-20 10:00:00</span>
+      <div id="content">正文</div>
+    </body></html>
+    """
+    html_map = {
+        "https://example.gov.cn/tzgg/index.html": list_html,
+        "https://example.gov.cn/dynamic/index.html": list_html,
+        "https://example.gov.cn/detail/1001.html": detail_html,
+    }
+
+    class _FakeFetcher:
+        async def get_text(self, url: str, page_cfg=None):  # noqa: ARG002
+            return html_map[url]
+
+    crawler = GovCrawler()
+    crawler.fetcher = _FakeFetcher()
+    crawler.extractor = GovExtractor()
+    records: list[dict] = []
+
+    async def _fake_update_gov_content(item: dict) -> None:
+        records.append(dict(item))
+
+    monkeypatch.setattr(gov_store, "update_gov_content", _fake_update_gov_content)
+    rule = {
+        "site": {
+            "code": "demo",
+            "name": "Demo",
+            "base_url": "https://example.gov.cn",
+        },
+        "channels": {
+            "tzgg": {"start_urls": ["https://example.gov.cn/tzgg/index.html"], "pagination": {"pattern": "", "start_page": 2}},
+            "dynamic": {"start_urls": ["https://example.gov.cn/dynamic/index.html"], "pagination": {"pattern": "", "start_page": 2}},
+        },
+        "extract": {
+            "list": {
+                "item_xpath": ["//ul/li"],
+                "title_xpath": [".//a/@title", ".//a/text()"],
+                "link_xpath": [".//a/@href"],
+                "date_xpath": [".//span/text()"],
+            },
+            "detail": {
+                "title_xpath": ["//h1/text()"],
+                "source_xpath": ["//span[contains(text(),'来源')]/text()"],
+                "pub_time_xpath": ["//span[contains(text(),'发布时间')]/text()"],
+                "content_xpath": ["//div[@id='content']"],
+                "attachments_xpath": ["//a/@href"],
+            },
+        },
+    }
+    seen_urls: set[str] = set()
+    await crawler._crawl_by_channel(rule=rule, channel="tzgg", global_seen_urls=seen_urls)
+    await crawler._crawl_by_channel(rule=rule, channel="dynamic", global_seen_urls=seen_urls)
+
+    assert len(records) == 1
+    assert records[0]["channel"] == "tzgg"
+    assert records[0]["url"] == "https://example.gov.cn/detail/1001.html"

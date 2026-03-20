@@ -13,17 +13,30 @@
           "wait_ms": 1500
         }
       ]
-    }
+    },
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://www.szcredit.org.cn/"
       ],
       "pagination": {
-        "pattern": "",
+        "pattern": "https://www.szcredit.org.cn/index_{page}.html",
         "start_page": 2
       }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://www.szcredit.org.cn/"
+      ],
+      "pagination": {
+        "pattern": "https://www.szcredit.org.cn/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

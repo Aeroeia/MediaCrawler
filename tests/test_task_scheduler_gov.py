@@ -119,3 +119,46 @@ def test_normalize_task_upsert_payload_for_non_ready_gov_rejected(monkeypatch: p
     with pytest.raises(TaskSchedulerError) as exc_info:
         service._normalize_task_upsert_payload(payload)
     assert "not ready" in str(exc_info.value)
+
+
+def test_normalize_task_upsert_payload_for_gov_channel_csv_kept():
+    service = TaskSchedulerService()
+    payload = TaskUpsertRequest(
+        name="gov-multi-channel",
+        platform="gov",
+        crawler_type="search",
+        login_type="qrcode",
+        save_option="jsonl",
+        gov_site="dpxq",
+        gov_channel="tzgg,policy,dynamic",
+        manual_only=True,
+    )
+    normalized = service._normalize_task_upsert_payload(payload)
+    assert normalized["gov_channel"] == "tzgg,policy,dynamic"
+
+
+@pytest.mark.asyncio
+async def test_run_now_can_disable_resume_checkpoint(monkeypatch: pytest.MonkeyPatch):
+    service = TaskSchedulerService()
+    calls: list[dict] = []
+
+    async def _fake_start_task(task_id, trigger_type, allow_busy_skip=False, use_resume_checkpoint=False):
+        calls.append(
+            {
+                "task_id": task_id,
+                "trigger_type": trigger_type,
+                "allow_busy_skip": allow_busy_skip,
+                "use_resume_checkpoint": use_resume_checkpoint,
+            }
+        )
+        return {"task_id": task_id}
+
+    monkeypatch.setattr(service, "_start_task", _fake_start_task)
+    await service.run_now(11, use_resume_checkpoint=False)
+    await service.run_now(12, use_resume_checkpoint=True)
+
+    assert calls[0]["task_id"] == 11
+    assert calls[0]["trigger_type"] == "manual"
+    assert calls[0]["use_resume_checkpoint"] is False
+    assert calls[1]["task_id"] == 12
+    assert calls[1]["use_resume_checkpoint"] is True

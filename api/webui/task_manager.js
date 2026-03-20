@@ -163,7 +163,7 @@
       '      <div class="tm-field full" id="tm-field-specified"><label>详情ID（detail）</label><textarea class="tm-textarea" name="specified_ids" placeholder="多个 ID 逗号分隔"></textarea></div>',
       '      <div class="tm-field full" id="tm-field-creator"><label>创作者ID（creator）</label><textarea class="tm-textarea" name="creator_ids" placeholder="多个 ID 逗号分隔"></textarea></div>',
       '      <div class="tm-field" id="tm-field-gov-site"><label>Gov 站点</label><select class="tm-select" name="gov_site"></select></div>',
-      '      <div class="tm-field" id="tm-field-gov-channel"><label>Gov 栏目</label><select class="tm-select" name="gov_channel"></select></div>',
+      '      <div class="tm-field" id="tm-field-gov-channel"><label>Gov 栏目</label><select class="tm-select" name="gov_channel" multiple></select></div>',
       '      <div class="tm-field full" id="tm-field-gov-status"><label>Gov 站点状态</label><div id="tm-gov-status-text" class="tm-meta">-</div></div>',
       '      <div class="tm-field" id="tm-field-gov-pages"><label>Gov 最大页数</label><input class="tm-input" name="gov_max_pages" type="number" min="1" value="1"></div>',
       '      <div class="tm-field full" id="tm-field-gov-rule"><label>Gov 规则路径（可选）</label><input class="tm-input" name="gov_rule_path" placeholder="media_platform/gov/rules"></div>',
@@ -290,6 +290,44 @@
       .join("");
   }
 
+  function parseCsvList(raw) {
+    return String(raw || "")
+      .split(/[,\n，]+/)
+      .map(function (s) {
+        return s.trim();
+      })
+      .filter(function (s) {
+        return !!s;
+      });
+  }
+
+  function getMultiSelectCsv(selectEl) {
+    if (!(selectEl instanceof HTMLSelectElement)) {
+      return "";
+    }
+    const values = Array.from(selectEl.selectedOptions || []).map(function (opt) {
+      return String(opt.value || "").trim();
+    });
+    return values
+      .map(function (v) {
+        return v.trim();
+      })
+      .filter(function (v) {
+        return !!v;
+      })
+      .join(",");
+  }
+
+  function setMultiSelectByCsv(selectEl, csvText) {
+    if (!(selectEl instanceof HTMLSelectElement)) {
+      return;
+    }
+    const targets = new Set(parseCsvList(csvText));
+    Array.from(selectEl.options || []).forEach(function (opt) {
+      opt.selected = targets.has(String(opt.value || "").trim());
+    });
+  }
+
   function getGovSiteMeta(siteCode) {
     const code = String(siteCode || "").trim();
     if (!code) {
@@ -352,9 +390,14 @@
       setGovChannelOptions(state.govChannels);
       const node = els.taskForm ? els.taskForm.elements.namedItem("gov_channel") : null;
       if (node) {
-        const target = String(preferred || data.default_channel || "").trim();
-        if (target) {
-          node.value = target;
+        const preferredList = parseCsvList(preferred || "");
+        if (preferredList.length) {
+          setMultiSelectByCsv(node, preferredList.join(","));
+        } else {
+          const target = String(data.default_channel || "").trim();
+          if (target) {
+            setMultiSelectByCsv(node, target);
+          }
         }
       }
     } catch (error) {
@@ -574,6 +617,7 @@
         const runBtnText = govNotReady
           ? "站点未就绪"
           : (busyOther ? "平台占用" : (!isWx && task.resume_available ? "续爬执行" : "立即执行"));
+        const showRunFresh = !isWx && !!task.resume_available && !govNotReady && !busyOther;
         const stopDisabled = String(task.status) !== "running";
         const pauseAction = task.is_enabled ? "pause" : "resume";
         const pauseText = task.is_enabled ? "暂停" : "恢复";
@@ -597,6 +641,9 @@
           "  <td>" + Number(task.success_count || 0) + " / " + Number(task.fail_count || 0) + '<div class="tm-small">命中数据: ' + Number(task.data_hit_count || 0) + "</div></td>",
           '  <td><div class="tm-ops">',
           '    <button class="tm-btn" data-action="run" data-id="' + Number(task.id) + '"' + (disabledRun ? " disabled" : "") + ">" + runBtnText + "</button>",
+          (showRunFresh
+            ? ('    <button class="tm-btn" data-action="run_fresh" data-id="' + Number(task.id) + '"' + (disabledRun ? " disabled" : "") + ">从头执行</button>")
+            : ""),
           '    <button class="tm-btn warn" data-action="stop" data-id="' + Number(task.id) + '"' + (stopDisabled ? " disabled" : "") + ">停止</button>",
           '    <button class="tm-btn" data-action="' + pauseAction + '" data-id="' + Number(task.id) + '">' + pauseText + "</button>",
           '    <button class="tm-btn" data-action="edit" data-id="' + Number(task.id) + '">编辑</button>',
@@ -714,7 +761,7 @@
       params.gov_site ||
       (state.govSites[0] && state.govSites[0].value) ||
       "";
-    form.elements.namedItem("gov_channel").value = params.gov_channel || "";
+    setMultiSelectByCsv(form.elements.namedItem("gov_channel"), params.gov_channel || "");
     form.elements.namedItem("gov_max_pages").value = Number(params.gov_max_pages || 1);
     form.elements.namedItem("gov_rule_path").value = params.gov_rule_path || "";
     form.elements.namedItem("cookies").value = params.cookies || "";
@@ -1031,7 +1078,7 @@
         if (!siteNode.value && state.govSites.length) {
           siteNode.value = state.govSites[0].value;
         }
-        const currentChannel = String(els.taskForm.elements.namedItem("gov_channel").value || "");
+        const currentChannel = getMultiSelectCsv(els.taskForm.elements.namedItem("gov_channel"));
         loadGovChannels(siteNode.value, currentChannel).catch(function () {
           // no-op
         });
@@ -1059,6 +1106,7 @@
       throw new Error("Cron 表达式不能为空");
     }
 
+    const govChannelCsv = getMultiSelectCsv(form.namedItem("gov_channel"));
     const payload = {
       name: name,
       description: String(form.namedItem("description").value || "").trim(),
@@ -1070,7 +1118,7 @@
       specified_ids: String(form.namedItem("specified_ids").value || "").trim(),
       creator_ids: String(form.namedItem("creator_ids").value || "").trim(),
       gov_site: String(form.namedItem("gov_site").value || "").trim(),
-      gov_channel: String(form.namedItem("gov_channel").value || "").trim(),
+      gov_channel: govChannelCsv,
       gov_max_pages: Number(form.namedItem("gov_max_pages").value || 1),
       gov_rule_path: String(form.namedItem("gov_rule_path").value || "").trim(),
       cookies: String(form.namedItem("cookies").value || "").trim(),
@@ -1144,8 +1192,8 @@
       });
       if (runNowAfterSave) {
         const runTaskId = editingId || Number((data && data.id) || 0);
-        if (runTaskId > 0) {
-          await fetchEnvelope("/api/tasks/" + runTaskId + "/run-now", { method: "POST" });
+      if (runTaskId > 0) {
+          await fetchEnvelope("/api/tasks/" + runTaskId + "/run-now?resume=true", { method: "POST" });
         }
       }
       closeTaskModal();
@@ -1288,7 +1336,7 @@
       return;
     }
 
-    if (action === "run" && String(task.platform || "").toLowerCase() === "gov") {
+    if ((action === "run" || action === "run_fresh") && String(task.platform || "").toLowerCase() === "gov") {
       const siteCode = String(
         task && task.crawler_params && task.crawler_params.gov_site ? task.crawler_params.gov_site : ""
       ).trim();
@@ -1305,7 +1353,8 @@
     }
 
     const actionMap = {
-      run: { path: "/api/tasks/" + id + "/run-now", text: "任务已启动" },
+      run: { path: "/api/tasks/" + id + "/run-now?resume=true", text: "任务已启动" },
+      run_fresh: { path: "/api/tasks/" + id + "/run-now?resume=false", text: "任务已从头启动" },
       stop: { path: "/api/tasks/" + id + "/stop", text: "任务停止请求已发送" },
       pause: { path: "/api/tasks/" + id + "/pause", text: "任务已暂停" },
       resume: { path: "/api/tasks/" + id + "/resume", text: "任务已恢复" },

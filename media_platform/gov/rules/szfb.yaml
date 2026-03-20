@@ -2,17 +2,50 @@
   "site": {
     "code": "szfb",
     "name": "深圳市财政局",
-    "base_url": "https://szfb.sz.gov.cn"
+    "base_url": "https://szfb.sz.gov.cn",
+    "default_channel": "tzgg"
   },
   "channels": {
     "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://szfb.sz.gov.cn/xwzx/tzgg/index.html"
+        "http://szfb.sz.gov.cn/xwzx/tzgg/"
       ],
       "pagination": {
         "pattern": "https://szfb.sz.gov.cn/xwzx/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "http://szfb.sz.gov.cn/zwgk/zcfg/qt/index.html"
+      ],
+      "pagination": {
+        "pattern": "http://szfb.sz.gov.cn/zwgk/zcfg/qt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "http://szfb.sz.gov.cn/xwzx/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "http://szfb.sz.gov.cn/xwzx/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "http://szfb.sz.gov.cn/xwzx/tzgg/"
+      ],
+      "pagination": {
+        "pattern": "http://szfb.sz.gov.cn/xwzx/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

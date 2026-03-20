@@ -1,0 +1,2259 @@
+{
+  "generated_at": "2026-03-20 16:46:54",
+  "summary": {
+    "total": 51,
+    "ready": 48,
+    "blocked": 3
+  },
+  "rows": [
+    {
+      "site_code": "zfcg",
+      "site_name": "深圳政府采购",
+      "base_url": "http://zfcg.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 5,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 12,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 14,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 31,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:44:57"
+    },
+    {
+      "site_code": "gdzwfw",
+      "site_name": "广东政务服务网深圳",
+      "base_url": "https://www.gdzwfw.gov.cn/portal/index?region=440300",
+      "status": "blocked",
+      "verified_mode": "browser",
+      "channel_count": 1,
+      "channels_verified": [
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "tzgg",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 0,
+      "detail_attempt": 0,
+      "detail_success": 0,
+      "verify_success_rate": 0.0,
+      "verify_error_code": "no_list_items",
+      "verify_error": "no_list_items: list extraction returned 0 items",
+      "last_verified_at": "2026-03-20 16:45:22"
+    },
+    {
+      "site_code": "dpxq",
+      "site_name": "大鹏新区",
+      "base_url": "http://www.dpxq.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 4,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 14,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:23"
+    },
+    {
+      "site_code": "szft",
+      "site_name": "福田区",
+      "base_url": "https://www.szft.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 18,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 2,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 40,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:24"
+    },
+    {
+      "site_code": "tjj",
+      "site_name": "深圳市统计局",
+      "base_url": "http://tjj.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 4,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 8,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 8,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 20,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:26"
+    },
+    {
+      "site_code": "xczxhxzjlj",
+      "site_name": "深圳市乡村振兴和协作交流局",
+      "base_url": "http://xczxhxzjlj.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 20,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:27"
+    },
+    {
+      "site_code": "ga",
+      "site_name": "深圳市公安局",
+      "base_url": "http://ga.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "policy",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 20,
+      "detail_attempt": 1,
+      "detail_success": 1,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:28"
+    },
+    {
+      "site_code": "drc",
+      "site_name": "深圳市发展研究中心",
+      "base_url": "http://drc.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 20,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:29"
+    },
+    {
+      "site_code": "wjw",
+      "site_name": "深圳市卫生健康委员会",
+      "base_url": "http://wjw.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "policy",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 40,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:30"
+    },
+    {
+      "site_code": "gzw",
+      "site_name": "深圳市国资委",
+      "base_url": "http://gzw.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 86,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 96,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:32"
+    },
+    {
+      "site_code": "commerce",
+      "site_name": "深圳市商务局",
+      "base_url": "http://commerce.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 19,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 59,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:33"
+    },
+    {
+      "site_code": "swj",
+      "site_name": "深圳市水务局",
+      "base_url": "http://swj.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "policy",
+          "list_count": 2,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 2,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 4,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:34"
+    },
+    {
+      "site_code": "audit",
+      "site_name": "深圳市审计局",
+      "base_url": "http://audit.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 9,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 7,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 26,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:35"
+    },
+    {
+      "site_code": "stic",
+      "site_name": "深圳市科技创新局",
+      "base_url": "http://stic.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 19,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 19,
+      "detail_attempt": 1,
+      "detail_success": 1,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:36"
+    },
+    {
+      "site_code": "amr",
+      "site_name": "深圳市市场监督管理局",
+      "base_url": "https://amr.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 9,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 49,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:37"
+    },
+    {
+      "site_code": "gxj",
+      "site_name": "深圳市工业和信息化局",
+      "base_url": "http://gxj.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 4,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 14,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:39"
+    },
+    {
+      "site_code": "szns",
+      "site_name": "南山区",
+      "base_url": "http://www.szns.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 3,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:40"
+    },
+    {
+      "site_code": "szeb",
+      "site_name": "深圳市教育局",
+      "base_url": "http://szeb.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 4,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 4,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 8,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 16,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:42"
+    },
+    {
+      "site_code": "cgj",
+      "site_name": "深圳市城市管理和综合执法局",
+      "base_url": "http://cgj.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "policy",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 2,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 3,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:43"
+    },
+    {
+      "site_code": "hrss",
+      "site_name": "深圳市人力资源和社会保障局",
+      "base_url": "http://hrss.sz.gov.cn/",
+      "status": "blocked",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 0,
+      "detail_attempt": 0,
+      "detail_success": 0,
+      "verify_success_rate": 0.0,
+      "verify_error_code": "no_list_items",
+      "verify_error": "no_list_items: list extraction returned 0 items",
+      "last_verified_at": "2026-03-20 16:45:46"
+    },
+    {
+      "site_code": "szlh",
+      "site_name": "罗湖区",
+      "base_url": "http://www.szlh.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 60,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:48"
+    },
+    {
+      "site_code": "jtys",
+      "site_name": "深圳市交通运输局",
+      "base_url": "http://jtys.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 20,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:50"
+    },
+    {
+      "site_code": "szgm",
+      "site_name": "光明区",
+      "base_url": "http://www.szgm.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 15,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 15,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 40,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:53"
+    },
+    {
+      "site_code": "baoan",
+      "site_name": "宝安区",
+      "base_url": "http://www.baoan.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "dynamic",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 20,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:45:54"
+    },
+    {
+      "site_code": "szcredit",
+      "site_name": "深圳信用网",
+      "base_url": "https://www.szcredit.org.cn/",
+      "status": "ready",
+      "verified_mode": "browser",
+      "channel_count": 1,
+      "channels_verified": [
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "tzgg",
+          "list_count": 6,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 6,
+      "detail_attempt": 1,
+      "detail_success": 1,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:06"
+    },
+    {
+      "site_code": "szlhq",
+      "site_name": "龙华区",
+      "base_url": "http://www.szlhq.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 40,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:08"
+    },
+    {
+      "site_code": "opendata",
+      "site_name": "深圳市政府数据开放平台",
+      "base_url": "https://opendata.sz.gov.cn/",
+      "status": "blocked",
+      "verified_mode": "http",
+      "channel_count": 1,
+      "channels_verified": [
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "tzgg",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "http_404: [GovClient.get_text] request failed after retries, url=https://opendata.sz.gov.cn/index.html, err=Client error '404 ' for url 'https://opendata.sz.gov.cn/index.html'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404",
+          "verify_error_code": "http_404"
+        }
+      ],
+      "list_count": 0,
+      "detail_attempt": 0,
+      "detail_success": 0,
+      "verify_success_rate": 0.0,
+      "verify_error_code": "http_404",
+      "verify_error": "http_404: [GovClient.get_text] request failed after retries, url=https://opendata.sz.gov.cn/index.html, err=Client error '404 ' for url 'https://opendata.sz.gov.cn/index.html'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404",
+      "last_verified_at": "2026-03-20 16:46:12"
+    },
+    {
+      "site_code": "xfj",
+      "site_name": "深圳市信访局",
+      "base_url": "http://xfj.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 7,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 7,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 7,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 21,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:19"
+    },
+    {
+      "site_code": "szfb",
+      "site_name": "深圳市财政局",
+      "base_url": "http://szfb.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 60,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:23"
+    },
+    {
+      "site_code": "wtl",
+      "site_name": "深圳市文化广电旅游体育局",
+      "base_url": "http://wtl.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 14,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 54,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:24"
+    },
+    {
+      "site_code": "hsa",
+      "site_name": "深圳市医疗保障局",
+      "base_url": "http://hsa.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 1,
+      "channels_verified": [
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "tzgg",
+          "list_count": 15,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 15,
+      "detail_attempt": 1,
+      "detail_success": 1,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:25"
+    },
+    {
+      "site_code": "fgw",
+      "site_name": "深圳市发展和改革委员会",
+      "base_url": "http://fgw.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 3,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:27"
+    },
+    {
+      "site_code": "szpsq",
+      "site_name": "坪山区",
+      "base_url": "http://www.szpsq.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 19,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 40,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:29"
+    },
+    {
+      "site_code": "mzj",
+      "site_name": "深圳市民政局",
+      "base_url": "http://mzj.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 1,
+      "channels_verified": [
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "tzgg",
+          "list_count": 17,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 17,
+      "detail_attempt": 1,
+      "detail_success": 1,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:29"
+    },
+    {
+      "site_code": "zxqyj",
+      "site_name": "深圳市中小企业服务局",
+      "base_url": "http://zxqyj.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "policy",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 40,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:30"
+    },
+    {
+      "site_code": "szjj",
+      "site_name": "深圳交警",
+      "base_url": "http://szjj.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "policy",
+          "list_count": 15,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 15,
+      "detail_attempt": 1,
+      "detail_success": 1,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:31"
+    },
+    {
+      "site_code": "zjj",
+      "site_name": "深圳市住房和建设局",
+      "base_url": "http://zjj.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 11,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 51,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:33"
+    },
+    {
+      "site_code": "tyjr",
+      "site_name": "深圳市地方金融管理局",
+      "base_url": "http://tyjr.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 30,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:35"
+    },
+    {
+      "site_code": "ka",
+      "site_name": "深圳市口岸办公室",
+      "base_url": "http://ka.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 60,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:37"
+    },
+    {
+      "site_code": "szgov",
+      "site_name": "深圳市人民政府",
+      "base_url": "http://www.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 4,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 24,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:38"
+    },
+    {
+      "site_code": "szwb",
+      "site_name": "深圳市人民政府外事办公室",
+      "base_url": "http://szwb.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 30,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:40"
+    },
+    {
+      "site_code": "weather",
+      "site_name": "深圳市气象局",
+      "base_url": "http://weather.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 1,
+      "detail_attempt": 1,
+      "detail_success": 1,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:41"
+    },
+    {
+      "site_code": "yantian",
+      "site_name": "盐田区",
+      "base_url": "http://www.yantian.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 12,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:42"
+    },
+    {
+      "site_code": "yjgl",
+      "site_name": "深圳市应急管理局",
+      "base_url": "http://yjgl.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 10,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 20,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:43"
+    },
+    {
+      "site_code": "sf",
+      "site_name": "深圳市司法局",
+      "base_url": "http://sf.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 2,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 8,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 11,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:45"
+    },
+    {
+      "site_code": "qh",
+      "site_name": "前海管理局",
+      "base_url": "http://qh.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 2,
+      "channels_verified": [
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 14,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 14,
+      "detail_attempt": 1,
+      "detail_success": 1,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:46"
+    },
+    {
+      "site_code": "meeb",
+      "site_name": "深圳市生态环境局",
+      "base_url": "http://meeb.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "browser",
+      "channel_count": 1,
+      "channels_verified": [
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "tzgg",
+          "list_count": 16,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 16,
+      "detail_attempt": 1,
+      "detail_success": 1,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:50"
+    },
+    {
+      "site_code": "szss",
+      "site_name": "深汕特别合作区",
+      "base_url": "http://www.szss.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 1,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 3,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:51"
+    },
+    {
+      "site_code": "pnr",
+      "site_name": "深圳市规划和自然资源局",
+      "base_url": "http://pnr.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 0,
+          "detail_attempt": 0,
+          "detail_success": 0,
+          "verify_success_rate": 0.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 40,
+      "detail_attempt": 2,
+      "detail_success": 2,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:52"
+    },
+    {
+      "site_code": "lg",
+      "site_name": "龙岗区",
+      "base_url": "http://www.lg.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 3,
+      "channels_verified": [
+        "dynamic",
+        "policy",
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "dynamic",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "policy",
+          "list_count": 49,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        },
+        {
+          "channel": "tzgg",
+          "list_count": 20,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 89,
+      "detail_attempt": 3,
+      "detail_success": 3,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:53"
+    },
+    {
+      "site_code": "htcz",
+      "site_name": "深圳市航天产业投资控股",
+      "base_url": "https://htcz.sz.gov.cn/",
+      "status": "ready",
+      "verified_mode": "http",
+      "channel_count": 1,
+      "channels_verified": [
+        "tzgg"
+      ],
+      "channel_results": [
+        {
+          "channel": "tzgg",
+          "list_count": 24,
+          "detail_attempt": 1,
+          "detail_success": 1,
+          "verify_success_rate": 1.0,
+          "verify_error": "",
+          "verify_error_code": ""
+        }
+      ],
+      "list_count": 24,
+      "detail_attempt": 1,
+      "detail_success": 1,
+      "verify_success_rate": 1.0,
+      "verify_error_code": "",
+      "verify_error": "",
+      "last_verified_at": "2026-03-20 16:46:54"
+    }
+  ]
+}

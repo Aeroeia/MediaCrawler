@@ -3,10 +3,12 @@
     "code": "lg",
     "name": "龙岗区",
     "base_url": "http://www.lg.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://www.lg.gov.cn/xxgk/zwgk/tzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://www.lg.gov.cn/xxgk/zwgk/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://www.lg.gov.cn/xxgk/ztzl/zcwjk/"
+      ],
+      "pagination": {
+        "pattern": "https://www.lg.gov.cn/xxgk/ztzl/zcwjk/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://www.lg.gov.cn/xxgk/xwzx/zwdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.lg.gov.cn/xxgk/xwzx/zwdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://www.lg.gov.cn/xxgk/zwgk/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.lg.gov.cn/xxgk/zwgk/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

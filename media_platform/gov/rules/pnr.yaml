@@ -3,10 +3,12 @@
     "code": "pnr",
     "name": "深圳市规划和自然资源局",
     "base_url": "http://pnr.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "http://pnr.sz.gov.cn/xxgk/gggs/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "http://pnr.sz.gov.cn/xxgk/gggs/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "http://pnr.sz.gov.cn/xxgk/zcwj/index.html"
+      ],
+      "pagination": {
+        "pattern": "http://pnr.sz.gov.cn/xxgk/zcwj/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "http://pnr.sz.gov.cn/xxgk/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "http://pnr.sz.gov.cn/xxgk/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "http://pnr.sz.gov.cn/xxgk/gggs/index.html"
+      ],
+      "pagination": {
+        "pattern": "http://pnr.sz.gov.cn/xxgk/gggs/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

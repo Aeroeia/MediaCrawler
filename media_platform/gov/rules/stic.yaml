@@ -3,10 +3,12 @@
     "code": "stic",
     "name": "深圳市科技创新局",
     "base_url": "http://stic.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://stic.sz.gov.cn/xxgk/tzgg/index.html"
       ],
@@ -14,6 +16,27 @@
         "pattern": "https://stic.sz.gov.cn/xxgk/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://stic.sz.gov.cn/xxgk/zcfg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://stic.sz.gov.cn/xxgk/zcfg/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://stic.sz.gov.cn/xxgk/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://stic.sz.gov.cn/xxgk/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

@@ -3,10 +3,12 @@
     "code": "dpxq",
     "name": "大鹏新区",
     "base_url": "https://www.dpxq.gov.cn",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://www.dpxq.gov.cn/xxgk/xxgk/tzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://www.dpxq.gov.cn/xxgk/xxgk/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://www.dpxq.gov.cn/xxgk/xxgk/zcfg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.dpxq.gov.cn/xxgk/xxgk/zcfg/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://www.dpxq.gov.cn/xxgk/xxgk/zwdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.dpxq.gov.cn/xxgk/xxgk/zwdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://www.dpxq.gov.cn/xxgk/xxgk/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.dpxq.gov.cn/xxgk/xxgk/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

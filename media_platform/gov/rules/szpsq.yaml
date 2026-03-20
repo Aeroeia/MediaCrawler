@@ -3,10 +3,12 @@
     "code": "szpsq",
     "name": "坪山区",
     "base_url": "http://www.szpsq.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://www.szpsq.gov.cn/zwgk/tzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://www.szpsq.gov.cn/zwgk/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "http://www.szpsq.gov.cn/zwgk/gfxwjtycxpt/index.html"
+      ],
+      "pagination": {
+        "pattern": "http://www.szpsq.gov.cn/zwgk/gfxwjtycxpt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://www.szpsq.gov.cn/zwgk/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szpsq.gov.cn/zwgk/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://www.szpsq.gov.cn/zwgk/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szpsq.gov.cn/zwgk/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

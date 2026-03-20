@@ -15,17 +15,30 @@
           "wait_ms": 1200
         }
       ]
-    }
+    },
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://www.gdzwfw.gov.cn/portal/v2/notices?region=440300"
+        "https://www.gdzwfw.gov.cn/yhzx/index.html"
       ],
       "pagination": {
-        "pattern": "https://www.gdzwfw.gov.cn/portal/v2/notices?region=440300&page={page}",
+        "pattern": "https://www.gdzwfw.gov.cn/yhzx/index_{page}.html",
         "start_page": 2
       }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://www.gdzwfw.gov.cn/yhzx/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.gdzwfw.gov.cn/yhzx/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

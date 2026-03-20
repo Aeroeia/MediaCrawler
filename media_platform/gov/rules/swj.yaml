@@ -3,17 +3,40 @@
     "code": "swj",
     "name": "深圳市水务局",
     "base_url": "http://swj.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://swj.sz.gov.cn/xxgk/zfxxgkml/tzgg/content/post_12555245.html"
+        "http://swj.sz.gov.cn/xxgk/zfxxgkml/zcfg/flfg/"
       ],
       "pagination": {
-        "pattern": "https://swj.sz.gov.cn/xxgk/zfxxgkml/tzgg/content/post_12555245_index_{page}.html",
+        "pattern": "http://swj.sz.gov.cn/xxgk/zfxxgkml/zcfg/flfg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "http://swj.sz.gov.cn/xxgk/zfxxgkml/zcfg/flfg/"
+      ],
+      "pagination": {
+        "pattern": "http://swj.sz.gov.cn/xxgk/zfxxgkml/zcfg/flfg/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "http://swj.sz.gov.cn/xxgk/zfxxgkml/zcfg/flfg/"
+      ],
+      "pagination": {
+        "pattern": "http://swj.sz.gov.cn/xxgk/zfxxgkml/zcfg/flfg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

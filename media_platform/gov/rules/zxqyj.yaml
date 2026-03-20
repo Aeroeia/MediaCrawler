@@ -3,10 +3,12 @@
     "code": "zxqyj",
     "name": "深圳市中小企业服务局",
     "base_url": "http://zxqyj.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://zxqyj.sz.gov.cn/zwgk/zfxxgkml/tzgg/index.html"
       ],
@@ -14,6 +16,27 @@
         "pattern": "https://zxqyj.sz.gov.cn/zwgk/zfxxgkml/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://zxqyj.sz.gov.cn/zwgk/zfxxgkml/zcfg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://zxqyj.sz.gov.cn/zwgk/zfxxgkml/zcfg/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://zxqyj.sz.gov.cn/zwgk/zfxxgkml/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://zxqyj.sz.gov.cn/zwgk/zfxxgkml/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

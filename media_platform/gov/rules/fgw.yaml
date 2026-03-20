@@ -3,10 +3,12 @@
     "code": "fgw",
     "name": "深圳市发展和改革委员会",
     "base_url": "http://fgw.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://fgw.sz.gov.cn/zwgk/qt/tzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://fgw.sz.gov.cn/zwgk/qt/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://fgw.sz.gov.cn/zwgk/zcjzcjd/zcjd/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://fgw.sz.gov.cn/zwgk/zcjzcjd/zcjd/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://fgw.sz.gov.cn/zwgk/qt/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://fgw.sz.gov.cn/zwgk/qt/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://fgw.sz.gov.cn/zwgk/qt/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://fgw.sz.gov.cn/zwgk/qt/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

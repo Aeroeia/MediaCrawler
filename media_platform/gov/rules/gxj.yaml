@@ -3,10 +3,12 @@
     "code": "gxj",
     "name": "深圳市工业和信息化局",
     "base_url": "http://gxj.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "http://gxj.sz.gov.cn/xxgk/xxgkml/qt/tzgg"
       ],
@@ -14,6 +16,37 @@
         "pattern": "http://gxj.sz.gov.cn/xxgk/xxgkml/qt/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "http://gxj.sz.gov.cn/xxgk/xxgkml/zcfgjzcjd"
+      ],
+      "pagination": {
+        "pattern": "http://gxj.sz.gov.cn/xxgk/xxgkml/zcfgjzcjd/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "http://gxj.sz.gov.cn/xxgk/xxgkml/qt/gzdt"
+      ],
+      "pagination": {
+        "pattern": "http://gxj.sz.gov.cn/xxgk/xxgkml/qt/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "http://gxj.sz.gov.cn/xxgk/xxgkml/qt/tzgg"
+      ],
+      "pagination": {
+        "pattern": "http://gxj.sz.gov.cn/xxgk/xxgkml/qt/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

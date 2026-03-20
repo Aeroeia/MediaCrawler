@@ -3,10 +3,12 @@
     "code": "szwb",
     "name": "深圳市人民政府外事办公室",
     "base_url": "http://szwb.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://szwb.sz.gov.cn/gwsxwzx/ntzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://szwb.sz.gov.cn/gwsxwzx/ntzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://szwb.sz.gov.cn/gwszwgk/zcfg/flfg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://szwb.sz.gov.cn/gwszwgk/zcfg/flfg/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://szwb.sz.gov.cn/gwsxwzx/ngzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://szwb.sz.gov.cn/gwsxwzx/ngzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://szwb.sz.gov.cn/gwsxwzx/ntzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://szwb.sz.gov.cn/gwsxwzx/ntzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

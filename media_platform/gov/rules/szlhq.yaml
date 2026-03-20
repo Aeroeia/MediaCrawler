@@ -3,10 +3,12 @@
     "code": "szlhq",
     "name": "龙华区",
     "base_url": "http://www.szlhq.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://www.szlhq.gov.cn/xxgk/xwzx/tzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://www.szlhq.gov.cn/xxgk/xwzx/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://www.szlhq.gov.cn/xxgk/zcfg/qgfxwj/qgfxwj_129575/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szlhq.gov.cn/xxgk/zcfg/qgfxwj/qgfxwj_129575/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://www.szlhq.gov.cn/xxgk/xwzx/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szlhq.gov.cn/xxgk/xwzx/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://www.szlhq.gov.cn/xxgk/xwzx/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szlhq.gov.cn/xxgk/xwzx/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

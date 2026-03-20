@@ -3,10 +3,12 @@
     "code": "szns",
     "name": "南山区",
     "base_url": "http://www.szns.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://www.szns.gov.cn/xxgk/qzfxxgkml/tzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://www.szns.gov.cn/xxgk/qzfxxgkml/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://www.szns.gov.cn/xxgk/qzfxxgkml/zcwj/qjzcwj/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szns.gov.cn/xxgk/qzfxxgkml/zcwj/qjzcwj/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://www.szns.gov.cn/xxgk/qzfxxgkml/bmdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szns.gov.cn/xxgk/qzfxxgkml/bmdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://www.szns.gov.cn/xxgk/qzfxxgkml/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szns.gov.cn/xxgk/qzfxxgkml/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

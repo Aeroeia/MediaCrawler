@@ -3,17 +3,50 @@
     "code": "szss",
     "name": "深汕特别合作区",
     "base_url": "http://www.szss.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://www.szss.gov.cn//sstbhzq/ssw/xxgk/zcfg/content/post_12581655.html"
+        "https://www.szss.gov.cn//sstbhzq/ssw/jrss/ggtz/index.html"
       ],
       "pagination": {
-        "pattern": "https://www.szss.gov.cn//sstbhzq/ssw/xxgk/zcfg/content/post_12581655_index_{page}.html",
+        "pattern": "https://www.szss.gov.cn//sstbhzq/ssw/jrss/ggtz/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://www.szss.gov.cn//sstbhzq/ssw/xxgk/zcfg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szss.gov.cn//sstbhzq/ssw/xxgk/zcfg/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://www.szss.gov.cn//sstbhzq/ssw/jrss/sskx/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szss.gov.cn//sstbhzq/ssw/jrss/sskx/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://www.szss.gov.cn//sstbhzq/ssw/jrss/ggtz/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szss.gov.cn//sstbhzq/ssw/jrss/ggtz/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

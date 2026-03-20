@@ -1,0 +1,1600 @@
+{
+  "generated_at": "2026-03-20 16:43:06",
+  "summary": {
+    "total_sites": 51,
+    "sites_with_3_standard_channels": 33,
+    "sites_with_2_standard_channels": 11,
+    "sites_with_1_standard_channels": 7,
+    "sites_with_0_standard_channels": 0,
+    "sites_with_discovery_error": 1
+  },
+  "rows": [
+    {
+      "site_code": "zfcg",
+      "site_name": "深圳政府采购",
+      "base_url": "http://zfcg.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/zfcg.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "http://zfcg.sz.gov.cn/xxgk_64152/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "http://zfcg.sz.gov.cn/xxgk_64152/zcfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "http://zfcg.sz.gov.cn/xxgk_64152/zytz/index.html",
+          "label": "通知公告",
+          "text": "",
+          "score": 56.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "http://zfcg.sz.gov.cn/xxgk_64152/zytz/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "gdzwfw",
+      "site_name": "广东政务服务网深圳",
+      "base_url": "https://www.gdzwfw.gov.cn/portal/index?region=440300",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/gdzwfw.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "https://www.gdzwfw.gov.cn/yhzx/index.html",
+          "label": "通知公告",
+          "text": "",
+          "score": 56.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg"
+      ],
+      "missing_standard_channels": [
+        "policy",
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.gdzwfw.gov.cn/yhzx/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "dpxq",
+      "site_name": "大鹏新区",
+      "base_url": "http://www.dpxq.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/dpxq.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://www.dpxq.gov.cn/xxgk/xxgk/zwdt/index.html",
+          "label": "工作动态",
+          "text": "政务动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://www.dpxq.gov.cn/xxgk/xxgk/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://www.dpxq.gov.cn/xxgk/xxgk/zcfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.dpxq.gov.cn/xxgk/xxgk/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "szft",
+      "site_name": "福田区",
+      "base_url": "https://www.szft.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szft.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://www.szft.gov.cn/ftxx/xwdt/ftdt/index.html",
+          "label": "工作动态",
+          "text": "更多",
+          "score": 78.0
+        },
+        "policy": {
+          "url": "https://www.szft.gov.cn/xxgk/zwgk/zcfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.szft.gov.cn/xxgk/bmtzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "tjj",
+      "site_name": "深圳市统计局",
+      "base_url": "http://tjj.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/tjj.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://tjj.sz.gov.cn/zwgk/zfxxgkml/zcfgjzcjd/index.html",
+          "label": "政策文件",
+          "text": "政策法规及政策解读",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "https://tjj.sz.gov.cn/zwgk/zfxxgkml/qt/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://tjj.sz.gov.cn/zwgk/zfxxgkml/qt/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://tjj.sz.gov.cn/zwgk/zfxxgkml/qt/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "xczxhxzjlj",
+      "site_name": "深圳市乡村振兴和协作交流局",
+      "base_url": "http://xczxhxzjlj.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/xczxhxzjlj.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://xczxhxzjlj.sz.gov.cn/zwgk/zcfgjzcjd/index.html",
+          "label": "政策文件",
+          "text": "政策法规及政策解读",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "https://xczxhxzjlj.sz.gov.cn/zwgk/qt/gzdt/index.html",
+          "label": "工作动态",
+          "text": "+更多",
+          "score": 78.0
+        },
+        "tzgg": {
+          "url": "https://xczxhxzjlj.sz.gov.cn/zwgk/qt/tzgg/index.html",
+          "label": "通知公告",
+          "text": "+更多",
+          "score": 78.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://xczxhxzjlj.sz.gov.cn/zwgk/qt/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "ga",
+      "site_name": "深圳市公安局",
+      "base_url": "http://ga.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/ga.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://ga.sz.gov.cn/ZWGK/GFXWJ/index.html",
+          "label": "政策文件",
+          "text": "规范性文件查询",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://msjw.ga.sz.gov.cn/crj/crjmsjw/wgryw/ajax/gashygatznrh.html",
+          "label": "通知公告",
+          "text": "",
+          "score": 56.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy"
+      ],
+      "missing_standard_channels": [
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://msjw.ga.sz.gov.cn/crj/crjmsjw/wgryw/ajax/gashygatznrh.html",
+      "error": ""
+    },
+    {
+      "site_code": "drc",
+      "site_name": "深圳市发展研究中心",
+      "base_url": "http://drc.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/drc.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://drc.sz.gov.cn/xxgk/zcfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "https://drc.sz.gov.cn/gzdt/index.html",
+          "label": "工作动态",
+          "text": "更多",
+          "score": 78.0
+        },
+        "tzgg": {
+          "url": "https://drc.sz.gov.cn/tzgg/index.html",
+          "label": "通知公告",
+          "text": "更多",
+          "score": 78.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://drc.sz.gov.cn/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "wjw",
+      "site_name": "深圳市卫生健康委员会",
+      "base_url": "http://wjw.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/wjw.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://wjw.sz.gov.cn/xxgk/zcfggfxwj/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://wjw.sz.gov.cn/wjtz/index.html",
+          "label": "通知公告",
+          "text": "MORE>",
+          "score": 78.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy"
+      ],
+      "missing_standard_channels": [
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://wjw.sz.gov.cn/wjtz/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "gzw",
+      "site_name": "深圳市国资委",
+      "base_url": "http://gzw.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/gzw.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://gzw.sz.gov.cn/zwgk/zcfgjzcjd/index.html",
+          "label": "政策文件",
+          "text": "政策法规及政策解读",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "https://gzw.sz.gov.cn/gzjg/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://gzw.sz.gov.cn/zwgk/qt/tzgg/index.html",
+          "label": "通知公告",
+          "text": "更多>",
+          "score": 78.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://gzw.sz.gov.cn/zwgk/qt/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "commerce",
+      "site_name": "深圳市商务局",
+      "base_url": "http://commerce.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/commerce.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "https://commerce.sz.gov.cn/xxgk/qt/tzgg_1/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "https://commerce.sz.gov.cn/xxgk/qt/gzdt_1/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://commerce.sz.gov.cn/xxgk/qt/gfxwjmljcx/index.html",
+          "label": "政策文件",
+          "text": "规范性文件目录及查询",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://commerce.sz.gov.cn/xxgk/qt/tzgg_1/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "swj",
+      "site_name": "深圳市水务局",
+      "base_url": "http://swj.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/swj.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "http://swj.sz.gov.cn/xxgk/zfxxgkml/zcfg/flfg/",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 137.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy"
+      ],
+      "missing_standard_channels": [
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "http://swj.sz.gov.cn/xxgk/zfxxgkml/zcfg/flfg/",
+      "error": ""
+    },
+    {
+      "site_code": "audit",
+      "site_name": "深圳市审计局",
+      "base_url": "http://audit.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/audit.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://audit.sz.gov.cn/zwxx/sjxx/gzdt/index.html",
+          "label": "工作动态",
+          "text": "各区动态",
+          "score": 78.0
+        },
+        "tzgg": {
+          "url": "https://audit.sz.gov.cn/zwxx/sjxx/tzgk/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 93.0
+        },
+        "policy": {
+          "url": "https://audit.sz.gov.cn/zwxx/flfg/fgcwkj/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 93.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://audit.sz.gov.cn/zwxx/sjxx/tzgk/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "stic",
+      "site_name": "深圳市科技创新局",
+      "base_url": "http://stic.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/stic.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "https://stic.sz.gov.cn/xxgk/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://stic.sz.gov.cn/xxgk/zcfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy"
+      ],
+      "missing_standard_channels": [
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://stic.sz.gov.cn/xxgk/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "amr",
+      "site_name": "深圳市市场监督管理局",
+      "base_url": "https://amr.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/amr.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://amr.sz.gov.cn/xxgk/xwzx/tpxw/index.html",
+          "label": "工作动态",
+          "text": "新闻动态",
+          "score": 93.0
+        },
+        "tzgg": {
+          "url": "https://amr.sz.gov.cn/xxgk/qt/tzgg/index.html",
+          "label": "通知公告",
+          "text": "more",
+          "score": 78.0
+        },
+        "policy": {
+          "url": "https://amr.sz.gov.cn/xxgk/zcwj/zcjd/mindex.html",
+          "label": "政策文件",
+          "text": "政策解读",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://amr.sz.gov.cn/xxgk/qt/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "gxj",
+      "site_name": "深圳市工业和信息化局",
+      "base_url": "http://gxj.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/gxj.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "http://gxj.sz.gov.cn/xxgk/xxgkml/qt/tzgg",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 137.0
+        },
+        "dynamic": {
+          "url": "http://gxj.sz.gov.cn/xxgk/xxgkml/qt/gzdt",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 137.0
+        },
+        "policy": {
+          "url": "http://gxj.sz.gov.cn/xxgk/xxgkml/zcfgjzcjd",
+          "label": "政策文件",
+          "text": "政策法规及政策解读",
+          "score": 137.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "http://gxj.sz.gov.cn/xxgk/xxgkml/qt/tzgg",
+      "error": ""
+    },
+    {
+      "site_code": "szns",
+      "site_name": "南山区",
+      "base_url": "http://www.szns.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szns.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://www.szns.gov.cn/xxgk/qzfxxgkml/bmdt/index.html",
+          "label": "工作动态",
+          "text": "部门动态",
+          "score": 93.0
+        },
+        "tzgg": {
+          "url": "https://www.szns.gov.cn/xxgk/qzfxxgkml/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://www.szns.gov.cn/xxgk/qzfxxgkml/zcwj/qjzcwj/index.html",
+          "label": "政策文件",
+          "text": "政策文件",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.szns.gov.cn/xxgk/qzfxxgkml/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "szeb",
+      "site_name": "深圳市教育局",
+      "base_url": "http://szeb.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szeb.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "https://szeb.sz.gov.cn/home/jyfw/jyyj/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://szeb.sz.gov.cn/home/gfxwj/index.html",
+          "label": "政策文件",
+          "text": "规范性文件查询",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "https://szeb.sz.gov.cn/home/jyfw/jyyj/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://szeb.sz.gov.cn/home/jyfw/jyyj/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "cgj",
+      "site_name": "深圳市城市管理和综合执法局",
+      "base_url": "http://cgj.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/cgj.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://cgj.sz.gov.cn/zwgk/zcfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://cgj.sz.gov.cn/zwgk/tzgg/index.html",
+          "label": "通知公告",
+          "text": "查看更多",
+          "score": 78.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy"
+      ],
+      "missing_standard_channels": [
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://cgj.sz.gov.cn/zwgk/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "hrss",
+      "site_name": "深圳市人力资源和社会保障局",
+      "base_url": "http://hrss.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/hrss.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "http://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/index.html",
+          "label": "政策文件",
+          "text": "规范性文件",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy"
+      ],
+      "missing_standard_channels": [
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "http://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "szlh",
+      "site_name": "罗湖区",
+      "base_url": "http://www.szlh.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szlh.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://www.szlh.gov.cn/bmdt/index.html",
+          "label": "工作动态",
+          "text": "部门动态",
+          "score": 93.0
+        },
+        "tzgg": {
+          "url": "https://www.szlh.gov.cn/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://www.szlh.gov.cn/zwgk/zcwj/index.html",
+          "label": "政策文件",
+          "text": "政策文件",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.szlh.gov.cn/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "jtys",
+      "site_name": "深圳市交通运输局",
+      "base_url": "http://jtys.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/jtys.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://jtys.sz.gov.cn/zwgk/xxgkml/zcfgjjd/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://jtys.sz.gov.cn/zwgk/jtzx/tzgg/index.html",
+          "label": "通知公告",
+          "text": "更多>>",
+          "score": 78.0
+        },
+        "dynamic": {
+          "url": "https://jtys.sz.gov.cn/zwgk/jtzx/gzdt/index.html",
+          "label": "工作动态",
+          "text": "",
+          "score": 68.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://jtys.sz.gov.cn/zwgk/jtzx/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "szgm",
+      "site_name": "光明区",
+      "base_url": "http://www.szgm.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szgm.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://www.szgm.gov.cn/xxgk/xqgwhxxgkml/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://www.szgm.gov.cn/xxgk/xqgwhxxgkml/gzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 93.0
+        },
+        "policy": {
+          "url": "https://www.szgm.gov.cn/xxgk/xqgwhxxgkml/zcfg_116521/qzfgfxwj/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.szgm.gov.cn/xxgk/xqgwhxxgkml/gzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "baoan",
+      "site_name": "宝安区",
+      "base_url": "http://www.baoan.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/baoan.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://www.baoan.gov.cn/xxgk/xwzx/tpxw/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 93.0
+        },
+        "tzgg": {
+          "url": "https://www.baoan.gov.cn/xxgk/xwzx/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "dynamic"
+      ],
+      "missing_standard_channels": [
+        "policy"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.baoan.gov.cn/xxgk/xwzx/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "szcredit",
+      "site_name": "深圳信用网",
+      "base_url": "https://www.szcredit.org.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szcredit.yaml",
+      "discovered_channels": {},
+      "available_standard_channels": [
+        "tzgg"
+      ],
+      "missing_standard_channels": [
+        "policy",
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.szcredit.org.cn/",
+      "error": ""
+    },
+    {
+      "site_code": "szlhq",
+      "site_name": "龙华区",
+      "base_url": "http://www.szlhq.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szlhq.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://www.szlhq.gov.cn/xxgk/xwzx/gzdt/index.html",
+          "label": "工作动态",
+          "text": "政务动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://www.szlhq.gov.cn/xxgk/xwzx/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://www.szlhq.gov.cn/xxgk/zcfg/qgfxwj/qgfxwj_129575/index.html",
+          "label": "政策文件",
+          "text": "规范性文件",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.szlhq.gov.cn/xxgk/xwzx/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "opendata",
+      "site_name": "深圳市政府数据开放平台",
+      "base_url": "https://opendata.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/opendata.yaml",
+      "discovered_channels": {},
+      "available_standard_channels": [
+        "tzgg"
+      ],
+      "missing_standard_channels": [
+        "policy",
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://opendata.sz.gov.cn/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "xfj",
+      "site_name": "深圳市信访局",
+      "base_url": "http://xfj.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/xfj.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://xfj.sz.gov.cn/zwgk/zcfgjzcjd/index.html",
+          "label": "政策文件",
+          "text": "政策法规及政策解读",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "http://xfj.sz.gov.cn/zwgk/qt/gzdt",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 137.0
+        },
+        "tzgg": {
+          "url": "http://xfj.sz.gov.cn/zwgk/qt/tzgg",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 137.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "http://xfj.sz.gov.cn/zwgk/qt/tzgg",
+      "error": ""
+    },
+    {
+      "site_code": "szfb",
+      "site_name": "深圳市财政局",
+      "base_url": "http://szfb.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szfb.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "http://szfb.sz.gov.cn/zwgk/zcfg/qt/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "http://szfb.sz.gov.cn/xwzx/tzgg/",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 137.0
+        },
+        "dynamic": {
+          "url": "http://szfb.sz.gov.cn/xwzx/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "http://szfb.sz.gov.cn/xwzx/tzgg/",
+      "error": ""
+    },
+    {
+      "site_code": "wtl",
+      "site_name": "深圳市文化广电旅游体育局",
+      "base_url": "http://wtl.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/wtl.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://wtl.sz.gov.cn/xxgk/qt/gzdt/index.html",
+          "label": "工作动态",
+          "text": "更多>",
+          "score": 78.0
+        },
+        "tzgg": {
+          "url": "https://wtl.sz.gov.cn/xxgk/qt/tzgg/index.html",
+          "label": "通知公告",
+          "text": "更多>",
+          "score": 78.0
+        },
+        "policy": {
+          "url": "https://wtl.sz.gov.cn/xxgk/zcfgjzcjd/zcjd/index.html",
+          "label": "政策文件",
+          "text": "政策解读 +",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://wtl.sz.gov.cn/xxgk/qt/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "hsa",
+      "site_name": "深圳市医疗保障局",
+      "base_url": "http://hsa.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/hsa.yaml",
+      "discovered_channels": {},
+      "available_standard_channels": [
+        "tzgg"
+      ],
+      "missing_standard_channels": [
+        "policy",
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://hsa.sz.gov.cn/zwgk/zcfgjzcjd/zcfg/ylbx/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "fgw",
+      "site_name": "深圳市发展和改革委员会",
+      "base_url": "http://fgw.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/fgw.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://fgw.sz.gov.cn/zwgk/zcjzcjd/zcjd/index.html",
+          "label": "政策文件",
+          "text": "政策解读",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "https://fgw.sz.gov.cn/zwgk/qt/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://fgw.sz.gov.cn/zwgk/qt/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://fgw.sz.gov.cn/zwgk/qt/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "szpsq",
+      "site_name": "坪山区",
+      "base_url": "http://www.szpsq.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szpsq.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://www.szpsq.gov.cn/zwgk/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://www.szpsq.gov.cn/zwgk/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "http://www.szpsq.gov.cn/zwgk/gfxwjtycxpt/index.html",
+          "label": "政策文件",
+          "text": "规范性文件 统一查询平台",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.szpsq.gov.cn/zwgk/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "mzj",
+      "site_name": "深圳市民政局",
+      "base_url": "http://mzj.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/mzj.yaml",
+      "discovered_channels": {},
+      "available_standard_channels": [
+        "tzgg"
+      ],
+      "missing_standard_channels": [
+        "policy",
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://mzj.sz.gov.cn/szmz/pc/zwgk/jcxxgk/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "zxqyj",
+      "site_name": "深圳市中小企业服务局",
+      "base_url": "http://zxqyj.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/zxqyj.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "https://zxqyj.sz.gov.cn/zwgk/zfxxgkml/tzgg/index.html",
+          "label": "通知公告",
+          "text": "更多>>",
+          "score": 78.0
+        },
+        "policy": {
+          "url": "https://zxqyj.sz.gov.cn/zwgk/zfxxgkml/zcfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy"
+      ],
+      "missing_standard_channels": [
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://zxqyj.sz.gov.cn/zwgk/zfxxgkml/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "szjj",
+      "site_name": "深圳交警",
+      "base_url": "http://szjj.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szjj.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "https://szjj.sz.gov.cn/ZWGK/TZGG/index.html",
+          "label": "通知公告",
+          "text": "通知公告:",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://szjj.sz.gov.cn/ZWGK/ZCFG/ZCJD234/index.html",
+          "label": "政策文件",
+          "text": "政策解读",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy"
+      ],
+      "missing_standard_channels": [
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://szjj.sz.gov.cn/ZWGK/TZGG/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "zjj",
+      "site_name": "深圳市住房和建设局",
+      "base_url": "http://zjj.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/zjj.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "http://zjj.sz.gov.cn/xxgk/tzgg",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 137.0
+        },
+        "dynamic": {
+          "url": "https://zjj.sz.gov.cn/xxgk/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "http://zjj.sz.gov.cn/xxgk/zcfgs/zcfg",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 137.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "http://zjj.sz.gov.cn/xxgk/tzgg",
+      "error": ""
+    },
+    {
+      "site_code": "tyjr",
+      "site_name": "深圳市地方金融管理局",
+      "base_url": "http://tyjr.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/tyjr.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://tyjr.sz.gov.cn/gk/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://tyjr.sz.gov.cn/gk/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://tyjr.sz.gov.cn/gk/zcfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://tyjr.sz.gov.cn/gk/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "ka",
+      "site_name": "深圳市口岸办公室",
+      "base_url": "http://ka.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/ka.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "https://ka.sz.gov.cn/xxgk/qt/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "https://ka.sz.gov.cn/xxgk/qt/gzdt/index.html",
+          "label": "工作动态",
+          "text": "口岸动态",
+          "score": 78.0
+        },
+        "policy": {
+          "url": "https://ka.sz.gov.cn/xxgk/zcfggfxwj/haig/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://ka.sz.gov.cn/xxgk/qt/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "szgov",
+      "site_name": "深圳市人民政府",
+      "base_url": "http://www.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szgov.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "https://www.sz.gov.cn/cn/xxgk/zfxxgj/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "https://www.sz.gov.cn/cn/xxgk/zfxxgj/zwdt/index.html",
+          "label": "工作动态",
+          "text": "政务动态",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "http://www.sz.gov.cn/zcjd/index.html",
+          "label": "政策文件",
+          "text": "政策解读",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.sz.gov.cn/cn/xxgk/zfxxgj/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "szwb",
+      "site_name": "深圳市人民政府外事办公室",
+      "base_url": "http://szwb.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szwb.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://szwb.sz.gov.cn/gwsxwzx/ngzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 93.0
+        },
+        "tzgg": {
+          "url": "https://szwb.sz.gov.cn/gwsxwzx/ntzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 93.0
+        },
+        "policy": {
+          "url": "https://szwb.sz.gov.cn/gwszwgk/zcfg/flfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://szwb.sz.gov.cn/gwsxwzx/ntzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "weather",
+      "site_name": "深圳市气象局",
+      "base_url": "http://weather.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/weather.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://weather.sz.gov.cn/xingxigongkai/zhengcefagui/index.html",
+          "label": "政策文件",
+          "text": "政策法规及政策解读",
+          "score": 93.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy"
+      ],
+      "missing_standard_channels": [
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://weather.sz.gov.cn/xingxigongkai/tongzhigonggao/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "yantian",
+      "site_name": "盐田区",
+      "base_url": "http://www.yantian.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/yantian.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://www.yantian.gov.cn/cn/zwgk/zwdt/index.html",
+          "label": "工作动态",
+          "text": "政务动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://www.yantian.gov.cn/cn/zwgk/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://www.yantian.gov.cn/cn/zjyt/zcjd/index.html",
+          "label": "政策文件",
+          "text": "政策解读",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.yantian.gov.cn/cn/zwgk/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "yjgl",
+      "site_name": "深圳市应急管理局",
+      "base_url": "http://yjgl.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/yjgl.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://yjgl.sz.gov.cn/zwgk/gfxwjcx/index.html",
+          "label": "政策文件",
+          "text": "规范性文件查询",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://yjgl.sz.gov.cn/zwgk/xxgkml/qt/tzgg/index.html",
+          "label": "通知公告",
+          "text": "更多",
+          "score": 78.0
+        },
+        "dynamic": {
+          "url": "https://yjgl.sz.gov.cn/zwgk/xxgkml/qt/gzdt/index.html",
+          "label": "工作动态",
+          "text": "更多",
+          "score": 78.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://yjgl.sz.gov.cn/zwgk/xxgkml/qt/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "sf",
+      "site_name": "深圳市司法局",
+      "base_url": "http://sf.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/sf.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://sf.sz.gov.cn/xxgk/xxgkml/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://sf.sz.gov.cn/xxgk/xxgkml/gsgg/index.html",
+          "label": "通知公告",
+          "text": "公示公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://sf.sz.gov.cn/gfxwjcx/index.html",
+          "label": "政策文件",
+          "text": "规范性文件查询",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://sf.sz.gov.cn/xxgk/xxgkml/gsgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "qh",
+      "site_name": "前海管理局",
+      "base_url": "http://qh.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/qh.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://qh.sz.gov.cn/sygnan/xxgk/xxgkml/zcfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "http://qh.sz.gov.cn/sygnan/qhzx/tzgg",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 119.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy"
+      ],
+      "missing_standard_channels": [
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "http://qh.sz.gov.cn/sygnan/qhzx/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "meeb",
+      "site_name": "深圳市生态环境局",
+      "base_url": "http://meeb.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/meeb.yaml",
+      "discovered_channels": {},
+      "available_standard_channels": [
+        "tzgg"
+      ],
+      "missing_standard_channels": [
+        "policy",
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "http://meeb.sz.gov.cn/",
+      "error": "[GovClient.get_text] request failed after retries, url=http://meeb.sz.gov.cn/, err=[SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1016)"
+    },
+    {
+      "site_code": "szss",
+      "site_name": "深汕特别合作区",
+      "base_url": "http://www.szss.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/szss.yaml",
+      "discovered_channels": {
+        "policy": {
+          "url": "https://www.szss.gov.cn//sstbhzq/ssw/xxgk/zcfg/index.html",
+          "label": "政策文件",
+          "text": "政策法规",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "https://www.szss.gov.cn//sstbhzq/ssw/jrss/sskx/index.html",
+          "label": "工作动态",
+          "text": "政务动态",
+          "score": 93.0
+        },
+        "tzgg": {
+          "url": "https://www.szss.gov.cn//sstbhzq/ssw/jrss/ggtz/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 93.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.szss.gov.cn//sstbhzq/ssw/jrss/ggtz/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "pnr",
+      "site_name": "深圳市规划和自然资源局",
+      "base_url": "http://pnr.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/pnr.yaml",
+      "discovered_channels": {
+        "tzgg": {
+          "url": "http://pnr.sz.gov.cn/xxgk/gggs/index.html",
+          "label": "通知公告",
+          "text": "公告公示",
+          "score": 143.0
+        },
+        "dynamic": {
+          "url": "http://pnr.sz.gov.cn/xxgk/gzdt/index.html",
+          "label": "工作动态",
+          "text": "工作动态",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "http://pnr.sz.gov.cn/xxgk/zcwj/index.html",
+          "label": "政策文件",
+          "text": "政策文件",
+          "score": 143.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "http://pnr.sz.gov.cn/xxgk/gggs/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "lg",
+      "site_name": "龙岗区",
+      "base_url": "http://www.lg.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/lg.yaml",
+      "discovered_channels": {
+        "dynamic": {
+          "url": "https://www.lg.gov.cn/xxgk/xwzx/zwdt/index.html",
+          "label": "工作动态",
+          "text": "政务动态",
+          "score": 143.0
+        },
+        "tzgg": {
+          "url": "https://www.lg.gov.cn/xxgk/zwgk/tzgg/index.html",
+          "label": "通知公告",
+          "text": "通知公告",
+          "score": 143.0
+        },
+        "policy": {
+          "url": "https://www.lg.gov.cn/xxgk/ztzl/zcwjk/",
+          "label": "政策文件",
+          "text": "政策文件库",
+          "score": 137.0
+        }
+      },
+      "available_standard_channels": [
+        "tzgg",
+        "policy",
+        "dynamic"
+      ],
+      "missing_standard_channels": [],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://www.lg.gov.cn/xxgk/zwgk/tzgg/index.html",
+      "error": ""
+    },
+    {
+      "site_code": "htcz",
+      "site_name": "深圳市航天产业投资控股",
+      "base_url": "https://htcz.sz.gov.cn/",
+      "rule_path": "/Users/aer/IdeaProjects/MediaCrawler/media_platform/gov/rules/htcz.yaml",
+      "discovered_channels": {},
+      "available_standard_channels": [
+        "tzgg"
+      ],
+      "missing_standard_channels": [
+        "policy",
+        "dynamic"
+      ],
+      "default_standard_channel": "tzgg",
+      "compat_main_url": "https://htcz.sz.gov.cn/zfxx/cg/index.html",
+      "error": ""
+    }
+  ]
+}

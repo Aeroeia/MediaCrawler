@@ -8,10 +8,12 @@
       "wait_until": "domcontentloaded",
       "timeout_ms": 30000,
       "scroll_times": 1
-    }
+    },
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "http://meeb.sz.gov.cn/"
       ],
@@ -19,6 +21,17 @@
         "pattern": "http://meeb.sz.gov.cn/index_{page}.html",
         "start_page": 2
       }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "http://meeb.sz.gov.cn/"
+      ],
+      "pagination": {
+        "pattern": "http://meeb.sz.gov.cn/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

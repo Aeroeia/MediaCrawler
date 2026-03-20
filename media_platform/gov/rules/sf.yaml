@@ -3,10 +3,12 @@
     "code": "sf",
     "name": "深圳市司法局",
     "base_url": "http://sf.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://sf.sz.gov.cn/xxgk/xxgkml/gsgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://sf.sz.gov.cn/xxgk/xxgkml/gsgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://sf.sz.gov.cn/gfxwjcx/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://sf.sz.gov.cn/gfxwjcx/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://sf.sz.gov.cn/xxgk/xxgkml/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://sf.sz.gov.cn/xxgk/xxgkml/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://sf.sz.gov.cn/xxgk/xxgkml/gsgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://sf.sz.gov.cn/xxgk/xxgkml/gsgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

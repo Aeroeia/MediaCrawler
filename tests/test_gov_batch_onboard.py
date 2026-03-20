@@ -7,7 +7,7 @@
 # Licensed under NON-COMMERCIAL LEARNING LICENSE 1.1
 #
 
-from media_platform.gov.batch_onboard import classify_error
+from media_platform.gov.batch_onboard import _iter_verify_channels, classify_error
 
 
 def test_classify_error_timeout():
@@ -20,3 +20,14 @@ def test_classify_error_http_403():
 
 def test_classify_error_captcha():
     assert classify_error("hit captcha page").startswith("captcha")
+
+
+def test_iter_verify_channels_skips_main_compat_alias():
+    rule = {
+        "channels": {
+            "tzgg": {"start_urls": ["https://example.gov.cn/tzgg/index.html"]},
+            "main": {"compat_alias": True, "start_urls": ["https://example.gov.cn/tzgg/index.html"]},
+        }
+    }
+    channels = _iter_verify_channels(rule)
+    assert channels == ["tzgg"]

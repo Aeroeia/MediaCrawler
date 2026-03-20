@@ -3,17 +3,40 @@
     "code": "ga",
     "name": "深圳市公安局",
     "base_url": "http://ga.sz.gov.cn",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "http://szjj.sz.gov.cn/ZWGK/TZGG/GGSB/"
+        "https://msjw.ga.sz.gov.cn/crj/crjmsjw/wgryw/ajax/gashygatznrh.html"
+      ],
+      "pagination": {
+        "pattern": "https://msjw.ga.sz.gov.cn/crj/crjmsjw/wgryw/ajax/gashygatznrh_index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://ga.sz.gov.cn/ZWGK/GFXWJ/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://ga.sz.gov.cn/ZWGK/GFXWJ/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://msjw.ga.sz.gov.cn/crj/crjmsjw/wgryw/ajax/gashygatznrh.html"
       ],
       "pagination": {
         "pattern": "http://szjj.sz.gov.cn/ZWGK/TZGG/GGSB/index_{page}.html",
         "start_page": 2
-      }
+      },
+      "compat_alias": true
     }
   },
   "extract": {

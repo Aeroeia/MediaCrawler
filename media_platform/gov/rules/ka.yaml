@@ -3,10 +3,12 @@
     "code": "ka",
     "name": "深圳市口岸办公室",
     "base_url": "http://ka.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://ka.sz.gov.cn/xxgk/qt/tzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://ka.sz.gov.cn/xxgk/qt/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://ka.sz.gov.cn/xxgk/zcfggfxwj/haig/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://ka.sz.gov.cn/xxgk/zcfggfxwj/haig/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://ka.sz.gov.cn/xxgk/qt/gzdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://ka.sz.gov.cn/xxgk/qt/gzdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://ka.sz.gov.cn/xxgk/qt/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://ka.sz.gov.cn/xxgk/qt/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

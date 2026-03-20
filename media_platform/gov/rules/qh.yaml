@@ -3,17 +3,40 @@
     "code": "qh",
     "name": "前海管理局",
     "base_url": "http://qh.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "http://qh.sz.gov.cn/sygnan/qhzx/tzgg"
+        "http://qh.sz.gov.cn/sygnan/qhzx/tzgg/index.html"
       ],
       "pagination": {
         "pattern": "http://qh.sz.gov.cn/sygnan/qhzx/tzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://qh.sz.gov.cn/sygnan/xxgk/xxgkml/zcfg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://qh.sz.gov.cn/sygnan/xxgk/xxgkml/zcfg/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "http://qh.sz.gov.cn/sygnan/qhzx/tzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "http://qh.sz.gov.cn/sygnan/qhzx/tzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

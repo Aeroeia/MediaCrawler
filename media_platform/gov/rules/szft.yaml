@@ -3,10 +3,12 @@
     "code": "szft",
     "name": "福田区",
     "base_url": "https://www.szft.gov.cn",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
         "https://www.szft.gov.cn/xxgk/bmtzgg/index.html"
       ],
@@ -14,6 +16,37 @@
         "pattern": "https://www.szft.gov.cn/xxgk/bmtzgg/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://www.szft.gov.cn/xxgk/zwgk/zcfg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szft.gov.cn/xxgk/zwgk/zcfg/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "dynamic": {
+      "label": "工作动态",
+      "start_urls": [
+        "https://www.szft.gov.cn/ftxx/xwdt/ftdt/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szft.gov.cn/ftxx/xwdt/ftdt/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://www.szft.gov.cn/xxgk/bmtzgg/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://www.szft.gov.cn/xxgk/bmtzgg/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {

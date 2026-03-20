@@ -3,17 +3,40 @@
     "code": "szjj",
     "name": "深圳交警",
     "base_url": "http://szjj.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "http://szjj.sz.gov.cn/ZWGK/TZGG/GGBF/index.html"
+        "https://szjj.sz.gov.cn/ZWGK/TZGG/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://szjj.sz.gov.cn/ZWGK/TZGG/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "https://szjj.sz.gov.cn/ZWGK/ZCFG/ZCJD234/index.html"
+      ],
+      "pagination": {
+        "pattern": "https://szjj.sz.gov.cn/ZWGK/ZCFG/ZCJD234/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "https://szjj.sz.gov.cn/ZWGK/TZGG/index.html"
       ],
       "pagination": {
         "pattern": "http://szjj.sz.gov.cn/ZWGK/TZGG/GGBF/index_{page}.html",
         "start_page": 2
-      }
+      },
+      "compat_alias": true
     }
   },
   "extract": {

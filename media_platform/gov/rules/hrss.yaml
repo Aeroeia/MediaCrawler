@@ -3,17 +3,40 @@
     "code": "hrss",
     "name": "深圳市人力资源和社会保障局",
     "base_url": "http://hrss.sz.gov.cn/",
-    "fetch_mode": "http"
+    "fetch_mode": "http",
+    "default_channel": "tzgg"
   },
   "channels": {
-    "main": {
+    "tzgg": {
+      "label": "通知公告",
       "start_urls": [
-        "https://hrss.sz.gov.cn/tzgg/content/post_12691453.html"
+        "http://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/index.html"
       ],
       "pagination": {
-        "pattern": "https://hrss.sz.gov.cn/tzgg/content/post_12691453_index_{page}.html",
+        "pattern": "http://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/index_{page}.html",
         "start_page": 2
       }
+    },
+    "policy": {
+      "label": "政策文件",
+      "start_urls": [
+        "http://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/index.html"
+      ],
+      "pagination": {
+        "pattern": "http://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/index_{page}.html",
+        "start_page": 2
+      }
+    },
+    "main": {
+      "label": "兼容入口(main)",
+      "start_urls": [
+        "http://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/index.html"
+      ],
+      "pagination": {
+        "pattern": "http://hrss.sz.gov.cn/xxgk/zcfgjjd/zcfg/shbx/index_{page}.html",
+        "start_page": 2
+      },
+      "compat_alias": true
     }
   },
   "extract": {
